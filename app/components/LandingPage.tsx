@@ -22,7 +22,12 @@ import {
   Wrench,
   CaretDown,
 } from "phosphor-react";
-import { ArmchairIcon, HandshakeIcon, HardHatIcon, TargetIcon } from "@phosphor-icons/react";
+import {
+  ArmchairIcon,
+  HandshakeIcon,
+  HardHatIcon,
+  TargetIcon,
+} from "@phosphor-icons/react";
 
 function AmanaLogo({ size = 48 }: { size?: number }) {
   const scale = size / 48;
@@ -76,11 +81,17 @@ function Navbar() {
 
   return (
     <nav className={`navbar${scrolled ? " scrolled" : ""}`}>
-      <a href="#home" className="logo-link" onClick={() => setMobileOpen(false)}>
+      <a
+        href="#home"
+        className="logo-link"
+        onClick={() => setMobileOpen(false)}
+      >
         <AmanaLogo size={42} />
         <div>
           <div className="logo-text">Amana</div>
-          <div className="logo-tag">Your money. Safe. Until it&apos;s time.</div>
+          <div className="logo-tag">
+            Your money. Safe. Until it&apos;s time.
+          </div>
         </div>
       </a>
 
@@ -103,7 +114,11 @@ function Navbar() {
             {item.label}
           </a>
         ))}
-        <Link href="/auth/client" className="cta-button" onClick={() => setMobileOpen(false)}>
+        <Link
+          href="/auth/client"
+          className="cta-button"
+          onClick={() => setMobileOpen(false)}
+        >
           Get Started
         </Link>
       </div>
@@ -149,8 +164,8 @@ function Reveal({
     direction === "left"
       ? " translate-left"
       : direction === "right"
-      ? " translate-right"
-      : "";
+        ? " translate-right"
+        : "";
 
   return (
     <div
@@ -172,7 +187,8 @@ function HeroSection() {
             <LockSimple size={18} weight="bold" /> PROUDLY ABUJA-BASED
           </div>
           <h1 className="hero-title">
-            Payment Protection<br />
+            Payment Protection
+            <br />
             <span>You Can Trust.</span>
           </h1>
           <p className="hero-text">
@@ -187,6 +203,24 @@ function HeroSection() {
             <Link href="/auth/artisan" className="btn-secondary">
               I&apos;m doing the work
             </Link>
+          </div>
+
+          <div className="regulatory-badge">
+            <LockSimple
+              size={20}
+              weight="bold"
+              style={{
+                color: "var(--green2)",
+                flexShrink: 0,
+                marginTop: "2px",
+              }}
+            />
+            <span style={{ textAlign: "left" }}>
+              <strong>Regulatory Notice:</strong> Amana is a technology
+              platform, not a bank or financial institution. All protected funds
+              are secured in escrow by our licensed partner financial
+              institutions.
+            </span>
           </div>
 
           <div className="hero-stats">
@@ -213,26 +247,30 @@ function HeroSection() {
               <div className="hero-card-value">₦250,000</div>
             </div>
             <div className="hero-card-meta">
-              <span className="hero-card-note">Funds held until completion</span>
+              <span className="hero-card-note">
+                Held securely by our CBN-licensed partner bank
+              </span>
             </div>
 
-            <div className="job-card">
-              <div className="job-card-header">
-                <h3>Kitchen Installation</h3>
-                <span className="job-badge job-badge-secure">
-                  <ShieldCheck size={14} weight="fill" /> Funds Secured
-                </span>
+            <div className="job-cards">
+              <div className="job-card">
+                <div className="job-card-header">
+                  <h3>Kitchen Installation</h3>
+                  <span className="job-badge job-badge-secure">
+                    <ShieldCheck size={14} weight="fill" /> Funds Secured
+                  </span>
+                </div>
+                <p>Gwarinpa, Abuja</p>
               </div>
-              <p>Gwarinpa, Abuja</p>
-            </div>
-            <div className="job-card">
-              <div className="job-card-header">
-                <h3>POP Ceiling</h3>
-                <span className="job-badge job-badge-progress">
-                  <Lightning size={14} weight="fill" /> Work In Progress
-                </span>
+              <div className="job-card">
+                <div className="job-card-header">
+                  <h3>POP Ceiling</h3>
+                  <span className="job-badge job-badge-progress">
+                    <Lightning size={14} weight="fill" /> Work In Progress
+                  </span>
+                </div>
+                <p>Wuse 2, Abuja</p>
               </div>
-              <p>Wuse 2, Abuja</p>
             </div>
           </div>
         </div>
@@ -244,14 +282,14 @@ function HeroSection() {
 function HowItWorks() {
   const steps = [
     {
-      icon: <ClipboardText size={28} />, 
+      icon: <ClipboardText size={28} />,
       title: "Create Agreement",
       desc: "Define the scope, price, and deadline. Both parties review before anything moves.",
     },
     {
       icon: <ShieldCheck size={28} />,
       title: "Secure Funds",
-      desc: "Client deposits payment into Amana protection. Money is held safely until work is done.",
+      desc: "Client deposits payment. Funds are secured by our licensed partner financial institution until the work is approved.",
     },
     {
       icon: <Gear size={28} />,
@@ -271,7 +309,10 @@ function HowItWorks() {
         <div className="section-header">
           <span className="eyebrow">🔄 HOW IT WORKS</span>
           <h2>Four simple steps to protect every naira.</h2>
-          <p>Whether you&apos;re hiring an artisan or doing the work, Amana makes the process transparent and safe.</p>
+          <p>
+            Whether you&apos;re hiring an artisan or doing the work, Amana makes
+            the process transparent and safe.
+          </p>
         </div>
 
         <div className="steps-grid">
@@ -331,7 +372,10 @@ function FeaturesSection() {
         <div className="section-header">
           <span className="eyebrow">⚡ FEATURES</span>
           <h2>Everything you need for trusted transactions.</h2>
-          <p>Amana is purpose-built for the way Nigerians hire and pay for services.</p>
+          <p>
+            Amana is purpose-built for the way Nigerians hire and pay for
+            services.
+          </p>
         </div>
 
         <div className="features-grid">
@@ -351,10 +395,22 @@ function FeaturesSection() {
 }
 
 function TrustSection() {
-  const trustItems = [
-    { value: "₦8.7M+", label: "Protected" },
-    { value: "150+", label: "Jobs Secured" },
-    { value: "98%", label: "Resolved" },
+  const trustSignals = [
+    {
+      icon: <MapPin size={28} />,
+      text: "Launching with Abuja businesses",
+      subtext: "Starting locally in FCT to ensure hands-on support for businesses, clients, and skilled pros.",
+    },
+    {
+      icon: <Handshake size={28} />,
+      text: "Built for Nigerians tired of failed agreements",
+      subtext: "Designed to end the cycle of unpaid work and unfinished projects with reliable payment protection.",
+    },
+    {
+      icon: <CheckCircle size={28} />,
+      text: "Join early access",
+      subtext: "Secure your next project today as one of our early pilot users and experience absolute peace of mind.",
+    },
   ];
 
   return (
@@ -363,15 +419,22 @@ function TrustSection() {
         <div className="section-header">
           <span className="eyebrow">🤝 BUILT ON TRUST</span>
           <h2>The bridge between promise and delivery.</h2>
-          <p>In Abuja&apos;s service economy, trust is everything. Amana eliminates the risk of unpaid work and unfinished jobs by holding funds safely until everyone is satisfied.</p>
+          <p>
+            In Abuja&apos;s service economy, trust is everything. Amana
+            eliminates the risk of unpaid work and unfinished jobs by holding
+            funds safely until everyone is satisfied.
+          </p>
         </div>
 
         <div className="trust-grid">
-          {trustItems.map((item) => (
-            <div key={item.label} className="trust-card">
-              <strong>{item.value}</strong>
-              <span>{item.label}</span>
-            </div>
+          {trustSignals.map((item, index) => (
+            <Reveal key={item.text} delay={index * 0.1}>
+              <div className="trust-card">
+                <div className="feature-icon">{item.icon}</div>
+                <h3>{item.text}</h3>
+                <p>{item.subtext}</p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -392,7 +455,7 @@ function UseCasesSection() {
       desc: "Secure payments for solar installations, inverter setups, and electrical work across Abuja homes and offices.",
     },
     {
-      icon:<ArmchairIcon size={28} />,
+      icon: <ArmchairIcon size={28} />,
       title: "Furniture & Interiors",
       desc: "From custom kitchen cabinets to full interior fitouts – protect every naira until the furniture is delivered.",
     },
@@ -409,7 +472,10 @@ function UseCasesSection() {
         <div className="section-header">
           <span className="eyebrow">🎯 USE CASES</span>
           <h2>Built for Abuja&apos;s service economy.</h2>
-          <p>From home renovations to commercial projects, Amana protects every type of service transaction.</p>
+          <p>
+            From home renovations to commercial projects, Amana protects every
+            type of service transaction.
+          </p>
         </div>
 
         <div className="use-cases-grid">
@@ -428,64 +494,7 @@ function UseCasesSection() {
   );
 }
 
-function TestimonialsSection() {
-  const testimonials = [
-    {
-      stars: "★★★★★",
-      quote:
-        "I used to pay artisans upfront and pray they'd finish the job. With Amana, my ₦4M kitchen renovation was protected from day one. Never going back.",
-      name: "Adaeze O.",
-      role: "Homeowner, Maitama",
-      initials: "AO",
-    },
-    {
-      stars: "★★★★★",
-      quote:
-        "As an artisan, Amana gives me confidence. I know the money is there before I start buying materials. It changed how I run my business.",
-      name: "Musa B.",
-      role: "Borehole Specialist, Gwarinpa",
-      initials: "MB",
-    },
-    {
-      stars: "★★★★★",
-      quote:
-        "We had a small dispute on a solar installation. Amana's resolution process was fair, fast, and based on our original agreement. Professional.",
-      name: "Chinedu K.",
-      role: "Property Developer, Wuse",
-      initials: "CK",
-    },
-  ];
-
-  return (
-    <section className="section" id="testimonials">
-      <div className="page-container">
-        <div className="section-header">
-          <span className="eyebrow">💬 TESTIMONIALS</span>
-          <h2>Trusted by clients and artisans across Abuja.</h2>
-          <p>Real stories from real people who use Amana to protect their payments and their work.</p>
-        </div>
-
-        <div className="testimonials-grid">
-          {testimonials.map((item, index) => (
-            <Reveal key={item.name} delay={index * 0.12}>
-              <div className="testimonial-card">
-                <div className="stars">{item.stars}</div>
-                <blockquote>{item.quote}</blockquote>
-                <div className="testimonial-author">
-                  <div className="testimonial-avatar">{item.initials}</div>
-                  <div>
-                    <div>{item.name}</div>
-                    <div style={{ color: "var(--muted)", fontSize: "0.9rem" }}>{item.role}</div>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+// Testimonials section removed to ensure all trust signals remain 100% real.
 
 function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -493,11 +502,11 @@ function FAQSection() {
   const faqs = [
     {
       q: "What is Amana?",
-      a: "Amana is a payment protection platform that holds funds securely in escrow until work is completed and approved. We're built specifically for Nigeria's service economy — connecting clients with artisans through transparent, trust-based transactions.",
+      a: "Amana is a payment protection platform built specifically for Nigeria's service economy. We connect clients with artisans through transparent, trust-based transactions. Please note that Amana is a technology provider; all funds are held in secure escrow custody by our CBN-licensed partner financial institutions.",
     },
     {
       q: "How does the escrow work?",
-      a: "When a client creates a protected payment, the funds are held by Amana in a secure account. The artisan can see that the money is available but can't access it until the client approves the completed work. If there's a dispute, Amana reviews the evidence and makes a fair decision.",
+      a: "When a client creates a protected payment, the funds are held securely in custody by our CBN-licensed partner financial institution. The artisan can see that the money is available but can't access it until the client approves the completed work. If there's a dispute, Amana reviews the evidence and makes a fair decision.",
     },
     {
       q: "What if there's a dispute?",
@@ -509,7 +518,7 @@ function FAQSection() {
     },
     {
       q: "Is my money safe?",
-      a: "Absolutely. All funds are held in regulated, insured accounts. Amana never invests or uses your money. It sits safely until it's time to release — either to the artisan upon completion or back to the client if needed.",
+      a: "Absolutely. All funds are held securely in escrow by our regulated, CBN-licensed partner bank. Amana is a software platform and does not hold or custody your funds directly. Your money sits safely with our partner institution until it's time to release — either to the artisan upon completion or back to the client if needed.",
     },
     {
       q: "How do I invite an artisan?",
@@ -527,10 +536,12 @@ function FAQSection() {
         <div className="section-header">
           <span className="eyebrow">❓ FAQ</span>
           <h2>Common questions, clear answers.</h2>
-          <p>Everything you need to know about using Amana for your next project.</p>
+          <p>
+            Everything you need to know about using Amana for your next project.
+          </p>
         </div>
 
-        <div>
+        <div className="faq-list">
           {faqs.map((faq, index) => (
             <div key={faq.q} className="faq-card">
               <button className="faq-question" onClick={() => toggle(index)}>
@@ -538,11 +549,17 @@ function FAQSection() {
                 <span>
                   <CaretDown
                     size={18}
-                    style={{ transform: openIndex === index ? "rotate(180deg)" : "none", transition: "transform 0.2s ease" }}
+                    style={{
+                      transform:
+                        openIndex === index ? "rotate(180deg)" : "none",
+                      transition: "transform 0.2s ease",
+                    }}
                   />
                 </span>
               </button>
-              <div className={`faq-answer${openIndex === index ? " open" : ""}`}>
+              <div
+                className={`faq-answer${openIndex === index ? " open" : ""}`}
+              >
                 <p>{faq.a}</p>
               </div>
             </div>
@@ -558,7 +575,9 @@ function CTASection() {
     <section className="cta-section" id="cta">
       <div className="page-container cta-inner">
         <h2>Ready to protect your next project?</h2>
-        <p>Join hundreds of clients and artisans across Abuja who trust Amana for safe, transparent payments.</p>
+        <p>
+          Join early access and secure your next agreement with absolute peace of mind.
+        </p>
         <div className="hero-actions" style={{ justifyContent: "center" }}>
           <Link href="/auth/client" className="cta-button">
             Get Started — It&apos;s Free
@@ -583,7 +602,10 @@ function Footer() {
               <h1>Amana</h1>
             </div>
           </div>
-          <p>Your money. Safe. Until it&apos;s time. Amana is Nigeria&apos;s first payment protection platform built for the service economy.</p>
+          <p>
+            Your money. Safe. Until it&apos;s time. Amana is Nigeria&apos;s
+            first payment protection platform built for the service economy.
+          </p>
         </div>
 
         <div>
@@ -612,10 +634,21 @@ function Footer() {
       </div>
 
       <div className="page-container footer-bottom">
-        <p>© 2026 Amana. All rights reserved. Proudly built in Abuja, Nigeria.</p>
-        <div>
-          <a href="#home">Privacy Policy</a>
-          <a href="#home">Terms of Service</a>
+        <div className="footer-disclaimer">
+          Amana is a technology platform, not a bank, escrow agent, or financial
+          institution. Payment protection and escrow custody services are
+          provided by our Central Bank of Nigeria (CBN) licensed partner
+          financial institution. All escrowed funds are held securely in custody
+          accounts at our licensed partner bank.
+        </div>
+        <div className="footer-bottom-row">
+          <p>
+            © 2026 Amana. All rights reserved. Proudly built in Abuja, Nigeria.
+          </p>
+          <div className="footer-bottom-links">
+            <a href="#home">Privacy Policy</a>
+            <a href="#home">Terms of Service</a>
+          </div>
         </div>
       </div>
     </footer>
@@ -632,7 +665,6 @@ export default function LandingPage() {
         <FeaturesSection />
         <TrustSection />
         <UseCasesSection />
-        <TestimonialsSection />
         <FAQSection />
         <CTASection />
       </main>

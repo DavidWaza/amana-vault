@@ -46,16 +46,16 @@ export default function ClientAuthPage() {
   return (
     <div className="auth-page">
       <div className="auth-container">
-        <Link href="/" className="logo-link" style={{ flexDirection: "column", gap: "1rem" }}>
+        <Link href="/" className="logo-link auth-brand">
           <AmanaLogo size={56} />
-          <div style={{ textAlign: "center" }}>
-            <h1 className="logo-text">Amana</h1>
-            <p className="logo-tag" style={{ color: "var(--muted)", marginTop: "0.25rem" }}>Client Portal</p>
+          <div>
+            <h1 className="logo-text auth-brand-title">Amana</h1>
+            <p className="auth-portal-tag">Client Portal</p>
           </div>
         </Link>
 
         <div className="auth-card">
-          <div style={{ marginBottom: "2rem", textAlign: "center" }}>
+          <div className="auth-card-header">
             <h2>{isLogin ? "Welcome back" : "Create an account"}</h2>
             <p>{isLogin ? "Sign in to manage your protected payments." : "Protect your money before work begins."}</p>
           </div>
@@ -89,12 +89,12 @@ export default function ClientAuthPage() {
             </form>
           ) : (
             <form onSubmit={handleVerifySubmit}>
-              <div style={{ marginBottom: "2rem", textAlign: "center" }}>
-                <div style={{ margin: "0 auto 1rem", width: "4rem", height: "4rem", borderRadius: "999px", background: "var(--soft)", display: "grid", placeItems: "center", fontSize: "1.75rem" }}>
+              <div className="auth-card-header">
+                <div className="auth-verify-icon">
                   <LockSimple size={32} weight="bold" />
                 </div>
                 <h2>Verify your number</h2>
-                <p style={{ color: "var(--muted)", marginTop: "0.75rem", lineHeight: 1.7 }}>
+                <p>
                   We sent a 4-digit code to <strong>{phone}</strong>. Enter it below to continue.
                 </p>
               </div>
@@ -114,8 +114,8 @@ export default function ClientAuthPage() {
             </form>
           )}
 
-          <div style={{ marginTop: "2rem", borderTop: "1px solid var(--line)", paddingTop: "1.5rem", textAlign: "center" }}>
-            <p style={{ color: "var(--muted)", fontSize: "0.95rem" }}>
+          <div className="auth-divider">
+            <p>
               {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
               <button type="button" onClick={() => setIsLogin((prev) => !prev)} className="auth-switch">
                 {isLogin ? "Sign up" : "Sign in"}
@@ -124,7 +124,10 @@ export default function ClientAuthPage() {
           </div>
         </div>
 
-        <p className="auth-note">Protected by bank-level security</p>
+        <p className="auth-note">Funds held by CBN-licensed financial partners</p>
+        <p className="auth-disclaimer">
+          Amana is a technology platform, not a bank or financial institution. All escrowed funds are held securely in custody by our licensed partner bank.
+        </p>
       </div>
     </div>
   );

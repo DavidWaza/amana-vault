@@ -46,18 +46,16 @@ export default function ArtisanAuthPage() {
   return (
     <div className="auth-page">
       <div className="auth-container">
-        <Link href="/" className="logo-link" style={{ flexDirection: "column", gap: "1rem" }}>
+        <Link href="/" className="logo-link auth-brand">
           <AmanaLogo size={56} />
-          <div style={{ textAlign: "center" }}>
-            <h1 className="logo-text">Amana</h1>
-            <span className="logo-tag" style={{ color: "var(--gold)", background: "var(--gold-soft)", padding: "0.35rem 0.8rem", borderRadius: "999px", display: "inline-flex" }}>
-              ARTISAN PORTAL
-            </span>
+          <div>
+            <h1 className="logo-text auth-brand-title">Amana</h1>
+            <span className="auth-portal-tag auth-portal-tag--artisan">Artisan Portal</span>
           </div>
         </Link>
 
         <div className="auth-card">
-          <div style={{ marginBottom: "2rem", textAlign: "center" }}>
+          <div className="auth-card-header">
             <h2>{isLogin ? "Welcome back, Pro" : "Join Amana as a Pro"}</h2>
             <p>{isLogin ? "Sign in to view your secured jobs." : "Get guaranteed payments for your work."}</p>
           </div>
@@ -107,12 +105,12 @@ export default function ArtisanAuthPage() {
             </form>
           ) : (
             <form onSubmit={handleVerifySubmit}>
-              <div style={{ marginBottom: "2rem", textAlign: "center" }}>
-                <div style={{ margin: "0 auto 1rem", width: "4rem", height: "4rem", borderRadius: "999px", background: "var(--gold-soft)", display: "grid", placeItems: "center", fontSize: "1.75rem" }}>
+              <div className="auth-card-header">
+                <div className="auth-verify-icon auth-verify-icon--artisan">
                   <LockSimple size={32} weight="bold" />
                 </div>
                 <h2>Verify your number</h2>
-                <p style={{ color: "var(--muted)", marginTop: "0.75rem", lineHeight: 1.7 }}>
+                <p>
                   We sent a 4-digit code to <strong>{phone}</strong>. Enter it below to access your jobs.
                 </p>
               </div>
@@ -132,8 +130,8 @@ export default function ArtisanAuthPage() {
             </form>
           )}
 
-          <div style={{ marginTop: "2rem", borderTop: "1px solid var(--line)", paddingTop: "1.5rem", textAlign: "center" }}>
-            <p style={{ color: "var(--muted)", fontSize: "0.95rem" }}>
+          <div className="auth-divider">
+            <p>
               {isLogin ? "New to Amana?" : "Already registered?"}{" "}
               <button type="button" onClick={() => setIsLogin((prev) => !prev)} className="auth-switch">
                 {isLogin ? "Apply as a Pro" : "Sign in"}
@@ -142,7 +140,10 @@ export default function ArtisanAuthPage() {
           </div>
         </div>
 
-        <p className="auth-note">Join 150+ verified artisans in Abuja</p>
+        <p className="auth-note">Launching with Abuja businesses</p>
+        <p className="auth-disclaimer">
+          Amana is a technology platform, not a bank or financial institution. All escrowed payments are held securely in custody by our CBN-licensed partner financial institutions.
+        </p>
       </div>
     </div>
   );
