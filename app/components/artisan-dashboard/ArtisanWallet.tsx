@@ -112,13 +112,13 @@ export default function ArtisanWalletSection({
           <p className="adash-eyebrow">amana vault</p>
         </div>
         <span className="adash-wallet-icon-wrap">
-          <VaultIcon size={36} />
+          <VaultIcon size={72} />
         </span>
       </div>
 
       <div className="adash-wallet-balance-card">
       <h2 className="adash-wallet-title">
-            <VaultIcon size={24} />
+            <VaultIcon size={50} variant="white"/>
             Secured in Escrow
           </h2>
         <p className="adash-wallet-balance-value">

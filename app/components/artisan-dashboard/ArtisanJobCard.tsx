@@ -7,11 +7,14 @@ import {
   Warning,
   Clock,
   User,
+  ChatsCircle,
+  Receipt,
 } from "phosphor-react";
 import type { ArtisanJob, JobPrimaryAction } from "./types";
 import {
   formatNaira,
   formatRelativeDate,
+  canMessageClient,
   getJobPrimaryAction,
   JOB_STATUS_META,
 } from "./utils";
@@ -21,6 +24,8 @@ type ArtisanJobCardProps = {
   canAcceptJobs: boolean;
   onPrimaryAction?: (job: ArtisanJob, action: JobPrimaryAction) => void;
   onDeclineInvite?: (jobId: string) => void;
+  onMessageClient?: (job: ArtisanJob) => void;
+  onCreateInvoice?: (job: ArtisanJob) => void;
 };
 
 export default function ArtisanJobCard({
@@ -28,6 +33,8 @@ export default function ArtisanJobCard({
   canAcceptJobs,
   onPrimaryAction,
   onDeclineInvite,
+  onMessageClient,
+  onCreateInvoice,
 }: ArtisanJobCardProps) {
   const status = JOB_STATUS_META[job.status];
   const action = getJobPrimaryAction(job);
@@ -114,8 +121,42 @@ export default function ArtisanJobCard({
         </p>
       )}
 
+      {job.milestones && job.milestones.length > 0 && (
+        <div className="adash-job-milestones-preview">
+          <span>{job.milestones.length} milestones</span>
+          <span>{formatNaira(job.amount)} total</span>
+        </div>
+      )}
+
+      {job.invoice?.status === "sent" && (
+        <p className="adash-job-notice adash-job-notice--secure">
+          <Receipt size={16} weight="bold" />
+          Invoice {job.invoice.invoiceNumber} sent
+        </p>
+      )}
+
       {action && (
         <div className="adash-job-actions">
+          {job.sentByArtisan && onCreateInvoice && (
+            <button
+              type="button"
+              className="adash-btn adash-btn--secondary"
+              onClick={() => onCreateInvoice(job)}
+            >
+              <Receipt size={16} weight="bold" />
+              {job.invoice ? "View invoice" : "Create invoice"}
+            </button>
+          )}
+          {canMessageClient(job) && onMessageClient && (
+            <button
+              type="button"
+              className="adash-btn adash-btn--secondary"
+              onClick={() => onMessageClient(job)}
+            >
+              <ChatsCircle size={16} weight="bold" />
+              Message
+            </button>
+          )}
           {job.status === "invitation_pending" && (
             <button
               type="button"

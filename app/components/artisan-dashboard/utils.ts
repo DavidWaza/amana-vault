@@ -27,6 +27,12 @@ export function isInvitation(job: ArtisanJob): boolean {
   );
 }
 
+export function canMessageClient(job: ArtisanJob): boolean {
+  return !["declined", "cancelled", "invitation_expired", "released"].includes(
+    job.status,
+  );
+}
+
 export function isActiveJob(job: ArtisanJob): boolean {
   return [
     "awaiting_funding",

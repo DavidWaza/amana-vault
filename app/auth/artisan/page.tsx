@@ -50,7 +50,7 @@ export default function ArtisanAuthPage() {
           <AmanaLogo size={56} />
           <div>
             <h1 className="logo-text auth-brand-title">Amana</h1>
-            <span className="auth-portal-tag auth-portal-tag--artisan">Artisan Portal</span>
+            {/* <span className="auth-portal-tag auth-portal-tag--artisan">Artisan Portal</span> */}
           </div>
         </Link>
 

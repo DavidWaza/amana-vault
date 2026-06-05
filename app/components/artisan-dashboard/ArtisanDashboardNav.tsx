@@ -3,10 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { SignOut, UserCircle, Money } from "phosphor-react";
+import { UserCircle, Money } from "phosphor-react";
 import ArtisanNotificationsDropdown from "./ArtisanNotificationsDropdown";
+import ArtisanChatInbox from "./ArtisanChatInbox";
 import { useArtisanProfile } from "./ArtisanProfileProvider";
 import type { ArtisanNotification } from "./types";
+import VaultIcon from "./VaultIcon";
 
 type ArtisanDashboardNavProps = {
   currentPage?: "dashboard" | "pro";
@@ -25,6 +27,7 @@ export default function ArtisanDashboardNav({
     openProfileSettings,
   } = useArtisanProfile();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const page =
     currentPage ?? (pathname.startsWith("/artisan/pro") ? "pro" : "dashboard");
@@ -65,8 +68,10 @@ export default function ArtisanDashboardNav({
     <header className="adash-nav">
       <div className="adash-nav-inner">
         <Link href="/artisan/dashboard" className="adash-nav-brand">
+        <div className="adash-nav-brand-logo">
+        <VaultIcon size={50} variant="green"/>
           <span className="adash-nav-logo">Amana</span>
-          <span className="adash-nav-portal">Artisan Portal</span>
+        </div>
         </Link>
 
         <nav className="adash-nav-links" aria-label="Dashboard navigation">
@@ -82,13 +87,6 @@ export default function ArtisanDashboardNav({
           <Link href="/artisan/dashboard#reviews" className="adash-nav-link">
             Reviews
           </Link>
-          {/* <button
-            type="button"
-            className="adash-nav-link adash-nav-link--button"
-            onClick={openSettings}
-          >
-            Profile
-          </button> */}
         </nav>
 
         <div className="adash-nav-actions">
@@ -100,10 +98,22 @@ export default function ArtisanDashboardNav({
             <span>Amana Pro</span>
           </Link>
 
+          <ArtisanChatInbox
+            open={chatOpen}
+            onToggle={() => {
+              setChatOpen((prev) => !prev);
+              setNotificationsOpen(false);
+            }}
+            onClose={() => setChatOpen(false)}
+          />
+
           <ArtisanNotificationsDropdown
             notifications={notifications}
             open={notificationsOpen}
-            onToggle={() => setNotificationsOpen((prev) => !prev)}
+            onToggle={() => {
+              setNotificationsOpen((prev) => !prev);
+              setChatOpen(false);
+            }}
             onClose={() => setNotificationsOpen(false)}
             onDismiss={dismissNotification}
             onAction={handleNotificationAction}
@@ -117,10 +127,6 @@ export default function ArtisanDashboardNav({
             <UserCircle size={22} weight="bold" />
             <span>{profile.fullName.split(" ")[0]}</span>
           </button>
-
-          <Link href="/" className="adash-icon-btn" aria-label="Sign out">
-            <SignOut size={20} weight="bold" />
-          </Link>
         </div>
       </div>
     </header>

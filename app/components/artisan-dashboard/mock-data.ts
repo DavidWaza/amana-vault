@@ -1,10 +1,13 @@
 import type {
+  ArtisanClient,
   ArtisanJob,
   ArtisanProfile,
   ArtisanReview,
   ArtisanWallet,
   DashboardAlert,
+  JobChatMessage,
 } from "./types";
+import { buildMilestones } from "./agreement-summary";
 
 export const MOCK_ARTISAN: ArtisanProfile = {
   id: "art-001",
@@ -132,6 +135,10 @@ export const MOCK_JOBS: ArtisanJob[] = [
     priority: "normal",
     createdAt: "2026-06-03T15:00:00Z",
     deadline: "2026-06-25T17:00:00Z",
+    agreementScope:
+      "Commercial toilet refit with multiple WC units, urinals, and shared waste mains.",
+    sentByArtisan: true,
+    milestones: buildMilestones("plumbing", 180000),
     lastUpdated: "2026-06-03T15:00:00Z",
   },
   {
@@ -161,6 +168,81 @@ export const MOCK_JOBS: ArtisanJob[] = [
     deadline: "2026-06-10T17:00:00Z",
     invitationExpiresAt: "2026-05-30T23:59:00Z",
     lastUpdated: "2026-05-31T00:00:00Z",
+  },
+];
+
+export const MOCK_JOB_MESSAGES: Record<string, JobChatMessage[]> = {
+  "job-106": [
+    {
+      id: "msg-1",
+      jobId: "job-106",
+      sender: "artisan",
+      text: "Hi Kola Ventures — I've sent the Office Toilet Refit agreement with 3 milestones. Let me know if the scope works for your team.",
+      createdAt: "2026-06-03T15:05:00Z",
+    },
+    {
+      id: "msg-2",
+      jobId: "job-106",
+      sender: "client",
+      text: "Thanks Musa. We're reviewing the milestone amounts now. Can you confirm the after-hours strip-out timing?",
+      createdAt: "2026-06-03T16:20:00Z",
+    },
+  ],
+};
+
+export const MOCK_CLIENTS: ArtisanClient[] = [
+  {
+    id: "client-001",
+    name: "Adaeze Obi",
+    phone: "08012345678",
+    email: "adaeze@email.com",
+    verified: true,
+    lastJobTitle: "Kitchen Pipe Installation",
+  },
+  {
+    id: "client-002",
+    name: "Chidi Nwosu",
+    phone: "08023456789",
+    email: "chidi@email.com",
+    verified: true,
+    lastJobTitle: "Bathroom Renovation",
+  },
+  {
+    id: "client-003",
+    name: "Fatima Bello",
+    phone: "08034567890",
+    verified: false,
+    lastJobTitle: "Water Heater Setup",
+  },
+  {
+    id: "client-004",
+    name: "Grace Adeyemi",
+    phone: "08045678901",
+    email: "grace@email.com",
+    verified: true,
+    lastJobTitle: "Solar Inverter Plumbing",
+  },
+  {
+    id: "client-005",
+    name: "Kola Ventures",
+    phone: "08056789012",
+    email: "ops@kolaventures.ng",
+    verified: true,
+    lastJobTitle: "Office Toilet Refit",
+  },
+  {
+    id: "client-006",
+    name: "Emeka Duru",
+    phone: "08067890123",
+    verified: true,
+    lastJobTitle: "Borehole Pipe Connection",
+  },
+  {
+    id: "client-007",
+    name: "James Okafor",
+    phone: "08078901234",
+    verified: true,
+    lastJobTitle: "POP Ceiling Repair",
   },
 ];
 

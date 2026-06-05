@@ -2,21 +2,21 @@ import AmanaLogo from "../join-amana/AmanaLogo";
 
 type VaultIconProps = {
   size?: number;
-  light?: boolean;
+  variant?: "green" | "white";
   className?: string;
 };
 
 export default function VaultIcon({
   size = 28,
-  light = false,
+  variant = "green",
   className = "",
 }: VaultIconProps) {
   return (
     <span
-      className={`adash-vault-icon${light ? " adash-vault-icon--light" : ""}${className ? ` ${className}` : ""}`}
+      className={`adash-vault-icon${variant === "white" ? " adash-vault-icon--light" : ""}${className ? ` ${className}` : ""}`}
       aria-hidden
     >
-      <AmanaLogo size={size} light={light} />
+      <AmanaLogo size={size} variant={variant} />
     </span>
   );
 }

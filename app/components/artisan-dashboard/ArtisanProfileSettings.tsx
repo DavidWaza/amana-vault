@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import Link from "next/link";
 import {
   X,
   UserCircle,
@@ -9,6 +10,7 @@ import {
   Camera,
   UploadSimple,
   Warning,
+  SignOut,
 } from "phosphor-react";
 import type {
   ArtisanProfile,
@@ -640,6 +642,13 @@ export default function ArtisanProfileSettings({
               </button>
             </div>
           )}
+        </div>
+
+        <div className="adash-settings-footer">
+          <Link href="/" className="adash-btn adash-btn--danger adash-btn--block">
+            <SignOut size={16} weight="bold" />
+            Sign out
+          </Link>
         </div>
       </div>
     </div>

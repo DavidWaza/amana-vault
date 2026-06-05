@@ -29,35 +29,21 @@ import {
   TargetIcon,
 } from "@phosphor-icons/react";
 
-function AmanaLogo({ size = 48 }: { size?: number }) {
-  const scale = size / 48;
+function AmanaLogo({
+  size = 180,
+  variant = "green",
+}: {
+  size?: number;
+  variant?: "green" | "white";
+}) {
+  const scale = size / 108;
   return (
-    <div
-      className="logo"
-      style={{
-        width: size,
-        height: size,
-        borderWidth: 4 * scale,
-        borderColor: "var(--green2)",
-      }}
-    >
-      <div
-        className="logo-mark"
-        style={{
-          width: 24 * scale,
-          height: 24 * scale,
-          borderWidth: 4 * scale,
-          borderColor: "var(--green2)",
-        }}
-      >
-        <div className="logo-cross logo-cross-first" />
-        <div className="logo-cross logo-cross-second" />
-        <div
-          className="logo-dot"
-          style={{ width: 6 * scale, height: 6 * scale }}
-        />
-      </div>
-    </div>
+    <img
+      src={variant === "green" ? "/logo-main.png" : "/logo-white.png"}
+      alt="Amana Logo"
+      width={size}
+      height="auto"
+    />
   );
 }
 
@@ -86,12 +72,12 @@ function Navbar() {
         className="logo-link"
         onClick={() => setMobileOpen(false)}
       >
-        <AmanaLogo size={42} />
-        <div>
-          <div className="logo-text">Amana</div>
-          <div className="logo-tag">
-            Your money. Safe. Until it&apos;s time.
-          </div>
+        <AmanaLogo size={60} />
+
+        <div className="amana-brand-name-container">
+        <h1 className="amana-brand-name">Amana</h1>
+
+        <div className="logo-tag">Secure am, relax</div>
         </div>
       </a>
 
@@ -399,17 +385,20 @@ function TrustSection() {
     {
       icon: <MapPin size={28} />,
       text: "Launching with Abuja businesses",
-      subtext: "Starting locally in FCT to ensure hands-on support for businesses, clients, and skilled pros.",
+      subtext:
+        "Starting locally in FCT to ensure hands-on support for businesses, clients, and skilled pros.",
     },
     {
       icon: <Handshake size={28} />,
       text: "Built for Nigerians tired of failed agreements",
-      subtext: "Designed to end the cycle of unpaid work and unfinished projects with reliable payment protection.",
+      subtext:
+        "Designed to end the cycle of unpaid work and unfinished projects with reliable payment protection.",
     },
     {
       icon: <CheckCircle size={28} />,
       text: "Join early access",
-      subtext: "Secure your next project today as one of our early pilot users and experience absolute peace of mind.",
+      subtext:
+        "Secure your next project today as one of our early pilot users and experience absolute peace of mind.",
     },
   ];
 
@@ -576,7 +565,8 @@ function CTASection() {
       <div className="page-container cta-inner">
         <h2>Ready to protect your next project?</h2>
         <p>
-          Join early access and secure your next agreement with absolute peace of mind.
+          Join early access and secure your next agreement with absolute peace
+          of mind.
         </p>
         <div className="hero-actions" style={{ justifyContent: "center" }}>
           <Link href="/join-amana" className="cta-button">
@@ -597,10 +587,8 @@ function Footer() {
       <div className="page-container footer-grid">
         <div className="footer-brand">
           <div className="logo-link">
-            <AmanaLogo size={42} />
-            <div>
-              <h1>Amana</h1>
-            </div>
+            <AmanaLogo size={60} variant="white" />
+            <h1 className="amana-brand-name">Amana</h1>
           </div>
           <p>
             Your money. Safe. Until it&apos;s time. Amana is Nigeria&apos;s

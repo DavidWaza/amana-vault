@@ -8,14 +8,23 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { MOCK_ARTISAN, MOCK_NOTIFICATIONS, MOCK_WALLET } from "./mock-data";
+import {
+  MOCK_ARTISAN,
+  MOCK_JOBS,
+  MOCK_JOB_MESSAGES,
+  MOCK_NOTIFICATIONS,
+  MOCK_WALLET,
+} from "./mock-data";
 import { applyGrowthPurchase } from "./growth-utils";
 import ArtisanProfileSettings from "./ArtisanProfileSettings";
+import ArtisanJobChat from "./ArtisanJobChat";
 import type {
+  ArtisanJob,
   ArtisanNotification,
   ArtisanProfile,
   ArtisanWallet,
   GrowthFeatureId,
+  JobChatMessage,
   ProfileSettingsTab,
 } from "./types";
 
@@ -26,6 +35,17 @@ type ArtisanProfileContextValue = {
   setProfile: React.Dispatch<React.SetStateAction<ArtisanProfile>>;
   wallet: ArtisanWallet;
   setWallet: React.Dispatch<React.SetStateAction<ArtisanWallet>>;
+  jobs: ArtisanJob[];
+  setJobs: React.Dispatch<React.SetStateAction<ArtisanJob[]>>;
+  jobMessages: Record<string, JobChatMessage[]>;
+  setJobMessages: React.Dispatch<
+    React.SetStateAction<Record<string, JobChatMessage[]>>
+  >;
+  chatReadAt: Record<string, string>;
+  chatJobId: string | null;
+  openChat: (jobId: string) => void;
+  closeChat: () => void;
+  sendChatMessage: (jobId: string, text: string) => void;
   notifications: ArtisanNotification[];
   setNotifications: React.Dispatch<React.SetStateAction<ArtisanNotification[]>>;
   dismissNotification: (id: string) => void;
@@ -50,6 +70,11 @@ const ArtisanProfileContext = createContext<ArtisanProfileContextValue | null>(
 export function ArtisanProfileProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<ArtisanProfile>(MOCK_ARTISAN);
   const [wallet, setWallet] = useState<ArtisanWallet>(MOCK_WALLET);
+  const [jobs, setJobs] = useState<ArtisanJob[]>(MOCK_JOBS);
+  const [jobMessages, setJobMessages] =
+    useState<Record<string, JobChatMessage[]>>(MOCK_JOB_MESSAGES);
+  const [chatReadAt, setChatReadAt] = useState<Record<string, string>>({});
+  const [chatJobId, setChatJobId] = useState<string | null>(null);
   const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState<ProfileSettingsTab>("profile");
@@ -79,6 +104,49 @@ export function ArtisanProfileProvider({ children }: { children: ReactNode }) {
 
   const closeProfileSettings = useCallback(() => {
     setSettingsOpen(false);
+  }, []);
+
+  const openChat = useCallback((jobId: string) => {
+    setChatJobId(jobId);
+    setChatReadAt((prev) => ({
+      ...prev,
+      [jobId]: new Date().toISOString(),
+    }));
+  }, []);
+
+  const closeChat = useCallback(() => {
+    setChatJobId(null);
+  }, []);
+
+  const sendChatMessage = useCallback((jobId: string, text: string) => {
+    const message: JobChatMessage = {
+      id: `msg-${Date.now()}`,
+      jobId,
+      sender: "artisan",
+      text,
+      createdAt: new Date().toISOString(),
+    };
+
+    setJobMessages((prev) => ({
+      ...prev,
+      [jobId]: [...(prev[jobId] ?? []), message],
+    }));
+
+    window.setTimeout(() => {
+      setJobMessages((prev) => ({
+        ...prev,
+        [jobId]: [
+          ...(prev[jobId] ?? []),
+          {
+            id: `msg-${Date.now()}-reply`,
+            jobId,
+            sender: "client",
+            text: "Thanks — I'll review this on the agreement and get back to you shortly.",
+            createdAt: new Date().toISOString(),
+          },
+        ],
+      }));
+    }, 1800);
   }, []);
 
   const dismissNotification = useCallback((id: string) => {
@@ -115,6 +183,8 @@ export function ArtisanProfileProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const chatJob = jobs.find((job) => job.id === chatJobId) ?? null;
+
   return (
     <ArtisanProfileContext.Provider
       value={{
@@ -122,6 +192,15 @@ export function ArtisanProfileProvider({ children }: { children: ReactNode }) {
         setProfile,
         wallet,
         setWallet,
+        jobs,
+        setJobs,
+        jobMessages,
+        setJobMessages,
+        chatReadAt,
+        chatJobId,
+        openChat,
+        closeChat,
+        sendChatMessage,
         notifications,
         setNotifications,
         dismissNotification,
@@ -154,6 +233,14 @@ export function ArtisanProfileProvider({ children }: { children: ReactNode }) {
           handlePayoutChange(payout);
           closeProfileSettings();
         }}
+      />
+      <ArtisanJobChat
+        job={chatJob}
+        messages={chatJobId ? (jobMessages[chatJobId] ?? []) : []}
+        artisanName={profile.fullName}
+        open={chatJobId !== null}
+        onClose={closeChat}
+        onSend={sendChatMessage}
       />
     </ArtisanProfileContext.Provider>
   );

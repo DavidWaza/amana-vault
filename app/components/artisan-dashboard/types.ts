@@ -72,6 +72,95 @@ export type ArtisanPayoutForm = {
   accountName: string;
 };
 
+export type ArtisanClient = {
+  id: string;
+  name: string;
+  phone: string;
+  email?: string;
+  verified: boolean;
+  lastJobTitle?: string;
+};
+
+export type AgreementCategoryId =
+  | "plumbing"
+  | "electrical"
+  | "carpentry"
+  | "borehole"
+  | "solar"
+  | "ac"
+  | "painting"
+  | "mechanic"
+  | "other";
+
+export type CreateAgreementStep =
+  | "category"
+  | "details"
+  | "terms"
+  | "client"
+  | "summary";
+
+export type AgreementWarranty = "none" | "7_days" | "30_days" | "custom";
+
+export type AgreementMilestone = {
+  id: string;
+  title: string;
+  description: string;
+  amount: string;
+};
+
+export type CreateAgreementForm = {
+  categoryId: AgreementCategoryId;
+  selections: Record<string, string[]>;
+  otherTexts: Record<string, string>;
+  customTexts: Record<string, string>;
+  price: string;
+  startDate: string;
+  finishDate: string;
+  warranty: AgreementWarranty;
+  warrantyCustom: string;
+  changesPolicy: string[];
+  clientId: string | null;
+};
+
+export type JobChatMessage = {
+  id: string;
+  jobId: string;
+  sender: "artisan" | "client";
+  text: string;
+  createdAt: string;
+};
+
+export type ChatThread = {
+  jobId: string;
+  clientName: string;
+  jobTitle: string;
+  lastMessage?: string;
+  lastMessageAt?: string;
+  unreadCount: number;
+};
+
+export type InvoiceLineItem = {
+  id: string;
+  description: string;
+  amount: number;
+};
+
+export type InvoiceStatus = "draft" | "sent" | "paid";
+
+export type JobInvoice = {
+  id: string;
+  jobId: string;
+  invoiceNumber: string;
+  clientName: string;
+  lineItems: InvoiceLineItem[];
+  subtotal: number;
+  notes: string;
+  dueDate: string;
+  status: InvoiceStatus;
+  sentAt?: string;
+  createdAt: string;
+};
+
 export type ArtisanJob = {
   id: string;
   title: string;
@@ -87,6 +176,11 @@ export type ArtisanJob = {
   proofDueAt?: string;
   disputeReason?: string;
   invitationExpiresAt?: string;
+  agreementScope?: string;
+  paymentTerms?: string;
+  milestones?: AgreementMilestone[];
+  sentByArtisan?: boolean;
+  invoice?: JobInvoice;
   lastUpdated: string;
 };
 
@@ -95,7 +189,8 @@ export type JobPrimaryAction =
   | "review_invite"
   | "start_work"
   | "view_dispute"
-  | "view_receipt";
+  | "view_receipt"
+  | "message_client";
 
 export type NotificationActionType = JobPrimaryAction | "open_settings";
 

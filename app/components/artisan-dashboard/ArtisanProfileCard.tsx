@@ -1,6 +1,7 @@
 "use client";
 
-import { Star, MapPin, Wrench, ShieldCheck, Gear, Sparkle } from "phosphor-react";
+import Link from "next/link";
+import { Star, MapPin, Wrench, ShieldCheck, Gear, Sparkle, SignOut } from "phosphor-react";
 import { useArtisanProfile } from "./ArtisanProfileProvider";
 
 function getInitials(name: string): string {
@@ -107,6 +108,10 @@ export default function ArtisanProfileCard() {
           <Gear size={16} weight="bold" />
           Profile Settings
         </button>
+        <Link href="/" className="adash-btn adash-btn--danger adash-btn--block">
+          <SignOut size={16} weight="bold" />
+          Sign out
+        </Link>
       </div>
     </aside>
   );

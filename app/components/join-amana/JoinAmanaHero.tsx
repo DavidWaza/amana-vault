@@ -17,15 +17,15 @@ export default function JoinAmanaHero({
   return (
     <aside className="join-amana-hero">
       <Link href="/" className="join-amana-brand">
-        <AmanaLogo size={44} light />
+        <AmanaLogo size={80} variant="white" />
         <span className="join-amana-brand-name">Amana</span>
       </Link>
 
       <div className="join-amana-hero-content">
         <h1>
-          Work with trust.
+          Why <br /> trust a handshake,
           <br />
-          Get paid securely.
+          When you can trust <span>VAULT</span> .
         </h1>
         <p>The verified marketplace for Nigeria&apos;s most reliable artisans.</p>
 
