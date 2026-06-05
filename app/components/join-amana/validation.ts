@@ -65,7 +65,7 @@ export function isProfileStepValid(form: ArtisanFormData): boolean {
 }
 
 export function isTradeStepValid(form: ArtisanFormData): boolean {
-  if (!form.category || !form.experience) return false;
+  if (!form.category) return false;
   if (form.category === "other") {
     return form.otherTrade.trim().length > 2;
   }
@@ -82,12 +82,6 @@ export function getNinError(nin: string): string | null {
   return null;
 }
 
-export function getBvnError(bvn: string): string | null {
-  if (!bvn.trim()) return "BVN is required";
-  if (!/^\d{11}$/.test(bvn)) return "BVN must be exactly 11 digits";
-  return null;
-}
-
 export function isIdentityStepValid(
   form: ArtisanFormData,
   files: IdentityFiles,
@@ -95,11 +89,39 @@ export function isIdentityStepValid(
 ): boolean {
   return (
     getNinError(form.nin) === null &&
-    getBvnError(form.bvn) === null &&
     files.governmentId !== null &&
     files.selfie !== null &&
     identityConsent
   );
+}
+
+export function getBankNameError(bankName: string): string | null {
+  if (!bankName.trim()) return "Select your bank";
+  return null;
+}
+
+export function getAccountNumberError(accountNumber: string): string | null {
+  if (!accountNumber.trim()) return "Account number is required";
+  if (!/^\d{10}$/.test(accountNumber)) return "Account number must be 10 digits";
+  return null;
+}
+
+export function getAccountNameError(accountName: string): string | null {
+  if (!accountName.trim()) return "Account name is required";
+  if (accountName.trim().length < 3) return "Enter the full name on your account";
+  return null;
+}
+
+export function isBankStepValid(form: ArtisanFormData): boolean {
+  return (
+    getBankNameError(form.bankName) === null &&
+    getAccountNumberError(form.accountNumber) === null &&
+    getAccountNameError(form.accountName) === null
+  );
+}
+
+export function formatAccountNumber(value: string): string {
+  return value.replace(/\D/g, "").slice(0, 10);
 }
 
 export function isPhoneVerifyStepValid(otp: string[]): boolean {

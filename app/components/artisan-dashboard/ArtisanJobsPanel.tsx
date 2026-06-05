@@ -10,6 +10,7 @@ type ArtisanJobsPanelProps = {
   jobs: ArtisanJob[];
   canAcceptJobs: boolean;
   onPrimaryAction?: (job: ArtisanJob, action: JobPrimaryAction) => void;
+  onDeclineInvite?: (jobId: string) => void;
 };
 
 const TABS: { id: DashboardTab; label: string }[] = [
@@ -22,6 +23,7 @@ export default function ArtisanJobsPanel({
   jobs,
   canAcceptJobs,
   onPrimaryAction,
+  onDeclineInvite,
 }: ArtisanJobsPanelProps) {
   const [tab, setTab] = useState<DashboardTab>("active");
 
@@ -84,6 +86,7 @@ export default function ArtisanJobsPanel({
               job={job}
               canAcceptJobs={canAcceptJobs}
               onPrimaryAction={onPrimaryAction}
+              onDeclineInvite={onDeclineInvite}
             />
           ))}
         </div>

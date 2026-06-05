@@ -70,27 +70,6 @@ export default function TradeStep({
       )}
 
       <div className="join-field">
-        <label className="join-label" htmlFor="experience">
-          Years of Experience
-        </label>
-        <select
-          id="experience"
-          className="join-input join-select"
-          value={data.experience}
-          onChange={(e) => onChange("experience", e.target.value)}
-          required
-        >
-          <option value="" disabled>
-            Select experience...
-          </option>
-          <option value="1-2">1–2 years</option>
-          <option value="3-5">3–5 years</option>
-          <option value="6-10">6–10 years</option>
-          <option value="10+">10+ years</option>
-        </select>
-      </div>
-
-      <div className="join-field">
         <label className="join-label" htmlFor="bio">
           Short Bio
         </label>

@@ -20,6 +20,18 @@ export type JobStatus =
 
 export type JobPriority = "normal" | "urgent";
 
+export type GrowthFeatureId =
+  | "verification_checks"
+  | "verification_badge"
+  | "recommendation_boost";
+
+export type ArtisanGrowthFeatures = {
+  checksPaid: boolean;
+  verificationPaid: boolean;
+  boostActive: boolean;
+  boostExpiresAt: string | null;
+};
+
 export type ArtisanProfile = {
   id: string;
   fullName: string;
@@ -28,7 +40,6 @@ export type ArtisanProfile = {
   category: string;
   categoryLabel: string;
   otherTrade: string;
-  experience: string;
   bio: string;
   area: string;
   areaLabel: string;
@@ -41,6 +52,8 @@ export type ArtisanProfile = {
   payoutStatus: PayoutStatus;
   profileComplete: boolean;
   memberSince: string;
+  growth: ArtisanGrowthFeatures;
+  isRecommended: boolean;
 };
 
 export type ProfileSettingsTab = "profile" | "account" | "payout";
@@ -84,6 +97,8 @@ export type JobPrimaryAction =
   | "view_dispute"
   | "view_receipt";
 
+export type NotificationActionType = JobPrimaryAction | "open_settings";
+
 export type DashboardAlert = {
   id: string;
   type: "warning" | "info" | "error" | "success";
@@ -91,8 +106,14 @@ export type DashboardAlert = {
   message: string;
   actionLabel?: string;
   actionHref?: string;
-  actionType?: JobPrimaryAction;
+  actionType?: NotificationActionType;
   actionJobId?: string;
+  settingsTab?: ProfileSettingsTab;
+};
+
+export type ArtisanNotification = DashboardAlert & {
+  createdAt: string;
+  read: boolean;
 };
 
 export type DashboardTab = "active" | "invitations" | "history";

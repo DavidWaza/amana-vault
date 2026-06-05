@@ -1,3 +1,4 @@
+import PasswordInput from "../../PasswordInput";
 import { MIN_ARTISAN_AGE, PASSWORD_MIN_LENGTH } from "../constants";
 import {
   getConfirmPasswordError,
@@ -95,7 +96,7 @@ export default function ProfileStep({
 
       <div className="join-field">
         <label className="join-label" htmlFor="email">
-          Email <span className="join-optional">(optional)</span>
+          Email 
         </label>
         <input
           id="email"
@@ -111,9 +112,8 @@ export default function ProfileStep({
         <label className="join-label" htmlFor="password">
           Password
         </label>
-        <input
+        <PasswordInput
           id="password"
-          type="password"
           className={`join-input${showPasswordError ? " join-input--error" : ""}`}
           placeholder="At least 8 characters"
           value={data.password}
@@ -138,9 +138,8 @@ export default function ProfileStep({
         <label className="join-label" htmlFor="confirmPassword">
           Confirm Password
         </label>
-        <input
+        <PasswordInput
           id="confirmPassword"
-          type="password"
           className={`join-input${showConfirmPasswordError ? " join-input--error" : ""}`}
           placeholder="Re-enter your password"
           value={data.confirmPassword}

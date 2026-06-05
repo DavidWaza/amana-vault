@@ -3,6 +3,7 @@ export const JOIN_STEPS = [
   { id: "trade", title: "Your trade", subtitle: "What services do you offer?" },
   { id: "location", title: "Your area", subtitle: "Where do you work?" },
   { id: "identity", title: "Verify identity", subtitle: "Confirm your government details" },
+  { id: "bank", title: "Bank details", subtitle: "Where should we send your payments?" },
   { id: "verify", title: "Verify phone", subtitle: "Confirm your number" },
 ] as const;
 
@@ -17,12 +18,13 @@ export type ArtisanFormData = {
   confirmPassword: string;
   category: string;
   otherTrade: string;
-  experience: string;
   bio: string;
   area: string;
   travelRadius: string;
   nin: string;
-  bvn: string;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
 };
 
 export type IdentityFiles = {
@@ -36,9 +38,11 @@ export type JoinTouchedState = {
   confirmPassword: boolean;
   otherTrade: boolean;
   nin: boolean;
-  bvn: boolean;
   governmentId: boolean;
   selfie: boolean;
+  bankName: boolean;
+  accountNumber: boolean;
+  accountName: boolean;
 };
 
 export type ProfileStepData = Pick<
@@ -53,9 +57,14 @@ export type ProfileStepData = Pick<
 
 export type TradeStepData = Pick<
   ArtisanFormData,
-  "category" | "otherTrade" | "experience" | "bio"
+  "category" | "otherTrade" | "bio"
 >;
 
 export type LocationStepData = Pick<ArtisanFormData, "area" | "travelRadius">;
 
-export type IdentityStepData = Pick<ArtisanFormData, "nin" | "bvn">;
+export type IdentityStepData = Pick<ArtisanFormData, "nin">;
+
+export type BankStepData = Pick<
+  ArtisanFormData,
+  "bankName" | "accountNumber" | "accountName"
+>;

@@ -9,13 +9,6 @@ export const SERVICE_CATEGORIES = [
   { value: "other", label: "Other" },
 ] as const;
 
-export const EXPERIENCE_OPTIONS = [
-  { value: "1-2", label: "1–2 years" },
-  { value: "3-5", label: "3–5 years" },
-  { value: "6-10", label: "6–10 years" },
-  { value: "10+", label: "10+ years" },
-] as const;
-
 export const AREA_OPTIONS = [
   { value: "gwarinpa", label: "Gwarinpa" },
   { value: "wuse", label: "Wuse / Wuse 2" },

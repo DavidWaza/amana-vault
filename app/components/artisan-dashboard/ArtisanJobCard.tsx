@@ -20,12 +20,14 @@ type ArtisanJobCardProps = {
   job: ArtisanJob;
   canAcceptJobs: boolean;
   onPrimaryAction?: (job: ArtisanJob, action: JobPrimaryAction) => void;
+  onDeclineInvite?: (jobId: string) => void;
 };
 
 export default function ArtisanJobCard({
   job,
   canAcceptJobs,
   onPrimaryAction,
+  onDeclineInvite,
 }: ArtisanJobCardProps) {
   const status = JOB_STATUS_META[job.status];
   const action = getJobPrimaryAction(job);
@@ -118,8 +120,7 @@ export default function ArtisanJobCard({
             <button
               type="button"
               className="adash-btn adash-btn--ghost"
-              disabled={!canAcceptJobs}
-              title={!canAcceptJobs ? "Complete verification first" : undefined}
+              onClick={() => onDeclineInvite?.(job.id)}
             >
               Decline
             </button>

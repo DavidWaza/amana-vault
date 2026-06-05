@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import ArtisanDashboardNav from "./ArtisanDashboardNav";
 import ArtisanStatusBanner from "./ArtisanStatusBanner";
 import ArtisanStats from "./ArtisanStats";
@@ -10,75 +11,158 @@ import ArtisanJobsPanel from "./ArtisanJobsPanel";
 import ArtisanProfileCard from "./ArtisanProfileCard";
 import ArtisanReviews from "./ArtisanReviews";
 import ArtisanProofUploadModal from "./ArtisanProofUploadModal";
+import ArtisanJobModals from "./ArtisanJobModals";
+import ArtisanProPromo from "./ArtisanProPromo";
+import { useArtisanProfile } from "./ArtisanProfileProvider";
 import {
-  MOCK_ALERTS,
-  MOCK_ARTISAN,
   MOCK_JOBS,
   MOCK_REVIEWS,
-  MOCK_WALLET,
   buildDashboardStats,
 } from "./mock-data";
-import type {
-  ArtisanJob,
-  ArtisanProfile,
-  ArtisanWallet,
-  DashboardAlert,
-  JobPrimaryAction,
-} from "./types";
+import type { ArtisanJob, DashboardAlert, JobPrimaryAction } from "./types";
 
-type ArtisanDashboardProps = {
-  profile?: ArtisanProfile;
-};
+export default function ArtisanDashboard() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const {
+    profile,
+    wallet,
+    notifications,
+    dismissNotification,
+    markNotificationRead,
+    openProfileSettings,
+  } = useArtisanProfile();
 
-export default function ArtisanDashboard({
-  profile: initialProfile = MOCK_ARTISAN,
-}: ArtisanDashboardProps) {
-  const [profile, setProfile] = useState(initialProfile);
-  const [wallet, setWallet] = useState(MOCK_WALLET);
-  const [alerts, setAlerts] = useState(MOCK_ALERTS);
   const [jobs, setJobs] = useState(MOCK_JOBS);
   const [proofJobId, setProofJobId] = useState<string | null>(null);
+  const [inviteJobId, setInviteJobId] = useState<string | null>(null);
+  const [detailState, setDetailState] = useState<{
+    jobId: string;
+    mode: "dispute" | "receipt";
+  } | null>(null);
 
   const stats = useMemo(() => buildDashboardStats(jobs), [jobs]);
 
   const canAcceptJobs =
     profile.verificationStatus === "verified" && profile.profileComplete;
 
-  const dismissAlert = (id: string) => {
-    setAlerts((prev) => prev.filter((alert) => alert.id !== id));
-  };
-
-  const openProofUpload = (jobId: string) => {
+  const openProofUpload = useCallback((jobId: string) => {
     setProofJobId(jobId);
     document.getElementById(jobId)?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
+  }, []);
+
+  const runJobAction = useCallback(
+    (action: JobPrimaryAction, jobId: string) => {
+      const job = jobs.find((item) => item.id === jobId);
+      if (!job) return;
+
+      switch (action) {
+        case "upload_proof":
+          openProofUpload(jobId);
+          break;
+        case "review_invite":
+          setInviteJobId(jobId);
+          break;
+        case "view_dispute":
+          setDetailState({ jobId, mode: "dispute" });
+          break;
+        case "view_receipt":
+          setDetailState({ jobId, mode: "receipt" });
+          break;
+        case "start_work":
+          setJobs((prev) =>
+            prev.map((item) =>
+              item.id === jobId
+                ? {
+                    ...item,
+                    status: "in_progress",
+                    lastUpdated: new Date().toISOString(),
+                  }
+                : item,
+            ),
+          );
+          break;
+        default:
+          break;
+      }
+    },
+    [jobs, openProofUpload],
+  );
+
+  useEffect(() => {
+    const action = searchParams.get("action") as JobPrimaryAction | null;
+    const jobId = searchParams.get("job");
+    if (!action || !jobId) return;
+
+    runJobAction(action, jobId);
+    router.replace("/artisan/dashboard", { scroll: false });
+  }, [searchParams, runJobAction, router]);
+
+  useEffect(() => {
+    if (window.location.hash !== "#profile") return;
+    openProfileSettings("profile");
+    window.history.replaceState(null, "", window.location.pathname);
+  }, [openProfileSettings]);
 
   const handleJobPrimaryAction = (job: ArtisanJob, action: JobPrimaryAction) => {
-    switch (action) {
-      case "upload_proof":
-        openProofUpload(job.id);
-        break;
-      case "start_work":
-        setJobs((prev) =>
-          prev.map((item) =>
-            item.id === job.id
-              ? {
-                  ...item,
-                  status: "in_progress",
-                  lastUpdated: new Date().toISOString(),
-                }
-              : item,
-          ),
-        );
-        break;
-      default:
-        break;
-    }
+    runJobAction(action, job.id);
+  };
+
+  const handleDeclineInvite = (jobId: string) => {
+    setJobs((prev) =>
+      prev.map((item) =>
+        item.id === jobId
+          ? { ...item, status: "declined", lastUpdated: new Date().toISOString() }
+          : item,
+      ),
+    );
+    setInviteJobId(null);
+    notifications
+      .filter(
+        (item) =>
+          item.actionType === "review_invite" && item.actionJobId === jobId,
+      )
+      .forEach((item) => dismissNotification(item.id));
+  };
+
+  const handleAcceptInvite = (jobId: string) => {
+    setJobs((prev) =>
+      prev.map((item) =>
+        item.id === jobId
+          ? {
+              ...item,
+              status: "awaiting_funding",
+              lastUpdated: new Date().toISOString(),
+            }
+          : item,
+      ),
+    );
+    setInviteJobId(null);
+    notifications
+      .filter(
+        (item) =>
+          item.actionType === "review_invite" && item.actionJobId === jobId,
+      )
+      .forEach((item) => dismissNotification(item.id));
   };
 
   const handleAlertAction = (alert: DashboardAlert) => {
-    if (alert.actionType === "upload_proof" && alert.actionJobId) {
-      openProofUpload(alert.actionJobId);
+    markNotificationRead(alert.id);
+
+    if (alert.actionType === "open_settings") {
+      openProfileSettings(alert.settingsTab ?? "profile");
+      return;
+    }
+
+    if (alert.actionType && alert.actionJobId) {
+      runJobAction(alert.actionType, alert.actionJobId);
+      return;
+    }
+
+    if (alert.actionHref?.startsWith("#")) {
+      document
+        .querySelector(alert.actionHref)
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -94,42 +178,25 @@ export default function ArtisanDashboard({
           : item,
       ),
     );
-    setAlerts((prev) =>
-      prev.filter(
-        (alert) =>
-          !(alert.actionType === "upload_proof" && alert.actionJobId === jobId),
-      ),
-    );
+    notifications
+      .filter(
+        (item) =>
+          item.actionType === "upload_proof" && item.actionJobId === jobId,
+      )
+      .forEach((item) => dismissNotification(item.id));
   };
 
   const proofJob = jobs.find((job) => job.id === proofJobId) ?? null;
+  const inviteJob = jobs.find((job) => job.id === inviteJobId) ?? null;
+  const detailJob = detailState
+    ? (jobs.find((job) => job.id === detailState.jobId) ?? null)
+    : null;
 
-  const handleAccountChange = (data: { phone: string; email: string }) => {
-    setProfile((prev) => ({ ...prev, phone: data.phone, email: data.email }));
-  };
-
-  const handlePayoutChange = (payout: {
-    bankName: string;
-    accountNumber: string;
-    accountName: string;
-  }) => {
-    setWallet((prev) => ({
-      ...prev,
-      bankAccount: {
-        bankName: payout.bankName,
-        accountNumber: payout.accountNumber,
-        accountName: payout.accountName,
-      },
-    }));
-    setProfile((prev) => ({ ...prev, payoutStatus: "pending" }));
-  };
+  const unreadAlerts = notifications.filter((item) => !item.read);
 
   return (
     <div className="adash-page">
-      <ArtisanDashboardNav
-        artisanName={profile.fullName}
-        unreadNotifications={alerts.length}
-      />
+      <ArtisanDashboardNav currentPage="dashboard" />
 
       <main className="adash-main">
         <div className="adash-container">
@@ -147,25 +214,22 @@ export default function ArtisanDashboard({
           <ArtisanWalletSection wallet={wallet} profile={profile} />
           <ArtisanStatusBanner profile={profile} />
           <ArtisanAlerts
-            alerts={alerts}
-            onDismiss={dismissAlert}
+            alerts={unreadAlerts}
+            onDismiss={dismissNotification}
             onAction={handleAlertAction}
           />
           <ArtisanStats {...stats} />
+
+          <ArtisanProPromo profile={profile} />
 
           <div className="adash-layout">
             <ArtisanJobsPanel
               jobs={jobs}
               canAcceptJobs={canAcceptJobs}
               onPrimaryAction={handleJobPrimaryAction}
+              onDeclineInvite={handleDeclineInvite}
             />
-            <ArtisanProfileCard
-              profile={profile}
-              bankAccount={wallet.bankAccount}
-              onProfileChange={setProfile}
-              onAccountChange={handleAccountChange}
-              onPayoutChange={handlePayoutChange}
-            />
+            <ArtisanProfileCard />
           </div>
 
           <ArtisanReviews reviews={MOCK_REVIEWS} />
@@ -183,6 +247,16 @@ export default function ArtisanDashboard({
         open={proofJobId !== null}
         onClose={() => setProofJobId(null)}
         onSubmit={handleProofSubmit}
+      />
+
+      <ArtisanJobModals
+        inviteJob={inviteJob}
+        detailJob={detailJob}
+        detailMode={detailState?.mode ?? null}
+        onCloseInvite={() => setInviteJobId(null)}
+        onCloseDetail={() => setDetailState(null)}
+        onAcceptInvite={handleAcceptInvite}
+        onDeclineInvite={handleDeclineInvite}
       />
     </div>
   );

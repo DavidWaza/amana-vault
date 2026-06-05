@@ -17,10 +17,10 @@ import type {
   ProfileSettingsTab,
 } from "./types";
 import type { ArtisanBankAccount } from "./types";
+import PasswordInput from "../PasswordInput";
 import {
   AREA_OPTIONS,
   BANK_OPTIONS,
-  EXPERIENCE_OPTIONS,
   SERVICE_CATEGORIES,
   TRAVEL_OPTIONS,
   getAreaLabel,
@@ -28,11 +28,13 @@ import {
 } from "./profile-constants";
 
 const PASSWORD_MIN_LENGTH = 8;
+const DRAWER_ANIMATION_MS = 360;
 
 type ArtisanProfileSettingsProps = {
   profile: ArtisanProfile;
   bankAccount: ArtisanBankAccount | null;
   open: boolean;
+  initialTab?: ProfileSettingsTab;
   onClose: () => void;
   onSaveProfile: (profile: ArtisanProfile) => void;
   onSaveAccount: (account: Pick<ArtisanAccountForm, "phone" | "email">) => void;
@@ -56,6 +58,7 @@ export default function ArtisanProfileSettings({
   profile,
   bankAccount,
   open,
+  initialTab = "profile",
   onClose,
   onSaveProfile,
   onSaveAccount,
@@ -80,7 +83,40 @@ export default function ArtisanProfileSettings({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [mounted, setMounted] = useState(open);
+  const [visible, setVisible] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      setMounted(true);
+      const frame = requestAnimationFrame(() => {
+        requestAnimationFrame(() => setVisible(true));
+      });
+      return () => cancelAnimationFrame(frame);
+    }
+
+    setVisible(false);
+    const timer = window.setTimeout(() => setMounted(false), DRAWER_ANIMATION_MS);
+    return () => window.clearTimeout(timer);
+  }, [open]);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [mounted, onClose]);
 
   useEffect(() => {
     if (!open) return;
@@ -100,8 +136,8 @@ export default function ArtisanProfileSettings({
     });
     setErrors({});
     setSuccess(null);
-    setTab("profile");
-  }, [open, profile, bankAccount]);
+    setTab(initialTab);
+  }, [open, profile, bankAccount, initialTab]);
 
   useEffect(() => {
     return () => {
@@ -111,7 +147,7 @@ export default function ArtisanProfileSettings({
     };
   }, [avatarPreview, profile.avatarUrl]);
 
-  if (!open) return null;
+  if (!mounted) return null;
 
   const handleAvatarChange = (file: File | null) => {
     if (avatarPreview && avatarPreview !== profile.avatarUrl) {
@@ -236,10 +272,15 @@ export default function ArtisanProfileSettings({
   ];
 
   return (
-    <div className="adash-settings-overlay" role="presentation" onClick={onClose}>
+    <div
+      className={`adash-settings-overlay${visible ? " adash-settings-overlay--open" : ""}`}
+      role="presentation"
+      onClick={onClose}
+    >
       <div
-        className="adash-settings-panel"
+        className={`adash-settings-panel${visible ? " adash-settings-panel--open" : ""}`}
         role="dialog"
+        aria-modal="true"
         aria-labelledby="profile-settings-title"
         onClick={(e) => e.stopPropagation()}
       >
@@ -286,7 +327,7 @@ export default function ArtisanProfileSettings({
 
         <div className="adash-settings-body">
           {tab === "profile" && (
-            <div className="adash-settings-section">
+            <div key="profile" className="adash-settings-section adash-settings-section--animate">
               <div className="adash-settings-avatar-block">
                 <div className="adash-settings-avatar">
                   {avatarPreview ? (
@@ -334,7 +375,7 @@ export default function ArtisanProfileSettings({
                   id="settings-bio"
                   className="adash-input adash-textarea"
                   rows={4}
-                  placeholder="Tell clients about your experience and specialties..."
+                  placeholder="Tell clients about your work and specialties..."
                   value={profileForm.bio}
                   onChange={(e) =>
                     setProfileForm((prev) => ({ ...prev, bio: e.target.value }))
@@ -378,39 +419,22 @@ export default function ArtisanProfileSettings({
                 </div>
               )}
 
-              <div className="adash-settings-grid">
-                <div className="adash-field">
-                  <label className="adash-label" htmlFor="settings-experience">Experience</label>
-                  <select
-                    id="settings-experience"
-                    className="adash-input adash-select"
-                    value={profileForm.experience}
-                    onChange={(e) =>
-                      setProfileForm((prev) => ({ ...prev, experience: e.target.value }))
-                    }
-                  >
-                    <option value="" disabled>Select...</option>
-                    {EXPERIENCE_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="adash-field">
-                  <label className="adash-label" htmlFor="settings-area">Primary Area</label>
-                  <select
-                    id="settings-area"
-                    className={`adash-input adash-select${errors.area ? " adash-input--error" : ""}`}
-                    value={profileForm.area}
-                    onChange={(e) =>
-                      setProfileForm((prev) => ({ ...prev, area: e.target.value }))
-                    }
-                  >
-                    <option value="" disabled>Select area...</option>
-                    {AREA_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
-                </div>
+              <div className="adash-field">
+                <label className="adash-label" htmlFor="settings-area">Primary Area</label>
+                <select
+                  id="settings-area"
+                  className={`adash-input adash-select${errors.area ? " adash-input--error" : ""}`}
+                  value={profileForm.area}
+                  onChange={(e) =>
+                    setProfileForm((prev) => ({ ...prev, area: e.target.value }))
+                  }
+                >
+                  <option value="" disabled>Select area...</option>
+                  {AREA_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+                {errors.area && <p className="adash-field-error">{errors.area}</p>}
               </div>
 
               <div className="adash-field">
@@ -441,7 +465,7 @@ export default function ArtisanProfileSettings({
           )}
 
           {tab === "account" && (
-            <div className="adash-settings-section">
+            <div key="account" className="adash-settings-section adash-settings-section--animate">
               <p className="adash-settings-intro">
                 Update how clients and Amana reach you. Phone changes may require OTP
                 verification when connected to the API.
@@ -483,9 +507,8 @@ export default function ArtisanProfileSettings({
 
               <div className="adash-field">
                 <label className="adash-label" htmlFor="settings-currentPassword">Current password</label>
-                <input
+                <PasswordInput
                   id="settings-currentPassword"
-                  type="password"
                   className={`adash-input${errors.currentPassword ? " adash-input--error" : ""}`}
                   value={accountForm.currentPassword}
                   onChange={(e) =>
@@ -501,9 +524,8 @@ export default function ArtisanProfileSettings({
               <div className="adash-settings-grid">
                 <div className="adash-field">
                   <label className="adash-label" htmlFor="settings-newPassword">New password</label>
-                  <input
+                  <PasswordInput
                     id="settings-newPassword"
-                    type="password"
                     className={`adash-input${errors.newPassword ? " adash-input--error" : ""}`}
                     value={accountForm.newPassword}
                     onChange={(e) =>
@@ -515,9 +537,8 @@ export default function ArtisanProfileSettings({
                 </div>
                 <div className="adash-field">
                   <label className="adash-label" htmlFor="settings-confirmPassword">Confirm password</label>
-                  <input
+                  <PasswordInput
                     id="settings-confirmPassword"
-                    type="password"
                     className={`adash-input${errors.confirmPassword ? " adash-input--error" : ""}`}
                     value={accountForm.confirmPassword}
                     onChange={(e) =>
@@ -543,7 +564,7 @@ export default function ArtisanProfileSettings({
           )}
 
           {tab === "payout" && (
-            <div className="adash-settings-section">
+            <div key="payout" className="adash-settings-section adash-settings-section--animate">
               <div className="adash-settings-notice">
                 <Warning size={18} weight="bold" />
                 <p>
@@ -603,7 +624,7 @@ export default function ArtisanProfileSettings({
                   }
                 />
                 <p className="adash-settings-hint">
-                  Must match the name on your NIN or BVN records.
+                  Must match the name on your government ID.
                 </p>
                 {errors.accountName && <p className="adash-field-error">{errors.accountName}</p>}
               </div>

@@ -7,10 +7,22 @@ import type { ArtisanFormData, IdentityFiles, JoinTouchedState } from "./types";
 
 export const VERIFICATION_CHECKS = [
   "NIN matches user details",
-  "BVN matches account holder",
   "Selfie matches ID photo",
   "Phone & email verified",
   "No duplicate account exists",
+] as const;
+
+export const BANK_OPTIONS = [
+  "GTBank",
+  "Access Bank",
+  "Zenith Bank",
+  "First Bank",
+  "UBA",
+  "Stanbic IBTC",
+  "Fidelity Bank",
+  "Kuda",
+  "Opay",
+  "Palmpay",
 ] as const;
 
 export const TRUST_POINTS = [
@@ -28,12 +40,13 @@ export const INITIAL_FORM: ArtisanFormData = {
   confirmPassword: "",
   category: "",
   otherTrade: "",
-  experience: "",
   bio: "",
   area: "",
   travelRadius: "",
   nin: "",
-  bvn: "",
+  bankName: "",
+  accountNumber: "",
+  accountName: "",
 };
 
 export const INITIAL_IDENTITY_FILES: IdentityFiles = {
@@ -47,9 +60,11 @@ export const INITIAL_TOUCHED: JoinTouchedState = {
   confirmPassword: false,
   otherTrade: false,
   nin: false,
-  bvn: false,
   governmentId: false,
   selfie: false,
+  bankName: false,
+  accountNumber: false,
+  accountName: false,
 };
 
 export const PASSWORD_MIN_LENGTH = 8;

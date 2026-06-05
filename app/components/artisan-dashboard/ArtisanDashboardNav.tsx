@@ -1,17 +1,66 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { Bell, SignOut, UserCircle } from "phosphor-react";
+import { usePathname, useRouter } from "next/navigation";
+import { SignOut, UserCircle, Money } from "phosphor-react";
+import ArtisanNotificationsDropdown from "./ArtisanNotificationsDropdown";
+import { useArtisanProfile } from "./ArtisanProfileProvider";
+import type { ArtisanNotification } from "./types";
 
 type ArtisanDashboardNavProps = {
-  artisanName: string;
-  unreadNotifications?: number;
+  currentPage?: "dashboard" | "pro";
 };
 
 export default function ArtisanDashboardNav({
-  artisanName,
-  unreadNotifications = 0,
+  currentPage,
 }: ArtisanDashboardNavProps) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const {
+    profile,
+    notifications,
+    dismissNotification,
+    markNotificationRead,
+    openProfileSettings,
+  } = useArtisanProfile();
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  const page =
+    currentPage ?? (pathname.startsWith("/artisan/pro") ? "pro" : "dashboard");
+
+  const handleNotificationAction = (notification: ArtisanNotification) => {
+    markNotificationRead(notification.id);
+    setNotificationsOpen(false);
+
+    if (notification.actionType === "open_settings") {
+      openProfileSettings(notification.settingsTab ?? "profile");
+      return;
+    }
+
+    if (notification.actionType && notification.actionJobId) {
+      const params = new URLSearchParams({
+        job: notification.actionJobId,
+        action: notification.actionType,
+      });
+      router.push(`/artisan/dashboard?${params.toString()}`);
+      return;
+    }
+
+    if (notification.actionHref?.startsWith("#")) {
+      const target = `/artisan/dashboard${notification.actionHref}`;
+      if (pathname === "/artisan/dashboard") {
+        document
+          .querySelector(notification.actionHref)
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      router.push(target);
+    }
+  };
+
+  const openSettings = () => openProfileSettings("profile");
+
   return (
     <header className="adash-nav">
       <div className="adash-nav-inner">
@@ -21,36 +70,53 @@ export default function ArtisanDashboardNav({
         </Link>
 
         <nav className="adash-nav-links" aria-label="Dashboard navigation">
-          <a href="#jobs" className="adash-nav-link adash-nav-link--active">
+          <Link
+            href="/artisan/dashboard#jobs"
+            className={`adash-nav-link${page === "dashboard" ? " adash-nav-link--active" : ""}`}
+          >
             Jobs
-          </a>
-          <a href="#wallet" className="adash-nav-link">
-            Wallet
-          </a>
-          <a href="#reviews" className="adash-nav-link">
+          </Link>
+          <Link href="/artisan/dashboard#wallet" className="adash-nav-link">
+            Vault
+          </Link>
+          <Link href="/artisan/dashboard#reviews" className="adash-nav-link">
             Reviews
-          </a>
-          <a href="#profile" className="adash-nav-link">
+          </Link>
+          {/* <button
+            type="button"
+            className="adash-nav-link adash-nav-link--button"
+            onClick={openSettings}
+          >
             Profile
-          </a>
+          </button> */}
         </nav>
 
         <div className="adash-nav-actions">
+          <Link
+            href="/artisan/pro"
+            className={`adash-nav-pro${page === "pro" ? " adash-nav-pro--active" : ""}`}
+          >
+            <Money size={16} weight="fill" />
+            <span>Amana Pro</span>
+          </Link>
+
+          <ArtisanNotificationsDropdown
+            notifications={notifications}
+            open={notificationsOpen}
+            onToggle={() => setNotificationsOpen((prev) => !prev)}
+            onClose={() => setNotificationsOpen(false)}
+            onDismiss={dismissNotification}
+            onAction={handleNotificationAction}
+          />
+
           <button
             type="button"
-            className="adash-icon-btn"
-            aria-label={`Notifications${unreadNotifications ? `, ${unreadNotifications} unread` : ""}`}
+            className="adash-profile-chip"
+            onClick={openSettings}
           >
-            <Bell size={20} weight="bold" />
-            {unreadNotifications > 0 && (
-              <span className="adash-icon-badge">{unreadNotifications}</span>
-            )}
-          </button>
-
-          <a href="#profile" className="adash-profile-chip">
             <UserCircle size={22} weight="bold" />
-            <span>{artisanName.split(" ")[0]}</span>
-          </a>
+            <span>{profile.fullName.split(" ")[0]}</span>
+          </button>
 
           <Link href="/" className="adash-icon-btn" aria-label="Sign out">
             <SignOut size={20} weight="bold" />

@@ -14,8 +14,7 @@ export const MOCK_ARTISAN: ArtisanProfile = {
   category: "plumbing",
   categoryLabel: "Plumbing",
   otherTrade: "",
-  experience: "6-10",
-  bio: "Licensed plumber with 8+ years experience across Abuja. Specialising in residential pipe work, water heaters, and bathroom installations.",
+  bio: "Licensed plumber across Abuja. Specialising in residential pipe work, water heaters, and bathroom installations.",
   area: "gwarinpa",
   areaLabel: "Gwarinpa",
   travelRadius: "abuja",
@@ -26,6 +25,27 @@ export const MOCK_ARTISAN: ArtisanProfile = {
   payoutStatus: "verified",
   profileComplete: true,
   memberSince: "2026-01-15",
+  growth: {
+    checksPaid: true,
+    verificationPaid: true,
+    boostActive: false,
+    boostExpiresAt: null,
+  },
+  isRecommended: false,
+};
+
+export const MOCK_ARTISAN_UNVERIFIED: ArtisanProfile = {
+  ...MOCK_ARTISAN,
+  verificationStatus: "unverified",
+  completedJobs: 0,
+  rating: null,
+  growth: {
+    checksPaid: false,
+    verificationPaid: false,
+    boostActive: false,
+    boostExpiresAt: null,
+  },
+  isRecommended: false,
 };
 
 export const MOCK_JOBS: ArtisanJob[] = [
@@ -271,9 +291,9 @@ export const MOCK_REVIEWS: ArtisanReview[] = [
   },
 ];
 
-export const MOCK_ALERTS: DashboardAlert[] = [
+export const MOCK_NOTIFICATIONS: import("./types").ArtisanNotification[] = [
   {
-    id: "alert-1",
+    id: "notif-1",
     type: "warning",
     title: "Proof due soon",
     message:
@@ -282,16 +302,35 @@ export const MOCK_ALERTS: DashboardAlert[] = [
     actionHref: "#job-101",
     actionType: "upload_proof",
     actionJobId: "job-101",
+    createdAt: "2026-06-04T09:00:00Z",
+    read: false,
   },
   {
-    id: "alert-2",
+    id: "notif-2",
     type: "info",
     title: "New client invite",
     message: "Grace Adeyemi invited you to Solar Inverter Plumbing. Expires in 2 days.",
     actionLabel: "Review invite",
     actionHref: "#job-105",
+    actionType: "review_invite",
+    actionJobId: "job-105",
+    createdAt: "2026-06-04T07:30:00Z",
+    read: false,
+  },
+  {
+    id: "notif-3",
+    type: "success",
+    title: "Payment released",
+    message: "₦70,000 from Borehole Pipe Connection was released to your wallet.",
+    actionLabel: "View wallet",
+    actionHref: "#wallet",
+    createdAt: "2026-06-03T14:00:00Z",
+    read: true,
   },
 ];
+
+/** @deprecated Use MOCK_NOTIFICATIONS */
+export const MOCK_ALERTS: DashboardAlert[] = MOCK_NOTIFICATIONS;
 
 export function buildDashboardStats(jobs: ArtisanJob[]) {
   const secured = jobs

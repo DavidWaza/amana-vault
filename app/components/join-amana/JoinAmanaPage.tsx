@@ -11,6 +11,7 @@ import ProfileStep from "./steps/ProfileStep";
 import TradeStep from "./steps/TradeStep";
 import LocationStep from "./steps/LocationStep";
 import IdentityStep from "./steps/IdentityStep";
+import BankStep from "./steps/BankStep";
 import PhoneVerifyStep from "./steps/PhoneVerifyStep";
 import {
   INITIAL_FORM,
@@ -18,6 +19,7 @@ import {
   INITIAL_TOUCHED,
 } from "./constants";
 import {
+  isBankStepValid,
   isIdentityStepValid,
   isLocationStepValid,
   isPhoneVerifyStepValid,
@@ -130,6 +132,8 @@ export default function JoinAmanaPage() {
         return isLocationStepValid(form);
       case "identity":
         return isIdentityStepValid(form, identityFiles, identityConsent);
+      case "bank":
+        return isBankStepValid(form);
       case "verify":
         return isPhoneVerifyStepValid(otp);
       default:
@@ -154,11 +158,18 @@ export default function JoinAmanaPage() {
         setTouched((prev) => ({
           ...prev,
           nin: true,
-          bvn: true,
           governmentId: true,
           selfie: true,
         }));
         return isIdentityStepValid(form, identityFiles, identityConsent);
+      case "bank":
+        setTouched((prev) => ({
+          ...prev,
+          bankName: true,
+          accountNumber: true,
+          accountName: true,
+        }));
+        return isBankStepValid(form);
       default:
         return canProceed();
     }
@@ -221,7 +232,6 @@ export default function JoinAmanaPage() {
             data={{
               category: form.category,
               otherTrade: form.otherTrade,
-              experience: form.experience,
               bio: form.bio,
             }}
             onChange={updateField}
@@ -240,14 +250,13 @@ export default function JoinAmanaPage() {
       case "identity":
         return (
           <IdentityStep
-            data={{ nin: form.nin, bvn: form.bvn }}
+            data={{ nin: form.nin }}
             files={identityFiles}
             governmentIdPreview={governmentIdPreview}
             selfiePreview={selfiePreview}
             identityConsent={identityConsent}
             touched={{
               nin: touched.nin,
-              bvn: touched.bvn,
               governmentId: touched.governmentId,
               selfie: touched.selfie,
             }}
@@ -256,6 +265,23 @@ export default function JoinAmanaPage() {
             onGovernmentIdChange={handleGovernmentIdChange}
             onSelfieChange={handleSelfieChange}
             onConsentChange={setIdentityConsent}
+          />
+        );
+      case "bank":
+        return (
+          <BankStep
+            data={{
+              bankName: form.bankName,
+              accountNumber: form.accountNumber,
+              accountName: form.accountName,
+            }}
+            touched={{
+              bankName: touched.bankName,
+              accountNumber: touched.accountNumber,
+              accountName: touched.accountName,
+            }}
+            onChange={updateField}
+            onBlur={markTouched}
           />
         );
       case "verify":

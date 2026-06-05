@@ -9,7 +9,7 @@ import {
   Info,
 } from "phosphor-react";
 import { VERIFICATION_CHECKS } from "../constants";
-import { getBvnError, getNinError, formatNumericId } from "../validation";
+import { getNinError, formatNumericId } from "../validation";
 import type { IdentityFiles, IdentityStepData } from "../types";
 
 type IdentityStepProps = {
@@ -20,12 +20,11 @@ type IdentityStepProps = {
   identityConsent: boolean;
   touched: {
     nin: boolean;
-    bvn: boolean;
     governmentId: boolean;
     selfie: boolean;
   };
   onChange: (field: keyof IdentityStepData, value: string) => void;
-  onBlur: (field: "nin" | "bvn") => void;
+  onBlur: (field: "nin") => void;
   onGovernmentIdChange: (file: File | null) => void;
   onSelfieChange: (file: File | null) => void;
   onConsentChange: (checked: boolean) => void;
@@ -48,9 +47,7 @@ export default function IdentityStep({
   const selfieInputRef = useRef<HTMLInputElement>(null);
 
   const ninError = getNinError(data.nin);
-  const bvnError = getBvnError(data.bvn);
   const showNinError = touched.nin && ninError;
-  const showBvnError = touched.bvn && bvnError;
   const showGovernmentIdError = touched.governmentId && !files.governmentId;
   const showSelfieError = touched.selfie && !files.selfie;
 
@@ -75,29 +72,6 @@ export default function IdentityStep({
         {showNinError && (
           <p className="join-field-error" role="alert">
             {ninError}
-          </p>
-        )}
-      </div>
-
-      <div className="join-field">
-        <label className="join-label" htmlFor="bvn">
-          Bank Verification Number (BVN)
-        </label>
-        <input
-          id="bvn"
-          type="text"
-          inputMode="numeric"
-          className={`join-input${showBvnError ? " join-input--error" : ""}`}
-          placeholder="11-digit BVN"
-          value={data.bvn}
-          onChange={(e) => onChange("bvn", formatNumericId(e.target.value))}
-          onBlur={() => onBlur("bvn")}
-          maxLength={11}
-          required
-        />
-        {showBvnError && (
-          <p className="join-field-error" role="alert">
-            {bvnError}
           </p>
         )}
       </div>
@@ -203,8 +177,8 @@ export default function IdentityStep({
         </ul>
         <p>
           Your documents are encrypted and reviewed only for identity
-          verification. Amana does not store raw BVN or NIN beyond what is
-          required by our licensed verification partners.
+          verification. Amana does not store raw NIN beyond what is required by
+          our licensed verification partners.
         </p>
       </div>
 

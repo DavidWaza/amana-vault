@@ -13,7 +13,7 @@ export default function JoinAmanaIntro({ onStart }: JoinAmanaIntroProps) {
       </div>
       <h2>Start your artisan application</h2>
       <p>
-        Complete a short 5-step form to join Amana. Get matched with verified
+        Complete a short 6-step form to join Amana. Get matched with verified
         clients and receive guaranteed payments through escrow.
       </p>
       <button type="button" className="join-btn-form" onClick={onStart}>
