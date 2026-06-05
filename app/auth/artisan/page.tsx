@@ -11,11 +11,11 @@ function AmanaLogo({ size = 48 }: { size?: number }) {
   return (
     <div
       className="logo"
-      style={{ width: size, height: size, borderWidth: 4 * scale, borderColor: "var(--green2)" }}
+      style={{ width: size, height: size, borderWidth: 4 * scale, borderColor: "var(--artisan2)" }}
     >
       <div
         className="logo-mark"
-        style={{ width: 24 * scale, height: 24 * scale, borderWidth: 4 * scale, borderColor: "var(--green2)" }}
+        style={{ width: 24 * scale, height: 24 * scale, borderWidth: 4 * scale, borderColor: "var(--artisan2)" }}
       >
         <div className="logo-cross logo-cross-first" />
         <div className="logo-cross logo-cross-second" />
@@ -44,7 +44,7 @@ export default function ArtisanAuthPage() {
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth-page auth-page--artisan">
       <div className="auth-container">
         <Link href="/" className="logo-link auth-brand">
           <AmanaLogo size={56} />

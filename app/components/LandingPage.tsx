@@ -115,7 +115,7 @@ function Navbar() {
           </a>
         ))}
         <Link
-          href="/auth/client"
+          href="/join-amana"
           className="cta-button"
           onClick={() => setMobileOpen(false)}
         >
@@ -200,7 +200,7 @@ function HeroSection() {
             <Link href="/auth/client" className="cta-button">
               I&apos;m paying for work
             </Link>
-            <Link href="/auth/artisan" className="btn-secondary">
+            <Link href="/join-amana" className="btn-secondary">
               I&apos;m doing the work
             </Link>
           </div>
@@ -579,7 +579,7 @@ function CTASection() {
           Join early access and secure your next agreement with absolute peace of mind.
         </p>
         <div className="hero-actions" style={{ justifyContent: "center" }}>
-          <Link href="/auth/client" className="cta-button">
+          <Link href="/join-amana" className="cta-button">
             Get Started — It&apos;s Free
           </Link>
           <a href="#how-it-works" className="btn-secondary">
