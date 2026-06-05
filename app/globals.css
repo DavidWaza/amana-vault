@@ -4709,7 +4709,7 @@ section {
 
 .adash-modal {
   width: 100%;
-  max-width: 100%;
+  max-width: 450px;
   padding: 1.5rem;
   border-radius: 22px;
   background: #fff;
