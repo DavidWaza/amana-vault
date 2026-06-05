@@ -40,7 +40,7 @@ export default function ArtisanAuthPage() {
 
   const handleVerifySubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/#artisan");
+    router.push("/artisan/dashboard");
   };
 
   return (

@@ -287,7 +287,7 @@ export default function JoinAmanaPage() {
             <JoinAmanaSuccess
               fullName={form.fullName}
               phone={form.phone}
-              onGoToPortal={() => router.push("/auth/artisan")}
+              onGoToPortal={() => router.push("/artisan/dashboard")}
             />
           ) : (
             <div className="join-amana-form-card">
