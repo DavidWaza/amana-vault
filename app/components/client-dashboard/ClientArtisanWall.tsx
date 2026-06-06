@@ -205,7 +205,7 @@ export default function ClientArtisanWall({
                   className="adash-btn adash-btn--primary adash-btn--block"
                   onClick={() => onViewArtisan(artisan)}
                 >
-                  Hire for a job
+                  Request for a job
                 </button>
               </div>
             </article>

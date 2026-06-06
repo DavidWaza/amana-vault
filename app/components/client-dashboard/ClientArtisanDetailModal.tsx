@@ -210,7 +210,7 @@ export default function ClientArtisanDetailModal({
             onClick={() => onHire(artisan)}
           >
             <Briefcase size={18} weight="bold" />
-            Hire for a job
+            Request for a job
           </button>
         </div>
       </div>
