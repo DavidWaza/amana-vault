@@ -18,10 +18,23 @@ import {
   Star,
   // HardHatIcon,
   Lightning,
-  // Sofa,
   Wrench,
   CaretDown,
+  User,
+  ArrowDown,
+  ArrowUp,
 } from "phosphor-react";
+import {
+  MOCK_ARTISAN,
+  MOCK_JOBS,
+  MOCK_WALLET,
+  buildDashboardStats,
+} from "./artisan-dashboard/mock-data";
+import {
+  formatNaira,
+  JOB_STATUS_META,
+} from "./artisan-dashboard/utils";
+import VaultIcon from "./artisan-dashboard/VaultIcon";
 import {
   ArmchairIcon,
   HandshakeIcon,
@@ -164,6 +177,128 @@ function Reveal({
   );
 }
 
+const HERO_PREVIEW_JOBS = MOCK_JOBS.filter((job) =>
+  ["job-101", "job-102"].includes(job.id),
+);
+
+function HeroPhonePreview() {
+  const stats = buildDashboardStats(MOCK_JOBS);
+  const firstName = MOCK_ARTISAN.fullName.split(" ")[0];
+
+  return (
+    <div className="hero-phone" aria-hidden>
+      <div className="hero-phone-frame">
+        <div className="hero-phone-notch" />
+        <div className="hero-phone-screen">
+          <div className="hero-phone-status">
+            <span>9:41</span>
+            <span className="hero-phone-status-icons">
+              <span />
+              <span />
+              <span />
+            </span>
+          </div>
+
+          <div className="hero-phone-dash">
+            <p className="hero-phone-eyebrow">Artisan Dashboard</p>
+            <h3 className="hero-phone-greeting">Good morning, {firstName}</h3>
+
+            <div className="hero-phone-wallet">
+              <div className="hero-phone-wallet-head">
+                <p className="hero-phone-eyebrow">amana vault</p>
+                <VaultIcon size={28} variant="green" />
+              </div>
+              <div className="hero-phone-wallet-card">
+                <div className="hero-phone-wallet-title">
+                  <VaultIcon size={18} variant="white" />
+                  <span>Secured in Escrow</span>
+                </div>
+                <p className="hero-phone-wallet-value">
+                  {formatNaira(MOCK_WALLET.availableBalance)}
+                </p>
+                <div className="hero-phone-wallet-breakdown">
+                  <div>
+                    <span>
+                      <ArrowDown size={12} weight="bold" />
+                      Incoming
+                    </span>
+                    <strong>{formatNaira(MOCK_WALLET.incomingBalance)}</strong>
+                    <small>Processing to your bank</small>
+                  </div>
+                  <div>
+                    <span>
+                      <ArrowUp size={12} weight="bold" />
+                      Pending withdrawal
+                    </span>
+                    <strong>{formatNaira(MOCK_WALLET.pendingWithdrawal)}</strong>
+                    <small>Awaiting client approval</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="hero-phone-stats">
+              <div>
+                <span>Active jobs</span>
+                <strong>{stats.activeCount}</strong>
+              </div>
+              <div>
+                <span>In escrow</span>
+                <strong>{formatNaira(stats.secured)}</strong>
+              </div>
+            </div>
+
+            <div className="hero-phone-jobs">
+              <div className="hero-phone-jobs-head">
+                <h4>Your jobs</h4>
+                <span>{stats.activeCount} active</span>
+              </div>
+              {HERO_PREVIEW_JOBS.map((job) => {
+                const status = JOB_STATUS_META[job.status];
+                return (
+                  <article key={job.id} className="hero-phone-job">
+                    <div className="hero-phone-job-top">
+                      <div>
+                        <h5>{job.title}</h5>
+                        <p>
+                          <User size={12} weight="bold" />
+                          {job.clientName}
+                          {job.clientVerified && (
+                            <span className="hero-phone-job-verified">
+                              <ShieldCheck size={10} weight="fill" />
+                              Verified
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                      <span
+                        className={`hero-phone-job-badge hero-phone-job-badge--${status.tone}`}
+                      >
+                        {status.label}
+                      </span>
+                    </div>
+                    <div className="hero-phone-job-meta">
+                      <span>
+                        <MapPin size={12} weight="bold" />
+                        {job.location}
+                      </span>
+                    </div>
+                    <div className="hero-phone-job-amount">
+                      <span>Protected amount</span>
+                      <strong>{formatNaira(job.amount)}</strong>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        <div className="hero-phone-home-indicator" />
+      </div>
+    </div>
+  );
+}
+
 function HeroSection() {
   return (
     <section className="hero" id="home">
@@ -223,43 +358,7 @@ function HeroSection() {
           </div>
         </div>
 
-        <div className="hero-card">
-          <div className="hero-card-inner">
-            <div className="hero-card-top">
-              <small className="card-label">Total Protected</small>
-              <span className="hero-card-pill">2 Active Jobs</span>
-            </div>
-            <div className="hero-card-value-box">
-              <div className="hero-card-value">₦250,000</div>
-            </div>
-            <div className="hero-card-meta">
-              <span className="hero-card-note">
-                Held securely by our CBN-licensed partner bank
-              </span>
-            </div>
-
-            <div className="job-cards">
-              <div className="job-card">
-                <div className="job-card-header">
-                  <h3>Kitchen Installation</h3>
-                  <span className="job-badge job-badge-secure">
-                    <ShieldCheck size={14} weight="fill" /> Funds Secured
-                  </span>
-                </div>
-                <p>Gwarinpa, Abuja</p>
-              </div>
-              <div className="job-card">
-                <div className="job-card-header">
-                  <h3>POP Ceiling</h3>
-                  <span className="job-badge job-badge-progress">
-                    <Lightning size={14} weight="fill" /> Work In Progress
-                  </span>
-                </div>
-                <p>Wuse 2, Abuja</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <HeroPhonePreview />
       </div>
     </section>
   );

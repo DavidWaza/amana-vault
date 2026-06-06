@@ -163,7 +163,7 @@ export default function ArtisanWalletSection({
                   : undefined
             }
           >
-            <VaultIcon size={18} />
+            <VaultIcon size={35} />
             Request to withdraw
           </button>
         </div>

@@ -361,225 +361,361 @@ section {
   margin-top: 2rem;
 }
 
-.hero-card {
-  position: relative;
+.hero-phone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  max-width: 520px;
-  margin: 0 auto;
-  border-radius: 44px;
-  background: linear-gradient(165deg, var(--vault-panel) 0%, var(--vault-dark) 100%);
-  padding: 2rem 1.75rem 1.5rem;
-  box-shadow: var(--shadow-vault);
-  color: #fff;
-  border: 1px solid var(--vault-border);
-  overflow: hidden;
 }
 
-.hero-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  opacity: 0.14;
-  background:
-    radial-gradient(
-      circle at top left,
-      rgba(0, 166, 81, 0.18),
-      transparent 35%
-    ),
-    radial-gradient(
-      circle at bottom right,
-      rgba(0, 122, 61, 0.16),
-      transparent 28%
-    );
-}
-
-.hero-card-badges {
+.hero-phone-frame {
   position: relative;
-  z-index: 1;
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  margin-bottom: 1.25rem;
+  width: min(300px, 100%);
+  padding: 11px 10px 14px;
+  border-radius: 42px;
+  background: linear-gradient(165deg, #2a2a2a 0%, #111 55%, #050505 100%);
+  box-shadow:
+    0 32px 64px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
-.hero-badge {
+.hero-phone-notch {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92px;
+  height: 24px;
+  border-radius: 18px;
+  background: #050505;
+  z-index: 2;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.hero-phone-screen {
+  position: relative;
+  border-radius: 30px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f8fffe, var(--artisan-soft) 35%, var(--bg));
+  min-height: 560px;
+  max-height: 600px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+.hero-phone-screen::-webkit-scrollbar {
+  display: none;
+}
+
+.hero-phone-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.85rem 0.35rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--artisan);
+}
+
+.hero-phone-status-icons {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 0.18rem;
+}
+
+.hero-phone-status-icons span {
+  display: block;
+  background: var(--artisan);
+  border-radius: 1px;
+}
+
+.hero-phone-status-icons span:nth-child(1) {
+  width: 3px;
+  height: 4px;
+}
+
+.hero-phone-status-icons span:nth-child(2) {
+  width: 3px;
+  height: 6px;
+}
+
+.hero-phone-status-icons span:nth-child(3) {
+  width: 3px;
+  height: 8px;
+}
+
+.hero-phone-dash {
+  padding: 0 0.75rem 1rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.hero-phone-eyebrow {
+  margin: 0;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--artisan2);
+}
+
+.hero-phone-greeting {
+  margin: 0.2rem 0 0;
+  font-size: 1.05rem;
+  color: var(--artisan);
+  line-height: 1.2;
+}
+
+.hero-phone-wallet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.hero-phone-wallet-card {
+  padding: 0.85rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--artisan), var(--artisan2));
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(13, 148, 136, 0.28);
+}
+
+.hero-phone-wallet-title {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 0.35rem;
-  padding: 0.65rem 1rem;
-  border-radius: 999px;
-  background: rgba(0, 166, 81, 0.12);
-  color: var(--green);
-  font-size: 0.75rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  opacity: 0.95;
+}
+
+.hero-phone-wallet-value {
+  margin: 0.35rem 0 0.65rem;
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.hero-phone-wallet-breakdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+}
+
+.hero-phone-wallet-breakdown > div {
+  padding: 0.5rem 0.55rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.hero-phone-wallet-breakdown span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.58rem;
   font-weight: 700;
+  opacity: 0.9;
+}
+
+.hero-phone-wallet-breakdown strong {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.hero-phone-wallet-breakdown small {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.52rem;
+  opacity: 0.75;
+  line-height: 1.3;
+}
+
+.hero-phone-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.hero-phone-stats > div {
+  padding: 0.6rem 0.7rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid var(--artisan-line);
+}
+
+.hero-phone-stats span {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
-.hero-card-inner {
-  position: relative;
-  background: rgba(255, 255, 255, 0.96);
-  border-radius: 34px;
-  padding: 1.75rem;
-  overflow: hidden;
-  color: var(--text);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+.hero-phone-stats strong {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: var(--artisan);
 }
 
-.hero-card-top {
+.hero-phone-jobs-head {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
 }
 
-.hero-card-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.7rem 1rem;
-  border-radius: 999px;
-  background: rgba(0, 122, 61, 0.12);
-  color: var(--green2);
-  font-size: 0.85rem;
-  font-weight: 800;
-}
-
-.hero-card-value-box {
-  width: 100%;
-  padding: 1.4rem 1.5rem;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--green2), var(--green3));
-  box-shadow: 0 18px 40px rgba(0, 75, 36, 0.18);
-  margin-bottom: 1rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-card-value {
-  font-family: var(--font-mono);
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 800;
+.hero-phone-jobs-head h4 {
   margin: 0;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  color: #fff;
-  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
+  color: var(--artisan);
 }
 
-.hero-card-meta {
+.hero-phone-jobs-head span {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--artisan2);
+  background: var(--artisan-soft);
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+}
+
+.hero-phone-job {
+  padding: 0.7rem;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--artisan-line);
+  margin-bottom: 0.5rem;
+}
+
+.hero-phone-job:last-child {
+  margin-bottom: 0;
+}
+
+.hero-phone-job-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.45rem;
+}
+
+.hero-phone-job h5 {
+  margin: 0;
+  font-size: 0.74rem;
+  color: var(--artisan);
+  line-height: 1.25;
+}
+
+.hero-phone-job-top p {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
   align-items: center;
-  margin-bottom: 1rem;
-}
-
-.hero-card-note {
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.hero-card-inner h2 {
-  margin: 0 0 0.5rem;
-  font-size: 1.4rem;
-  color: var(--green);
-}
-
-.hero-card-inner p {
-  margin: 0 0 1rem;
+  gap: 0.25rem;
+  margin: 0.25rem 0 0;
+  font-size: 0.62rem;
   color: var(--muted);
 }
 
-.card-label {
+.hero-phone-job-verified {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  background: rgba(255, 255, 255, 0.15);
-  color: #111;
+  gap: 0.15rem;
+  color: var(--artisan2);
+  font-weight: 700;
+}
+
+.hero-phone-job-badge {
+  flex-shrink: 0;
+  padding: 0.2rem 0.45rem;
   border-radius: 999px;
-  padding: 0.5rem 0.9rem;
-  font-size: 0.82rem;
-  font-weight: 800;
-}
-
-.job-cards {
-  display: grid;
-  gap: 0.85rem;
-  margin-top: 0.25rem;
-}
-
-.job-card {
-  display: flex;
-  flex-direction: column;
-  min-height: 5.5rem;
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 1.1rem 1.15rem;
-  background: #fff;
-  transition:
-    transform var(--transition),
-    box-shadow var(--transition),
-    border-color var(--transition);
-}
-
-.job-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--green2);
-  box-shadow: var(--shadow-sm);
-}
-
-.job-card h3 {
-  margin: 0 0 0.35rem;
-  color: var(--green);
-  font-size: 1rem;
-}
-
-.job-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.55rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.78rem;
+  font-size: 0.52rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
 }
 
-.job-badge-secure {
-  color: var(--green2);
+.hero-phone-job-badge--secure {
+  background: rgba(13, 148, 136, 0.12);
+  color: var(--artisan2);
+}
+
+.hero-phone-job-badge--progress {
+  background: rgba(15, 92, 90, 0.12);
+  color: var(--artisan);
+}
+
+.hero-phone-job-badge--warning {
+  background: rgba(244, 163, 0, 0.14);
+  color: #b7791f;
+}
+
+.hero-phone-job-badge--success {
   background: rgba(0, 166, 81, 0.12);
+  color: var(--green2);
 }
 
-.job-badge-progress {
-  color: var(--green);
-  background: rgba(0, 75, 36, 0.1);
+.hero-phone-job-badge--danger {
+  background: rgba(214, 69, 69, 0.12);
+  color: #c53030;
 }
 
-.job-card p {
-  margin: 0;
+.hero-phone-job-badge--muted {
+  background: rgba(91, 107, 96, 0.1);
   color: var(--muted);
-  font-size: 0.95rem;
 }
 
-.job-card-header {
+.hero-phone-job-meta {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
-  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  font-size: 0.62rem;
+  color: var(--muted);
 }
 
-.job-card-header h3 {
-  flex: 1;
-  min-width: 0;
+.hero-phone-job-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.hero-phone-job-amount {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.45rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed var(--artisan-line);
+}
+
+.hero-phone-job-amount span {
+  font-size: 0.58rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.hero-phone-job-amount strong {
+  font-size: 0.72rem;
+  color: var(--artisan);
+  font-weight: 900;
+}
+
+.hero-phone-home-indicator {
+  width: 108px;
+  height: 4px;
+  margin: 10px auto 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.32);
 }
 
 .hero-stats {
@@ -4543,7 +4679,6 @@ section {
 .adash-wallet-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
 }
 
 .adash-wallet-balance-card .adash-btn--primary {
