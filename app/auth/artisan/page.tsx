@@ -4,6 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LockSimple } from "phosphor-react";
+import {
+  isValidPhoneDigits,
+  normalizePhoneInput,
+  PHONE_DIGIT_LENGTH,
+} from "@/app/lib/phone";
 
 function AmanaLogo({ size = 48 }: { size?: number }) {
   const scale = size / 48;
@@ -29,13 +34,22 @@ export default function ArtisanAuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [step, setStep] = useState<"auth" | "verify">("auth");
   const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const router = useRouter();
+
+  const handlePhoneChange = (value: string) => {
+    setPhone(normalizePhoneInput(value));
+    if (phoneError) setPhoneError(null);
+  };
 
   const handleAuthSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.length > 5) {
-      setStep("verify");
+    if (!isValidPhoneDigits(phone)) {
+      setPhoneError(`Enter exactly ${PHONE_DIGIT_LENGTH} digits.`);
+      return;
     }
+    setPhoneError(null);
+    setStep("verify");
   };
 
   const handleVerifySubmit = (e: React.FormEvent) => {
@@ -86,19 +100,38 @@ export default function ArtisanAuthPage() {
               )}
 
               <div className="auth-field">
-                <label className="auth-label">Phone Number</label>
-                <input
-                  type="tel"
-                  placeholder="e.g. 0803 000 0000"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  required
-                  className="auth-input"
-                />
+                <label className="auth-label" htmlFor="artisan-phone">
+                  Phone Number
+                </label>
+                <div className="auth-input-wrap">
+                  <input
+                    id="artisan-phone"
+                    type="tel"
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    placeholder="e.g. 08030000000"
+                    value={phone}
+                    onChange={(e) => handlePhoneChange(e.target.value)}
+                    minLength={PHONE_DIGIT_LENGTH}
+                    maxLength={PHONE_DIGIT_LENGTH}
+                    pattern="\d{11}"
+                    required
+                    aria-invalid={phoneError ? true : undefined}
+                    className={`auth-input${phoneError ? " auth-input--error" : ""}`}
+                  />
+                  <p className="auth-field-hint">
+                    {phone.length}/{PHONE_DIGIT_LENGTH} digits
+                  </p>
+                </div>
+                {phoneError && <p className="auth-field-error">{phoneError}</p>}
               </div>
 
               <div className="auth-actions">
-                <button type="submit" className="auth-submit">
+                <button
+                  type="submit"
+                  className="auth-submit"
+                  disabled={!isValidPhoneDigits(phone)}
+                >
                   {isLogin ? "Sign In" : "Create Artisan Account"}
                 </button>
               </div>

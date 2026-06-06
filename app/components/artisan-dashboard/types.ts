@@ -215,7 +215,11 @@ export type DashboardTab = "active" | "invitations" | "history";
 
 export type WalletTransactionType = "credit" | "withdrawal";
 
-export type WalletTransactionStatus = "completed" | "pending" | "failed";
+export type WalletTransactionStatus =
+  | "completed"
+  | "awaiting_approval"
+  | "pending"
+  | "failed";
 
 export type WalletTransaction = {
   id: string;

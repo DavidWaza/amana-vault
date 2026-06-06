@@ -14,7 +14,16 @@
   --green-rgb: 0, 61, 28;
   --green2-rgb: 0, 107, 50;
   --green3-rgb: 0, 138, 68;
-  /* Dashboard tokens — same palette as landing */
+  /* Client portal — teal-green (distinct from artisan forest green) */
+  --client: #0f5c5a;
+  --client2: #0d9488;
+  --client3: #14b8a6;
+  --client-soft: #f0fdfa;
+  --client-line: #ccfbf1;
+  --client-rgb: 15, 92, 90;
+  --client2-rgb: 13, 148, 136;
+  --client3-rgb: 20, 184, 166;
+  /* Artisan dashboard — landing forest green */
   --artisan: var(--green);
   --artisan2: var(--green2);
   --artisan3: var(--green3);
@@ -1253,7 +1262,6 @@ section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
   text-align: center;
 }
 
@@ -1408,6 +1416,44 @@ section {
   display: grid;
   gap: 0.5rem;
   margin-bottom: 1rem;
+}
+
+.auth-input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.auth-field-hint {
+  margin: 0;
+  padding: 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+  line-height: 1.2;
+  text-align: right;
+}
+
+.auth-field-error {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #c53030;
+  line-height: 1.45;
+}
+
+.auth-input--error {
+  border-color: rgba(197, 48, 48, 0.55);
+}
+
+.auth-input--error:focus {
+  border-color: #c53030;
+  box-shadow: 0 0 0 4px rgba(197, 48, 48, 0.12);
+}
+
+.auth-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .auth-label {
@@ -4816,12 +4862,39 @@ section {
   color: var(--artisan2);
 }
 
-.adash-wallet-tx-status--pending {
+.adash-wallet-tx-status--awaiting_approval {
   color: #b45309;
+}
+
+.adash-wallet-tx-status--pending {
+  color: var(--artisan2);
 }
 
 .adash-wallet-tx-status--failed {
   color: #c53030;
+}
+
+.adash-wallet-release-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: var(--artisan-soft);
+  border: 1px solid var(--artisan-line);
+  color: var(--artisan);
+}
+
+.adash-wallet-release-notice svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.adash-wallet-release-notice p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.55;
 }
 
 .adash-wallet-disclaimer {
@@ -6538,5 +6611,1433 @@ section {
   .adash-settings-avatar-block {
     flex-direction: column;
     text-align: center;
+  }
+}
+
+/* ── Client Portal (teal-green theme) ── */
+
+.auth-portal-tag--client {
+  color: var(--client);
+  background: var(--client-soft);
+  border: 1px solid var(--client-line);
+}
+
+.auth-page--client {
+  background:
+    radial-gradient(circle at top, rgba(var(--client2-rgb), 0.1), transparent 42%),
+    linear-gradient(180deg, var(--bg), var(--client-soft)),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 24px,
+      rgba(var(--client2-rgb), 0.03) 24px,
+      rgba(var(--client2-rgb), 0.03) 25px
+    );
+}
+
+.auth-page--client .auth-card {
+  border-color: var(--client-line);
+}
+
+.auth-page--client .auth-card h2 {
+  color: var(--client);
+}
+
+.auth-page--client .auth-label {
+  color: var(--client);
+}
+
+.auth-page--client .auth-input:focus,
+.auth-page--client .auth-select:focus,
+.auth-page--client .auth-otp-input:focus {
+  border-color: var(--client2);
+  box-shadow: 0 0 0 4px rgba(var(--client2-rgb), 0.14);
+}
+
+.auth-page--client .auth-submit {
+  background: linear-gradient(135deg, var(--client), var(--client2));
+}
+
+.auth-page--client .auth-submit:hover {
+  box-shadow: 0 12px 28px rgba(var(--client-rgb), 0.28);
+}
+
+.auth-page--client .auth-switch {
+  color: var(--client2);
+}
+
+.auth-page--client .auth-divider {
+  border-top-color: var(--client-line);
+}
+
+.auth-page--client .auth-note {
+  color: var(--client);
+}
+
+.cdash-page {
+  --artisan: var(--client);
+  --artisan2: var(--client2);
+  --artisan3: var(--client3);
+  --artisan-soft: var(--client-soft);
+  --artisan-line: var(--client-line);
+  --green-rgb: var(--client-rgb);
+  --green2-rgb: var(--client2-rgb);
+  --green3-rgb: var(--client3-rgb);
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8fffe, var(--client-soft) 40%, var(--bg));
+  color: var(--text);
+}
+
+.cdash-page .adash-nav {
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom-color: var(--client-line);
+}
+
+.cdash-page .adash-main {
+  padding: 2.25rem 0 3.5rem;
+}
+
+.cdash-page .adash-container {
+  gap: 1.75rem;
+  padding: 0 1.5rem;
+}
+
+.cdash-page .adash-welcome h1 {
+  line-height: 1.2;
+}
+
+.cdash-page .adash-welcome-text {
+  line-height: 1.65;
+}
+
+.cdash-page .adash-layout {
+  gap: 1.75rem;
+}
+
+.cdash-page .adash-wallet {
+  padding: 1.75rem 1.85rem;
+  gap: 1.5rem;
+}
+
+.cdash-page .adash-wallet-header > div:first-child {
+  min-width: 0;
+  flex: 1;
+}
+
+.cdash-page .adash-wallet-header h2,
+.cdash-page .adash-wallet-note {
+  text-align: left;
+}
+
+.cdash-page .adash-wallet-balance-card {
+  padding: 1.5rem 1.65rem;
+}
+
+.cdash-page .adash-wallet-title {
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  line-height: 1.3;
+}
+
+.cdash-page .adash-wallet-breakdown > div {
+  padding: 1rem 1.1rem;
+}
+
+.cdash-page .adash-wallet-breakdown-label,
+.cdash-page .adash-wallet-breakdown strong,
+.cdash-page .adash-wallet-breakdown small {
+  text-align: left;
+}
+
+.cdash-page .adash-wallet-bank,
+.cdash-page .adash-wallet-history {
+  padding: 0.25rem 0;
+}
+
+.cdash-page .adash-wallet-bank h3,
+.cdash-page .adash-wallet-history h3 {
+  margin-bottom: 0.85rem;
+  text-align: left;
+}
+
+.cdash-page .adash-wallet-bank-details {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.cdash-page .adash-wallet-bank-details div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  background: var(--client-soft);
+}
+
+.cdash-page .adash-wallet-bank-details span {
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.cdash-page .adash-wallet-bank-details strong {
+  text-align: right;
+  word-break: break-word;
+}
+
+.cdash-page .adash-wallet-tx {
+  align-items: center;
+  padding: 0.9rem 0;
+  gap: 1rem;
+}
+
+.cdash-page .adash-wallet-tx > div:first-child {
+  min-width: 0;
+  flex: 1;
+}
+
+.cdash-page .adash-wallet-tx strong {
+  display: block;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.cdash-page .adash-wallet-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.cdash-page .adash-banner {
+  padding: 1.15rem 1.4rem;
+  align-items: center;
+}
+
+.cdash-page .adash-banner-body {
+  text-align: left;
+}
+
+.cdash-page .adash-banner-body strong {
+  line-height: 1.35;
+}
+
+.cdash-page .adash-banner-body p {
+  line-height: 1.6;
+}
+
+.cdash-page .adash-alert {
+  padding: 1rem 1.3rem;
+  align-items: flex-start;
+}
+
+.cdash-page .adash-alert > div {
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.cdash-page .adash-alert strong,
+.cdash-page .adash-alert p {
+  line-height: 1.5;
+}
+
+.cdash-page .adash-stat-card {
+  padding: 1.4rem 1.55rem;
+  align-items: flex-start;
+}
+
+.cdash-page .adash-stat-card > div {
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.cdash-page .adash-stat-label {
+  line-height: 1.35;
+}
+
+.cdash-page .adash-stat-value {
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.cdash-page .adash-stat-hint {
+  line-height: 1.45;
+}
+
+.cdash-page .adash-jobs {
+  gap: 1.25rem;
+}
+
+.cdash-page .adash-jobs-header {
+  align-items: flex-end;
+}
+
+.cdash-page .adash-jobs-header > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.cdash-page .adash-jobs-header h2,
+.cdash-page .adash-jobs-header p {
+  text-align: left;
+}
+
+.cdash-page .adash-job-card {
+  padding: 1.55rem 1.65rem;
+}
+
+.cdash-page .adash-job-card-top {
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.cdash-page .adash-job-card-top > div:first-child {
+  min-width: 0;
+  flex: 1;
+}
+
+.cdash-page .adash-job-card h3 {
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.cdash-page .adash-job-client {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.55rem;
+  line-height: 1.5;
+}
+
+.cdash-page .adash-job-badge {
+  line-height: 1.2;
+  text-align: center;
+}
+
+.cdash-page .adash-job-meta {
+  gap: 0.85rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.cdash-page .adash-job-meta span {
+  line-height: 1.4;
+}
+
+.cdash-page .adash-job-amount-row {
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.cdash-page .adash-job-amount-row > div {
+  text-align: left;
+}
+
+.cdash-page .adash-job-notice {
+  padding: 0.85rem 1rem;
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
+
+.cdash-page .adash-job-milestones-preview {
+  padding: 0.7rem 1rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.cdash-page .adash-job-actions {
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.cdash-page .adash-job-hint {
+  line-height: 1.5;
+  text-align: left;
+}
+
+.cdash-page .adash-profile-card {
+  padding: 1.65rem 1.75rem;
+  gap: 1.35rem;
+}
+
+.cdash-page .adash-profile-header {
+  align-items: flex-start;
+}
+
+.cdash-page .adash-profile-header > div:last-child {
+  min-width: 0;
+  flex: 1;
+}
+
+.cdash-page .adash-profile-header h2 {
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.cdash-page .adash-profile-meta {
+  line-height: 1.45;
+}
+
+.cdash-page .adash-profile-stats {
+  grid-template-columns: repeat(2, 1fr);
+  padding: 1rem 0.5rem;
+}
+
+.cdash-page .adash-profile-stat-label {
+  line-height: 1.35;
+}
+
+.cdash-page .adash-profile-details div {
+  padding: 0.35rem 0;
+  align-items: baseline;
+}
+
+.cdash-page .adash-profile-details strong {
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.cdash-page .adash-reviews {
+  gap: 1.35rem;
+}
+
+.cdash-page .adash-reviews-header h2,
+.cdash-page .adash-reviews-header p {
+  text-align: left;
+  line-height: 1.5;
+}
+
+.cdash-page .adash-review-card {
+  padding: 1.4rem 1.55rem;
+}
+
+.cdash-page .adash-review-card-top {
+  margin-bottom: 1rem;
+}
+
+.cdash-page .adash-review-client-name {
+  flex-wrap: wrap;
+  line-height: 1.4;
+}
+
+.cdash-page .adash-review-card h3 {
+  margin: 0 0 0.2rem;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--client);
+  text-align: left;
+}
+
+.cdash-page .adash-review-card > p {
+  margin: 0 0 0.65rem;
+  line-height: 1.65;
+  text-align: left;
+  color: var(--text);
+}
+
+.cdash-page .adash-review-card > span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: left;
+}
+
+.cdash-page .adash-empty {
+  padding: 3.25rem 2rem;
+}
+
+.cdash-page .adash-empty h3,
+.cdash-page .adash-empty p {
+  line-height: 1.55;
+}
+
+.cdash-page .adash-disclaimer {
+  padding: 1.15rem 1.35rem;
+  line-height: 1.65;
+  text-align: left;
+}
+
+.cdash-page .adash-modal {
+  width: min(52rem, calc(100vw - 2.5rem));
+  max-width: min(52rem, calc(100vw - 2.5rem));
+  padding: 1.75rem 2rem;
+}
+
+.cdash-page .adash-modal--agreement {
+  width: min(56rem, calc(100vw - 2.5rem));
+  max-width: min(56rem, calc(100vw - 2.5rem));
+}
+
+.cdash-page .adash-modal-header {
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.cdash-page .adash-modal-header h3 {
+  line-height: 1.35;
+}
+
+.cdash-page .adash-modal-subtext {
+  line-height: 1.6;
+  text-align: left;
+}
+
+.cdash-page .adash-modal-actions {
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.cdash-page .adash-completion-summary-row {
+  gap: 1.5rem;
+}
+
+.cdash-page .adash-job-modal-details p {
+  line-height: 1.55;
+}
+
+@media (max-width: 640px) {
+  .cdash-page .adash-modal,
+  .cdash-page .adash-modal--agreement,
+  .cdash-create-job-modal {
+    width: calc(100vw - 1.5rem);
+    max-width: calc(100vw - 1.5rem);
+    padding: 1.35rem 1.25rem;
+  }
+}
+
+.cdash-page .adash-chat-inbox-panel,
+.cdash-page .adash-notifications-panel {
+  box-shadow: 0 16px 40px rgba(var(--client2-rgb), 0.14);
+}
+
+.cdash-page .adash-fab {
+  box-shadow:
+    0 12px 32px rgba(var(--client2-rgb), 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.cdash-page .adash-fab:hover {
+  box-shadow:
+    0 16px 40px rgba(var(--client2-rgb), 0.42),
+    0 6px 16px rgba(0, 0, 0, 0.14);
+}
+
+@media (max-width: 640px) {
+  .cdash-page .adash-container {
+    padding: 0 1.15rem;
+    gap: 1.5rem;
+  }
+
+  .cdash-page .adash-job-card,
+  .cdash-page .adash-wallet,
+  .cdash-page .adash-profile-card {
+    padding: 1.35rem 1.25rem;
+  }
+
+  .cdash-page .adash-stat-card {
+    padding: 1.2rem 1.25rem;
+  }
+
+  .cdash-fund-queue-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cdash-fund-queue-btn {
+    width: 100%;
+  }
+}
+
+/* Client fund escrow */
+
+.cdash-fund-queue {
+  margin-bottom: 1.15rem;
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.cdash-fund-queue h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.85rem;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.92;
+}
+
+.cdash-fund-queue-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.cdash-fund-queue-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cdash-fund-queue-info {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  gap: 0.15rem;
+  text-align: left;
+}
+
+.cdash-fund-queue-info strong {
+  font-size: 0.92rem;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.cdash-fund-queue-info span {
+  font-size: 0.78rem;
+  opacity: 0.85;
+  line-height: 1.4;
+}
+
+.cdash-fund-queue-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+  background: #fff !important;
+  color: var(--client) !important;
+}
+
+.cdash-fund-queue-btn:hover:not(:disabled) {
+  background: var(--client-soft) !important;
+}
+
+.cdash-wallet-setup-link {
+  display: inline;
+  margin-left: 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cdash-wallet-add-payment {
+  margin-top: 0.85rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.adash-wallet-blocked--muted {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  opacity: 0.9;
+}
+
+.cdash-fund-payment {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.85rem;
+  border-radius: 14px;
+  background: var(--client-soft);
+  border: 1px solid var(--client-line);
+}
+
+.cdash-fund-payment svg {
+  flex-shrink: 0;
+  color: var(--client2);
+  margin-top: 0.1rem;
+}
+
+.cdash-fund-payment div {
+  display: grid;
+  gap: 0.15rem;
+  text-align: left;
+}
+
+.cdash-fund-payment strong {
+  font-size: 0.88rem;
+  color: var(--client);
+}
+
+.cdash-fund-payment span {
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.cdash-fund-authorize {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--client-line);
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.cdash-fund-authorize input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+  accent-color: var(--client2);
+}
+
+.cdash-fund-authorize span {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.cdash-fund-success {
+  text-align: center;
+  padding: 0.5rem 0 0.25rem;
+}
+
+.cdash-fund-success-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-bottom: 1rem;
+  border-radius: 999px;
+  background: var(--client-soft);
+  color: var(--client2);
+}
+
+.cdash-fund-success p {
+  margin: 0 0 0.75rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.cdash-fund-success .adash-modal-subtext {
+  text-align: center;
+}
+
+/* Client artisan wall & job creation */
+
+.cdash-artisan-wall {
+  display: grid;
+  gap: 1.35rem;
+  padding: 1.75rem 1.85rem;
+  border-radius: 24px;
+  background: #fff;
+  border: 1px solid var(--client-line);
+  box-shadow: var(--shadow-sm);
+}
+
+.cdash-artisan-wall-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.cdash-artisan-wall-header h2 {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 1.35rem;
+  color: var(--client);
+  line-height: 1.25;
+}
+
+.cdash-artisan-wall-header p {
+  margin: 0;
+  max-width: 38rem;
+  color: var(--muted);
+  line-height: 1.65;
+  text-align: left;
+}
+
+.cdash-artisan-wall-toolbar {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.cdash-artisan-search {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.8rem 1rem;
+  border-radius: 16px;
+  border: 1px solid var(--client-line);
+  background: var(--client-soft);
+}
+
+.cdash-artisan-search svg {
+  flex-shrink: 0;
+  color: var(--client2);
+}
+
+.cdash-artisan-search input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 0.92rem;
+  color: var(--text);
+}
+
+.cdash-artisan-search input:focus {
+  outline: none;
+}
+
+.cdash-artisan-search--modal {
+  margin-bottom: 0.75rem;
+}
+
+.cdash-artisan-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cdash-artisan-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--client-line);
+  background: #fff;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.cdash-artisan-filter span {
+  min-width: 1.2rem;
+  height: 1.2rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: var(--client-soft);
+  color: var(--client2);
+  font-size: 0.68rem;
+  display: grid;
+  place-items: center;
+}
+
+.cdash-artisan-filter--active {
+  background: var(--client);
+  border-color: var(--client);
+  color: #fff;
+}
+
+.cdash-artisan-filter--active span {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.cdash-artisan-wall-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: var(--client-soft);
+  border: 1px solid var(--client-line);
+  color: var(--client);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.cdash-artisan-wall-note svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  color: var(--client2);
+}
+
+.cdash-artisan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.cdash-artisan-card {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1.25rem 1.35rem;
+  border-radius: 20px;
+  border: 1px solid var(--client-line);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.cdash-artisan-card:hover {
+  border-color: var(--client2);
+  box-shadow: var(--shadow-md);
+}
+
+.cdash-artisan-card-top {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+
+.cdash-artisan-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--client), var(--client2));
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.cdash-artisan-avatar--small {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 0.78rem;
+  border-radius: 12px;
+}
+
+.cdash-artisan-card-heading {
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.cdash-artisan-name-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cdash-artisan-name-row h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--client);
+  line-height: 1.3;
+}
+
+.cdash-artisan-trade,
+.cdash-artisan-area {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0.2rem 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.cdash-artisan-card-trade-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+
+.cdash-artisan-bio {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  color: var(--text);
+  text-align: left;
+}
+
+.cdash-artisan-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.cdash-artisan-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cdash-artisan-meta svg {
+  color: var(--client2);
+}
+
+.cdash-artisan-verified {
+  color: var(--client2) !important;
+}
+
+.cdash-create-job-modal {
+  width: min(56rem, calc(100vw - 2.5rem));
+  max-width: min(56rem, calc(100vw - 2.5rem));
+  max-height: 90dvh;
+  overflow-y: auto;
+}
+
+.cdash-create-job-form {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.cdash-create-job-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.cdash-create-job-field {
+  display: grid;
+  gap: 0.35rem;
+  text-align: left;
+}
+
+.cdash-create-job-field label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--client);
+}
+
+.cdash-field-hint {
+  font-size: 0.76rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.cdash-field-error {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #c53030;
+  line-height: 1.4;
+}
+
+.cdash-field-error--block {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.cdash-create-job-picker {
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--client-line);
+}
+
+.cdash-create-job-picker-header {
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+
+.cdash-create-job-picker-header h4 {
+  margin: 0 0 0.2rem;
+  font-size: 0.95rem;
+  color: var(--client);
+}
+
+.cdash-create-job-picker-header p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.cdash-create-job-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+  max-height: 16rem;
+  overflow-y: auto;
+}
+
+.cdash-create-job-result {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid var(--client-line);
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.cdash-create-job-result:hover {
+  border-color: var(--client2);
+  background: var(--client-soft);
+}
+
+.cdash-create-job-result--selected {
+  border-color: var(--client2);
+  background: var(--client-soft);
+  box-shadow: inset 0 0 0 1px rgba(var(--client2-rgb), 0.15);
+}
+
+.cdash-create-job-result-body {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 0.12rem;
+}
+
+.cdash-create-job-result-body strong {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+  color: var(--client);
+  line-height: 1.35;
+}
+
+.cdash-create-job-result-body strong .adash-profile-recommended {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.cdash-create-job-result-body > span {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.cdash-create-job-result-meta {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.45rem !important;
+  color: var(--client2) !important;
+}
+
+.cdash-create-job-result > svg:last-child {
+  flex-shrink: 0;
+  color: var(--client2);
+}
+
+.cdash-create-job-success {
+  text-align: center;
+  padding: 0.25rem 0;
+}
+
+.cdash-create-job-success p {
+  margin: 0 0 1rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.cdash-artisan-card-actions {
+  display: flex;
+  flex-direction: column;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 0.64rem;
+}
+
+.cdash-create-job-result-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.55rem;
+}
+
+.cdash-create-job-result-row .cdash-create-job-result {
+  flex: 1;
+}
+
+.cdash-create-job-profile-btn {
+  flex-shrink: 0;
+  align-self: stretch;
+  padding: 0 0.9rem;
+  border-radius: 14px;
+  border: 1px solid var(--client-line);
+  background: #fff;
+  color: var(--client2);
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.cdash-create-job-profile-btn:hover {
+  border-color: var(--client2);
+  background: var(--client-soft);
+}
+
+.cdash-artisan-detail-modal {
+  max-height: 90dvh;
+  overflow-y: auto;
+}
+
+.cdash-artisan-detail-hero {
+  display: flex;
+  gap: 1.15rem;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+  padding: 1.15rem 1.25rem;
+  border-radius: 18px;
+  background: var(--client-soft);
+  border: 1px solid var(--client-line);
+}
+
+.cdash-artisan-avatar--large {
+  width: 4.25rem;
+  height: 4.25rem;
+  font-size: 1.1rem;
+  border-radius: 18px;
+}
+
+.cdash-artisan-detail-hero-body {
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.cdash-artisan-detail-hero-body h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--client);
+  line-height: 1.35;
+}
+
+.cdash-artisan-detail-bio {
+  margin: 0.65rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+.cdash-artisan-detail-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(var(--client2-rgb), 0.12);
+  color: var(--client2);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cdash-artisan-detail-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.cdash-artisan-detail-stats > div {
+  padding: 0.85rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid var(--client-line);
+  background: #fff;
+  text-align: left;
+}
+
+.cdash-artisan-detail-stat-label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cdash-artisan-detail-stats strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.92rem;
+  color: var(--client);
+  line-height: 1.35;
+}
+
+.cdash-artisan-detail-section {
+  margin-bottom: 1.15rem;
+  text-align: left;
+}
+
+.cdash-artisan-detail-section h4 {
+  margin: 0 0 0.65rem;
+  font-size: 0.95rem;
+  color: var(--client);
+}
+
+.cdash-artisan-specialties {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cdash-artisan-specialties li {
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: var(--client-soft);
+  border: 1px solid var(--client-line);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--client);
+}
+
+.cdash-artisan-detail-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.cdash-artisan-detail-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.8rem 0.95rem;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--client-line);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.cdash-artisan-detail-steps svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  color: var(--client2);
+}
+
+.cdash-artisan-detail-reviews {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.cdash-artisan-detail-reviews li {
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  border: 1px solid var(--client-line);
+  background: #fff;
+  text-align: left;
+}
+
+.cdash-artisan-detail-review-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.cdash-artisan-detail-review-top span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.cdash-artisan-detail-review-stars {
+  display: inline-flex;
+  gap: 0.1rem;
+  color: var(--client2);
+}
+
+.cdash-artisan-detail-reviews strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--client);
+}
+
+.cdash-artisan-detail-reviews p {
+  margin: 0 0 0.45rem;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.cdash-artisan-detail-reviews time {
+  font-size: 0.76rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.cdash-artisan-detail-empty-reviews {
+  margin: 0 0 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  background: var(--bg2);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--muted);
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .cdash-artisan-wall-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cdash-artisan-wall-header .adash-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cdash-create-job-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cdash-artisan-card-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .cdash-artisan-detail-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cdash-artisan-detail-hero {
+    flex-direction: column;
+  }
+
+  .cdash-create-job-result-row {
+    flex-direction: column;
+  }
+
+  .cdash-create-job-profile-btn {
+    width: 100%;
+    padding: 0.65rem;
   }
 }

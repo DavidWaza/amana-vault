@@ -4,53 +4,69 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LockSimple } from "phosphor-react";
+import AmanaLogo from "@/app/components/join-amana/AmanaLogo";
+import {
+  isValidPhoneDigits,
+  normalizePhoneInput,
+  PHONE_DIGIT_LENGTH,
+} from "@/app/lib/phone";
 
-function AmanaLogo({ size = 48 }: { size?: number }) {
-  const scale = size / 48;
+// function AmanaLogo({ size = 48 }: { size?: number }) {
+//   const scale = size / 48;
 
-  return (
-    <div
-      className="logo"
-      style={{ width: size, height: size, borderWidth: 4 * scale, borderColor: "var(--green2)" }}
-    >
-      <div
-        className="logo-mark"
-        style={{ width: 24 * scale, height: 24 * scale, borderWidth: 4 * scale, borderColor: "var(--green2)" }}
-      >
-        <div className="logo-cross logo-cross-first" />
-        <div className="logo-cross logo-cross-second" />
-        <div className="logo-dot" style={{ width: 6 * scale, height: 6 * scale }} />
-      </div>
-    </div>
-  );
-}
+//   return (
+//     <div
+//       className="logo"
+//       style={{ width: size, height: size, borderWidth: 4 * scale, borderColor: "var(--green2)" }}
+//     >
+//       <div
+//         className="logo-mark"
+//         style={{ width: 24 * scale, height: 24 * scale, borderWidth: 4 * scale, borderColor: "var(--green2)" }}
+//       >
+//         <div className="logo-cross logo-cross-first" />
+//         <div className="logo-cross logo-cross-second" />
+//         <div className="logo-dot" style={{ width: 6 * scale, height: 6 * scale }} />
+//       </div>
+//     </div>
+//   );
+// }
 
 export default function ClientAuthPage() {
+  
   const [isLogin, setIsLogin] = useState(true);
   const [step, setStep] = useState<"auth" | "verify">("auth");
   const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const router = useRouter();
+
+  const handlePhoneChange = (value: string) => {
+    setPhone(normalizePhoneInput(value));
+    if (phoneError) setPhoneError(null);
+  };
 
   const handleAuthSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.length > 5) {
-      setStep("verify");
+    if (!isValidPhoneDigits(phone)) {
+      setPhoneError(`Enter exactly ${PHONE_DIGIT_LENGTH} digits.`);
+      return;
     }
+    setPhoneError(null);
+    setStep("verify");
   };
 
   const handleVerifySubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/#dashboard");
+    router.push("/client/dashboard");
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth-page auth-page--client">
       <div className="auth-container">
         <Link href="/" className="logo-link auth-brand">
-          <AmanaLogo size={56} />
+        <AmanaLogo variant="green" size={80} />
           <div>
             <h1 className="logo-text auth-brand-title">Amana</h1>
-            <p className="auth-portal-tag">Client Portal</p>
+            <p className="auth-portal-tag auth-portal-tag--client">Client Portal</p>
           </div>
         </Link>
 
@@ -70,19 +86,38 @@ export default function ClientAuthPage() {
               )}
 
               <div className="auth-field">
-                <label className="auth-label">Phone Number</label>
-                <input
-                  type="tel"
-                  placeholder="e.g. 0803 000 0000"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  required
-                  className="auth-input"
-                />
+                <label className="auth-label" htmlFor="client-phone">
+                  Phone Number
+                </label>
+                <div className="auth-input-wrap">
+                  <input
+                    id="client-phone"
+                    type="tel"
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    placeholder="e.g. 08030000000"
+                    value={phone}
+                    onChange={(e) => handlePhoneChange(e.target.value)}
+                    minLength={PHONE_DIGIT_LENGTH}
+                    maxLength={PHONE_DIGIT_LENGTH}
+                    pattern="\d{11}"
+                    required
+                    aria-invalid={phoneError ? true : undefined}
+                    className={`auth-input${phoneError ? " auth-input--error" : ""}`}
+                  />
+                  <p className="auth-field-hint">
+                    {phone.length}/{PHONE_DIGIT_LENGTH} digits
+                  </p>
+                </div>
+                {phoneError && <p className="auth-field-error">{phoneError}</p>}
               </div>
 
               <div className="auth-actions">
-                <button type="submit" className="auth-submit">
+                <button
+                  type="submit"
+                  className="auth-submit"
+                  disabled={!isValidPhoneDigits(phone)}
+                >
                   {isLogin ? "Sign In" : "Create Account"}
                 </button>
               </div>

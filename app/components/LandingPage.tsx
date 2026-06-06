@@ -223,12 +223,12 @@ function HeroPhonePreview() {
                       Incoming
                     </span>
                     <strong>{formatNaira(MOCK_WALLET.incomingBalance)}</strong>
-                    <small>Processing to your bank</small>
+                    <small>On secured jobs awaiting release</small>
                   </div>
                   <div>
                     <span>
                       <ArrowUp size={12} weight="bold" />
-                      Pending withdrawal
+                      Pending release
                     </span>
                     <strong>{formatNaira(MOCK_WALLET.pendingWithdrawal)}</strong>
                     <small>Awaiting client approval</small>

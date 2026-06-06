@@ -1,0 +1,501 @@
+import { buildMilestones } from "../artisan-dashboard/agreement-summary";
+import { enrichRecommendedArtisan } from "./artisan-profile-details";
+import type {
+  ClientEscrow,
+  ClientJob,
+  ClientNotification,
+  ClientProfile,
+  ClientReview,
+  JobChatMessage,
+  RecommendedArtisan,
+} from "./types";
+import type { RecommendedArtisanSeed } from "./artisan-profile-details";
+
+export const MOCK_CLIENT: ClientProfile = {
+  id: "client-001",
+  fullName: "Adaeze Obi",
+  phone: "08012345678",
+  email: "adaeze@email.com",
+  area: "gwarinpa",
+  areaLabel: "Gwarinpa",
+  avatarUrl: null,
+  verificationStatus: "verified",
+  paymentMethodStatus: "verified",
+  profileComplete: true,
+  memberSince: "2026-01-10",
+  jobsProtected: 4,
+  totalEscrowed: 335000,
+};
+
+export const MOCK_CLIENT_UNVERIFIED: ClientProfile = {
+  ...MOCK_CLIENT,
+  verificationStatus: "unverified",
+  paymentMethodStatus: "not_set",
+  profileComplete: false,
+  jobsProtected: 0,
+  totalEscrowed: 0,
+};
+
+export const MOCK_CLIENT_JOBS: ClientJob[] = [
+  {
+    id: "job-c101",
+    title: "Kitchen Pipe Installation",
+    artisanName: "Musa Ibrahim",
+    artisanVerified: true,
+    artisanCategory: "Plumbing",
+    location: "Gwarinpa, Abuja",
+    amount: 85000,
+    protectionFee: 4250,
+    status: "in_progress",
+    priority: "normal",
+    createdAt: "2026-05-20T10:00:00Z",
+    deadline: "2026-06-08T17:00:00Z",
+    fundedAt: "2026-05-21T09:00:00Z",
+    milestones: buildMilestones("plumbing", 85000),
+    lastUpdated: "2026-06-04T14:30:00Z",
+  },
+  {
+    id: "job-c102",
+    title: "Office Toilet Refit",
+    artisanName: "Musa Ibrahim",
+    artisanVerified: true,
+    artisanCategory: "Plumbing",
+    location: "Central Area, Abuja",
+    amount: 180000,
+    protectionFee: 9000,
+    status: "awaiting_funding",
+    priority: "normal",
+    createdAt: "2026-06-03T15:00:00Z",
+    deadline: "2026-06-25T17:00:00Z",
+    agreementScope:
+      "Commercial toilet refit with multiple WC units, urinals, and shared waste mains.",
+    paymentTerms:
+      "₦180,000 held in Amana escrow across 3 milestones, plus a ₦9,000 protection fee (5%).",
+    sentByArtisan: true,
+    milestones: buildMilestones("plumbing", 180000),
+    lastUpdated: "2026-06-03T15:00:00Z",
+  },
+  {
+    id: "job-c103",
+    title: "Bathroom Renovation",
+    artisanName: "Musa Ibrahim",
+    artisanVerified: true,
+    artisanCategory: "Plumbing",
+    location: "Wuse 2, Abuja",
+    amount: 120000,
+    protectionFee: 6000,
+    status: "proof_submitted",
+    priority: "normal",
+    createdAt: "2026-05-10T08:00:00Z",
+    deadline: "2026-06-01T17:00:00Z",
+    fundedAt: "2026-05-11T11:00:00Z",
+    proofSubmittedAt: "2026-06-03T16:00:00Z",
+    proofNote: "3 photos and a walkthrough video of completed tiling and fixtures.",
+    milestones: buildMilestones("plumbing", 120000),
+    lastUpdated: "2026-06-03T16:00:00Z",
+  },
+  {
+    id: "job-c104",
+    title: "Solar Inverter Plumbing",
+    artisanName: "Musa Ibrahim",
+    artisanVerified: true,
+    artisanCategory: "Plumbing",
+    location: "Lugbe, Abuja",
+    amount: 95000,
+    status: "invitation_pending",
+    priority: "normal",
+    createdAt: "2026-06-04T07:00:00Z",
+    deadline: "2026-06-20T17:00:00Z",
+    invitationExpiresAt: "2026-06-06T23:59:00Z",
+    sentByClient: true,
+    lastUpdated: "2026-06-04T07:00:00Z",
+  },
+  {
+    id: "job-c105",
+    title: "POP Ceiling Repair",
+    artisanName: "James Okafor",
+    artisanVerified: false,
+    artisanCategory: "Carpentry",
+    location: "Garki, Abuja",
+    amount: 65000,
+    status: "disputed",
+    priority: "urgent",
+    createdAt: "2026-04-15T09:00:00Z",
+    deadline: "2026-05-20T17:00:00Z",
+    fundedAt: "2026-04-16T10:00:00Z",
+    disputeReason: "You reported incomplete finishing work. Amana is reviewing evidence.",
+    lastUpdated: "2026-05-28T11:00:00Z",
+  },
+  {
+    id: "job-c106",
+    title: "Water Heater Setup",
+    artisanName: "Musa Ibrahim",
+    artisanVerified: true,
+    artisanCategory: "Plumbing",
+    location: "Maitama, Abuja",
+    amount: 45000,
+    protectionFee: 2250,
+    status: "funds_secured",
+    priority: "urgent",
+    createdAt: "2026-06-01T12:00:00Z",
+    deadline: "2026-06-06T17:00:00Z",
+    fundedAt: "2026-06-02T08:00:00Z",
+    releaseRequestAmount: 22500,
+    milestones: buildMilestones("plumbing", 45000),
+    lastUpdated: "2026-06-04T18:00:00Z",
+  },
+  {
+    id: "job-c107",
+    title: "Borehole Pipe Connection",
+    artisanName: "Musa Ibrahim",
+    artisanVerified: true,
+    artisanCategory: "Plumbing",
+    location: "Kubwa, Abuja",
+    amount: 70000,
+    status: "released",
+    priority: "normal",
+    createdAt: "2026-03-01T10:00:00Z",
+    deadline: "2026-03-20T17:00:00Z",
+    fundedAt: "2026-03-02T09:00:00Z",
+    lastUpdated: "2026-03-22T10:00:00Z",
+  },
+  {
+    id: "job-c108",
+    title: "Garden Tap Installation",
+    artisanName: "Musa Ibrahim",
+    artisanVerified: true,
+    artisanCategory: "Plumbing",
+    location: "Gwarinpa, Abuja",
+    amount: 25000,
+    status: "invitation_expired",
+    priority: "normal",
+    createdAt: "2026-05-25T08:00:00Z",
+    deadline: "2026-06-10T17:00:00Z",
+    invitationExpiresAt: "2026-05-30T23:59:00Z",
+    sentByClient: true,
+    lastUpdated: "2026-05-31T00:00:00Z",
+  },
+];
+
+export const MOCK_CLIENT_JOB_MESSAGES: Record<string, JobChatMessage[]> = {
+  "job-c102": [
+    {
+      id: "msg-c1",
+      jobId: "job-c102",
+      sender: "artisan",
+      text: "Hi Adaeze — I've sent the Office Toilet Refit agreement with 3 milestones. Please review and fund escrow when ready.",
+      createdAt: "2026-06-03T15:05:00Z",
+    },
+    {
+      id: "msg-c2",
+      jobId: "job-c102",
+      sender: "client",
+      text: "Thanks Musa. We're reviewing the milestone amounts now.",
+      createdAt: "2026-06-03T16:20:00Z",
+    },
+  ],
+  "job-c103": [
+    {
+      id: "msg-c3",
+      jobId: "job-c103",
+      sender: "artisan",
+      text: "Proof uploaded for Bathroom Renovation — photos and video are ready for your review.",
+      createdAt: "2026-06-03T16:00:00Z",
+    },
+  ],
+  "job-c106": [
+    {
+      id: "msg-c4",
+      jobId: "job-c106",
+      sender: "artisan",
+      text: "I've requested release of ₦22,500 for completed work on Water Heater Setup. Please review and approve.",
+      createdAt: "2026-06-04T18:00:00Z",
+    },
+  ],
+};
+
+export const MOCK_CLIENT_ESCROW: ClientEscrow = {
+  securedBalance: 250000,
+  pendingFunding: 189000,
+  pendingReleaseApproval: 22500,
+  minFunding: 5000,
+  paymentMethod: {
+    type: "card",
+    label: "Visa",
+    lastFour: "4242",
+  },
+  transactions: [
+    {
+      id: "ctx-1",
+      type: "deposit",
+      amount: 89250,
+      status: "completed",
+      description: "Escrow funded — Kitchen Pipe Installation",
+      date: "2026-05-21T09:00:00Z",
+      jobId: "job-c101",
+    },
+    {
+      id: "ctx-2",
+      type: "deposit",
+      amount: 126000,
+      status: "completed",
+      description: "Escrow funded — Bathroom Renovation",
+      date: "2026-05-11T11:00:00Z",
+      jobId: "job-c103",
+    },
+    {
+      id: "ctx-3",
+      type: "release",
+      amount: 73500,
+      status: "completed",
+      description: "Released to Musa Ibrahim — Borehole Pipe Connection",
+      date: "2026-03-22T10:00:00Z",
+      jobId: "job-c107",
+    },
+    {
+      id: "ctx-4",
+      type: "release",
+      amount: 22500,
+      status: "awaiting_approval",
+      description: "Release request — Water Heater Setup (Musa Ibrahim)",
+      date: "2026-06-04T18:00:00Z",
+      jobId: "job-c106",
+    },
+  ],
+};
+
+export const MOCK_CLIENT_NOTIFICATIONS: ClientNotification[] = [
+  {
+    id: "cnotif-1",
+    type: "warning",
+    title: "Proof ready for review",
+    message: "Musa Ibrahim uploaded proof for Bathroom Renovation. Approve or dispute within 48 hours.",
+    actionLabel: "Review proof",
+    actionType: "approve_proof",
+    actionJobId: "job-c103",
+    createdAt: "2026-06-03T16:05:00Z",
+    read: false,
+  },
+  {
+    id: "cnotif-2",
+    type: "info",
+    title: "Agreement awaiting payment",
+    message: "Office Toilet Refit agreement is ready. Fund escrow to secure the job.",
+    actionLabel: "Review agreement",
+    actionType: "review_agreement",
+    actionJobId: "job-c102",
+    createdAt: "2026-06-03T15:10:00Z",
+    read: false,
+  },
+  {
+    id: "cnotif-3",
+    type: "success",
+    title: "Release request from artisan",
+    message: "Musa Ibrahim requested ₦22,500 release for Water Heater Setup.",
+    actionLabel: "Approve release",
+    actionType: "approve_release",
+    actionJobId: "job-c106",
+    createdAt: "2026-06-04T18:05:00Z",
+    read: false,
+  },
+];
+
+const BASE_RECOMMENDED_ARTISANS: RecommendedArtisanSeed[] = [
+  {
+    id: "art-001",
+    fullName: "Musa Ibrahim",
+    categoryId: "plumbing",
+    categoryLabel: "Plumbing",
+    categoryEmoji: "🔧",
+    areaLabel: "Gwarinpa",
+    bio: "Licensed plumber across Abuja. Residential pipe work, water heaters, and bathroom installations.",
+    rating: 4.8,
+    completedJobs: 12,
+    verified: true,
+    isRecommended: true,
+    avatarUrl: null,
+  },
+  {
+    id: "art-002",
+    fullName: "James Okafor",
+    categoryId: "carpentry",
+    categoryLabel: "Carpentry/Furniture",
+    categoryEmoji: "🪵",
+    areaLabel: "Garki",
+    bio: "Custom wardrobes, kitchen cabinets, and POP ceiling repairs with clean finishing.",
+    rating: 4.5,
+    completedJobs: 8,
+    verified: true,
+    isRecommended: true,
+    avatarUrl: null,
+  },
+  {
+    id: "art-003",
+    fullName: "Emeka Nwosu",
+    categoryId: "electrical",
+    categoryLabel: "Electrical",
+    categoryEmoji: "⚡",
+    areaLabel: "Wuse 2",
+    bio: "House wiring, inverter setups, and fault finding for homes and small offices.",
+    rating: 4.9,
+    completedJobs: 15,
+    verified: true,
+    isRecommended: true,
+    avatarUrl: null,
+  },
+  {
+    id: "art-004",
+    fullName: "Fatima Bello",
+    categoryId: "painting",
+    categoryLabel: "Painting",
+    categoryEmoji: "🎨",
+    areaLabel: "Maitama",
+    bio: "Interior and exterior painting with moisture-resistant finishes for Abuja homes.",
+    rating: 4.6,
+    completedJobs: 9,
+    verified: true,
+    isRecommended: false,
+    avatarUrl: null,
+  },
+  {
+    id: "art-005",
+    fullName: "Chidi Eze",
+    categoryId: "solar",
+    categoryLabel: "Solar/Inverter",
+    categoryEmoji: "☀️",
+    areaLabel: "Lugbe",
+    bio: "Solar panel installs, inverter sizing, and battery maintenance for estates.",
+    rating: 4.7,
+    completedJobs: 11,
+    verified: true,
+    isRecommended: true,
+    avatarUrl: null,
+  },
+  {
+    id: "art-006",
+    fullName: "Amina Yusuf",
+    categoryId: "ac",
+    categoryLabel: "AC/Fridge",
+    categoryEmoji: "❄️",
+    areaLabel: "Central Area",
+    bio: "Split-unit AC installation, servicing, and gas refills for commercial spaces.",
+    rating: 4.4,
+    completedJobs: 7,
+    verified: true,
+    isRecommended: false,
+    avatarUrl: null,
+  },
+  {
+    id: "art-007",
+    fullName: "Tunde Adeyemi",
+    categoryId: "borehole",
+    categoryLabel: "Borehole/Water",
+    categoryEmoji: "🚰",
+    areaLabel: "Kubwa",
+    bio: "Borehole drilling coordination, pump installs, and water treatment hookups.",
+    rating: 4.3,
+    completedJobs: 6,
+    verified: false,
+    isRecommended: false,
+    avatarUrl: null,
+  },
+  {
+    id: "art-008",
+    fullName: "Grace Okon",
+    categoryId: "plumbing",
+    categoryLabel: "Plumbing",
+    categoryEmoji: "🔧",
+    areaLabel: "Gwarinpa",
+    bio: "Bathroom refits, kitchen plumbing, and leak detection with same-week availability.",
+    rating: 4.2,
+    completedJobs: 5,
+    verified: true,
+    isRecommended: true,
+    avatarUrl: null,
+  },
+  {
+    id: "art-009",
+    fullName: "Ibrahim Sule",
+    categoryId: "mechanic",
+    categoryLabel: "Mechanic",
+    categoryEmoji: "🚗",
+    areaLabel: "Nyanya",
+    bio: "Mobile mechanic for diagnostics, brake work, and routine servicing across FCT.",
+    rating: 4.1,
+    completedJobs: 4,
+    verified: false,
+    isRecommended: false,
+    avatarUrl: null,
+  },
+  {
+    id: "art-010",
+    fullName: "Ngozi Eze",
+    categoryId: "electrical",
+    categoryLabel: "Electrical",
+    categoryEmoji: "⚡",
+    areaLabel: "Jabi",
+    bio: "Smart home wiring, CCTV power runs, and generator changeover installs.",
+    rating: 4.8,
+    completedJobs: 10,
+    verified: true,
+    isRecommended: true,
+    avatarUrl: null,
+  },
+];
+
+export const MOCK_RECOMMENDED_ARTISANS: RecommendedArtisan[] =
+  BASE_RECOMMENDED_ARTISANS.map(enrichRecommendedArtisan);
+
+export const MOCK_CLIENT_REVIEWS: ClientReview[] = [
+  {
+    id: "crev-1",
+    artisanName: "Musa Ibrahim",
+    jobTitle: "Borehole Pipe Connection",
+    jobId: "job-c107",
+    rating: 5,
+    comment: "Professional, on time, and clear communication throughout.",
+    createdAt: "2026-03-23T10:00:00Z",
+  },
+];
+
+export function buildClientDashboardStats(jobs: ClientJob[]) {
+  const secured = jobs
+    .filter((j) =>
+      ["funds_secured", "in_progress", "proof_submitted", "disputed"].includes(
+        j.status,
+      ),
+    )
+    .reduce((sum, j) => sum + j.amount, 0);
+
+  const pendingApproval = jobs
+    .filter((j) => j.status === "proof_submitted")
+    .reduce((sum, j) => sum + j.amount, 0);
+
+  const pendingFunding = jobs
+    .filter((j) => j.status === "awaiting_funding")
+    .reduce((sum, j) => sum + j.amount + (j.protectionFee ?? Math.round(j.amount * 0.05)), 0);
+
+  const released = jobs
+    .filter((j) => j.status === "released")
+    .reduce((sum, j) => sum + j.amount, 0);
+
+  const activeCount = jobs.filter((j) =>
+    ["funds_secured", "in_progress", "proof_submitted", "disputed"].includes(
+      j.status,
+    ),
+  ).length;
+
+  const pendingReleaseTotal = jobs.reduce(
+    (sum, j) => sum + (j.releaseRequestAmount ?? 0),
+    0,
+  );
+
+  return {
+    secured,
+    pendingApproval,
+    pendingFunding,
+    released,
+    activeCount,
+    pendingReleaseTotal,
+  };
+}

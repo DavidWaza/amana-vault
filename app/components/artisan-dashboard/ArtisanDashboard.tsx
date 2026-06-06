@@ -40,6 +40,7 @@ export default function ArtisanDashboard() {
   const {
     profile,
     wallet,
+    setWallet,
     jobs,
     setJobs,
     setJobMessages,
@@ -246,6 +247,67 @@ export default function ArtisanDashboard() {
     return jobId;
   };
 
+  const handleRequestRelease = async (amount: number) => {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+
+    const releaseJob =
+      jobs.find((job) => job.status === "proof_submitted") ??
+      jobs.find((job) =>
+        ["in_progress", "funds_secured", "disputed"].includes(job.status),
+      );
+
+    const now = new Date().toISOString();
+    const clientName = releaseJob?.clientName ?? "your client";
+
+    setWallet((prev) => ({
+      ...prev,
+      availableBalance: prev.availableBalance - amount,
+      pendingWithdrawal: prev.pendingWithdrawal + amount,
+      transactions: [
+        {
+          id: `txn-${Date.now()}`,
+          type: "withdrawal",
+          amount,
+          status: "awaiting_approval",
+          description: releaseJob
+            ? `Release request — ${releaseJob.title} (awaiting ${clientName}'s approval)`
+            : "Release request — awaiting client approval",
+          date: now,
+        },
+        ...prev.transactions,
+      ],
+    }));
+
+    setNotifications((prev) => [
+      {
+        id: `notif-${Date.now()}`,
+        type: "info",
+        title: "Release request sent",
+        message: `Your ${formatNaira(amount)} release request was sent to ${clientName}. Funds stay in escrow until they approve.`,
+        actionLabel: releaseJob ? "View job" : undefined,
+        actionHref: releaseJob ? `#${releaseJob.id}` : undefined,
+        createdAt: now,
+        read: false,
+      },
+      ...prev,
+    ]);
+
+    if (releaseJob) {
+      const chatNote: JobChatMessage = {
+        id: `msg-${Date.now()}`,
+        jobId: releaseJob.id,
+        sender: "artisan",
+        text: `I've requested release of ${formatNaira(amount)} for completed work on ${releaseJob.title}. Please review and approve so funds can leave escrow to my bank.`,
+        createdAt: now,
+      };
+
+      setJobMessages((prev) => ({
+        ...prev,
+        [releaseJob.id]: [...(prev[releaseJob.id] ?? []), chatNote],
+      }));
+    }
+  };
+
   const handleSendInvoice = async (invoice: JobInvoice) => {
     await new Promise((resolve) => setTimeout(resolve, 600));
 
@@ -329,7 +391,11 @@ export default function ArtisanDashboard() {
             </div>
           </header>
 
-          <ArtisanWalletSection wallet={wallet} profile={profile} />
+          <ArtisanWalletSection
+            wallet={wallet}
+            profile={profile}
+            onRequestRelease={handleRequestRelease}
+          />
           <ArtisanStatusBanner profile={profile} />
           <ArtisanAlerts
             alerts={unreadAlerts}

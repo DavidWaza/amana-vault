@@ -9,6 +9,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  icons: {
+    icon: [{ url: "/logo-main.png", type: "image/png" }],
+    apple: [{ url: "/logo-main.png", type: "image/png" }],
+  },
   title: "Amana — Payment Protection You Can Trust",
   description:
     "Amana keeps your money safe until the agreed work is completed, approved, or fairly resolved. Nigeria's first payment protection platform for the service economy.",

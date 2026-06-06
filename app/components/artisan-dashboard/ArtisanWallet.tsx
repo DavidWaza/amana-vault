@@ -8,15 +8,16 @@ import {
   LockSimple,
   Info,
   X,
+  UserCircle,
 } from "phosphor-react";
-import type { ArtisanProfile, ArtisanWallet } from "./types";
+import type { ArtisanProfile, ArtisanWallet, WalletTransactionStatus } from "./types";
 import { formatNaira } from "./utils";
 import VaultIcon from "./VaultIcon";
 
 type ArtisanWalletProps = {
   wallet: ArtisanWallet;
   profile: ArtisanProfile;
-  onWithdraw?: (amount: number) => Promise<void> | void;
+  onRequestRelease?: (amount: number) => Promise<void> | void;
 };
 
 function maskAccountNumber(accountNumber: string): string {
@@ -24,36 +25,50 @@ function maskAccountNumber(accountNumber: string): string {
   return `···${accountNumber.slice(-4)}`;
 }
 
+function formatTxStatus(status: WalletTransactionStatus): string {
+  switch (status) {
+    case "awaiting_approval":
+      return "awaiting client approval";
+    case "pending":
+      return "processing to bank";
+    case "completed":
+      return "completed";
+    case "failed":
+      return "failed";
+    default:
+      return status;
+  }
+}
+
 export default function ArtisanWalletSection({
-  wallet: initialWallet,
+  wallet,
   profile,
-  onWithdraw,
+  onRequestRelease,
 }: ArtisanWalletProps) {
-  const [wallet, setWallet] = useState(initialWallet);
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [amount, setAmount] = useState("");
-  const [withdrawing, setWithdrawing] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [withdrawError, setWithdrawError] = useState<string | null>(null);
   const [withdrawSuccess, setWithdrawSuccess] = useState<string | null>(null);
 
   const parsedAmount = Number(amount.replace(/,/g, ""));
   const hasBank = wallet.bankAccount !== null && profile.payoutStatus === "verified";
-  const canWithdraw =
+  const canRequestRelease =
     hasBank &&
     wallet.availableBalance >= wallet.minWithdrawal &&
     wallet.pendingWithdrawal === 0;
 
-  const validateWithdrawal = (value: number): string | null => {
-    if (!hasBank) return "Link a verified bank account before withdrawing.";
+  const validateReleaseRequest = (value: number): string | null => {
+    if (!hasBank) return "Link a verified bank account before requesting a release.";
     if (profile.payoutStatus === "pending") {
       return "Your bank account is still being verified.";
     }
     if (wallet.pendingWithdrawal > 0) {
-      return "You already have a withdrawal in progress.";
+      return "You already have a release request awaiting client approval.";
     }
     if (!value || Number.isNaN(value)) return "Enter a valid amount.";
     if (value < wallet.minWithdrawal) {
-      return `Minimum withdrawal is ${formatNaira(wallet.minWithdrawal)}.`;
+      return `Minimum release request is ${formatNaira(wallet.minWithdrawal)}.`;
     }
     if (value > wallet.availableBalance) {
       return "Amount exceeds your available balance.";
@@ -61,47 +76,30 @@ export default function ArtisanWalletSection({
     return null;
   };
 
-  const handleWithdraw = async () => {
-    const error = validateWithdrawal(parsedAmount);
+  const handleRequestRelease = async () => {
+    const error = validateReleaseRequest(parsedAmount);
     if (error) {
       setWithdrawError(error);
       return;
     }
 
-    setWithdrawing(true);
+    setSubmitting(true);
     setWithdrawError(null);
 
     try {
-      if (onWithdraw) {
-        await onWithdraw(parsedAmount);
+      if (onRequestRelease) {
+        await onRequestRelease(parsedAmount);
       }
 
-      setWallet((prev) => ({
-        ...prev,
-        availableBalance: prev.availableBalance - parsedAmount,
-        pendingWithdrawal: parsedAmount,
-        transactions: [
-          {
-            id: `txn-${Date.now()}`,
-            type: "withdrawal",
-            amount: parsedAmount,
-            status: "pending",
-            description: `Withdrawal to ${prev.bankAccount?.bankName} ${maskAccountNumber(prev.bankAccount?.accountNumber ?? "")}`,
-            date: new Date().toISOString(),
-          },
-          ...prev.transactions,
-        ],
-      }));
-
       setWithdrawSuccess(
-        `${formatNaira(parsedAmount)} withdrawal initiated. Funds typically arrive within 24 hours.`,
+        `${formatNaira(parsedAmount)} release request sent to your client. Funds stay in escrow until they approve — only then will payment be sent to your bank.`,
       );
       setAmount("");
       setShowWithdraw(false);
     } catch {
-      setWithdrawError("Withdrawal failed. Please try again.");
+      setWithdrawError("Release request failed. Please try again.");
     } finally {
-      setWithdrawing(false);
+      setSubmitting(false);
     }
   };
 
@@ -117,10 +115,10 @@ export default function ArtisanWalletSection({
       </div>
 
       <div className="adash-wallet-balance-card">
-      <h2 className="adash-wallet-title">
-            <VaultIcon size={50} variant="white"/>
-            Secured in Escrow
-          </h2>
+        <h2 className="adash-wallet-title">
+          <VaultIcon size={50} variant="white" />
+          Secured in Escrow
+        </h2>
         <p className="adash-wallet-balance-value">
           {formatNaira(wallet.availableBalance)}
         </p>
@@ -132,16 +130,15 @@ export default function ArtisanWalletSection({
               Incoming
             </span>
             <strong>{formatNaira(wallet.incomingBalance)}</strong>
-            <small>Processing to your bank</small>
+            <small>On secured jobs awaiting release</small>
           </div>
           <div>
             <span className="adash-wallet-breakdown-label">
               <ArrowUp size={14} weight="bold" />
-              Pending withdrawal
+              Pending release
             </span>
             <strong>{formatNaira(wallet.pendingWithdrawal)}</strong>
             <small>Awaiting client approval</small>
-
           </div>
         </div>
 
@@ -154,31 +151,31 @@ export default function ArtisanWalletSection({
               setWithdrawError(null);
               setWithdrawSuccess(null);
             }}
-            disabled={!canWithdraw}
+            disabled={!canRequestRelease}
             title={
               !hasBank
                 ? "Add a verified bank account first"
                 : wallet.availableBalance < wallet.minWithdrawal
-                  ? `Minimum withdrawal is ${formatNaira(wallet.minWithdrawal)}`
+                  ? `Minimum release request is ${formatNaira(wallet.minWithdrawal)}`
                   : undefined
             }
           >
             <VaultIcon size={35} />
-            Request to withdraw
+            Request release
           </button>
         </div>
 
         {!hasBank && (
           <p className="adash-wallet-blocked">
             <Bank size={16} weight="bold" />
-            Add a verified bank account in your profile to withdraw earnings.
+            Add a verified bank account in your profile to request fund releases.
           </p>
         )}
 
         {wallet.availableBalance > 0 && wallet.availableBalance < wallet.minWithdrawal && (
           <p className="adash-wallet-blocked">
             <Info size={16} weight="bold" />
-            Minimum withdrawal is {formatNaira(wallet.minWithdrawal)}.
+            Minimum release request is {formatNaira(wallet.minWithdrawal)}.
           </p>
         )}
       </div>
@@ -243,7 +240,7 @@ export default function ArtisanWalletSection({
                     {formatNaira(tx.amount)}
                   </span>
                   <span className={`adash-wallet-tx-status adash-wallet-tx-status--${tx.status}`}>
-                    {tx.status}
+                    {formatTxStatus(tx.status)}
                   </span>
                 </div>
               </li>
@@ -254,8 +251,9 @@ export default function ArtisanWalletSection({
 
       <p className="adash-wallet-disclaimer">
         <LockSimple size={14} weight="bold" />
-        Withdrawals are sent to your linked bank via our CBN-licensed partner.
-        Amana does not hold your funds directly.
+        Release requests need client approval before funds leave escrow. After
+        approval, payment is sent to your linked bank via our CBN-licensed
+        partner. Amana does not hold your funds directly.
       </p>
 
       {showWithdraw && (
@@ -267,7 +265,7 @@ export default function ArtisanWalletSection({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="adash-modal-header">
-              <h3 id="withdraw-title">Withdraw funds</h3>
+              <h3 id="withdraw-title">Request fund release</h3>
               <button
                 type="button"
                 className="adash-modal-close"
@@ -279,12 +277,20 @@ export default function ArtisanWalletSection({
             </div>
 
             <p className="adash-modal-subtext">
-              Available: <strong>{formatNaira(wallet.availableBalance)}</strong>
+              Available in escrow: <strong>{formatNaira(wallet.availableBalance)}</strong>
             </p>
+
+            <div className="adash-wallet-release-notice">
+              <UserCircle size={18} weight="bold" />
+              <p>
+                Your client must approve this release before any money is sent to
+                your bank. Funds remain secured in escrow until then.
+              </p>
+            </div>
 
             <div className="adash-field">
               <label className="adash-label" htmlFor="withdraw-amount">
-                Amount (NGN)
+                Amount to release (NGN)
               </label>
               <input
                 id="withdraw-amount"
@@ -304,13 +310,14 @@ export default function ArtisanWalletSection({
                 className="adash-link-btn"
                 onClick={() => setAmount(String(wallet.availableBalance))}
               >
-                Withdraw all
+                Request full balance
               </button>
             </div>
 
             {wallet.bankAccount && (
               <p className="adash-modal-bank">
-                Sending to {wallet.bankAccount.bankName}{" "}
+                After client approval, funds will be sent to{" "}
+                {wallet.bankAccount.bankName}{" "}
                 {maskAccountNumber(wallet.bankAccount.accountNumber)}
               </p>
             )}
@@ -332,10 +339,10 @@ export default function ArtisanWalletSection({
               <button
                 type="button"
                 className="adash-btn adash-btn--primary"
-                onClick={handleWithdraw}
-                disabled={withdrawing}
+                onClick={handleRequestRelease}
+                disabled={submitting}
               >
-                {withdrawing ? "Processing..." : "Confirm Withdrawal"}
+                {submitting ? "Sending request..." : "Send release request"}
               </button>
             </div>
           </div>
