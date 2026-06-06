@@ -11,11 +11,15 @@
   --bg2: #f0f7f2;
   --gold: #f4a300;
   --gold-soft: #fff4da;
-  --artisan: #0f5c5a;
-  --artisan2: #0d9488;
-  --artisan3: #14b8a6;
-  --artisan-soft: #f0fdfa;
-  --artisan-line: #ccfbf1;
+  --green-rgb: 0, 61, 28;
+  --green2-rgb: 0, 107, 50;
+  --green3-rgb: 0, 138, 68;
+  /* Dashboard tokens — same palette as landing */
+  --artisan: var(--green);
+  --artisan2: var(--green2);
+  --artisan3: var(--green3);
+  --artisan-soft: var(--soft);
+  --artisan-line: var(--line);
   --vault-dark: #071410;
   --vault-panel: #0c1a14;
   --vault-border: rgba(0, 107, 50, 0.22);
@@ -397,7 +401,7 @@ section {
   position: relative;
   border-radius: 30px;
   overflow: hidden;
-  background: linear-gradient(180deg, #f8fffe, var(--artisan-soft) 35%, var(--bg));
+  background: linear-gradient(180deg, var(--bg), var(--artisan-soft) 35%, var(--bg2));
   min-height: 560px;
   max-height: 600px;
   overflow-y: auto;
@@ -481,7 +485,7 @@ section {
   border-radius: 16px;
   background: linear-gradient(135deg, var(--artisan), var(--artisan2));
   color: #fff;
-  box-shadow: 0 12px 28px rgba(13, 148, 136, 0.28);
+  box-shadow: 0 12px 28px rgba(var(--green2-rgb), 0.28);
 }
 
 .hero-phone-wallet-title {
@@ -645,12 +649,12 @@ section {
 }
 
 .hero-phone-job-badge--secure {
-  background: rgba(13, 148, 136, 0.12);
+  background: rgba(var(--green2-rgb), 0.12);
   color: var(--artisan2);
 }
 
 .hero-phone-job-badge--progress {
-  background: rgba(15, 92, 90, 0.12);
+  background: rgba(var(--green-rgb), 0.12);
   color: var(--artisan);
 }
 
@@ -1317,14 +1321,14 @@ section {
 
 .auth-page--artisan {
   background:
-    radial-gradient(circle at top, rgba(13, 148, 136, 0.1), transparent 42%),
-    linear-gradient(180deg, #f8fffe, var(--artisan-soft)),
+    radial-gradient(circle at top, rgba(var(--green2-rgb), 0.1), transparent 42%),
+    linear-gradient(180deg, var(--bg), var(--artisan-soft)),
     repeating-linear-gradient(
       -45deg,
       transparent,
       transparent 24px,
-      rgba(13, 148, 136, 0.03) 24px,
-      rgba(13, 148, 136, 0.03) 25px
+      rgba(var(--green2-rgb), 0.03) 24px,
+      rgba(var(--green2-rgb), 0.03) 25px
     );
 }
 
@@ -1344,7 +1348,7 @@ section {
 .auth-page--artisan .auth-select:focus,
 .auth-page--artisan .auth-otp-input:focus {
   border-color: var(--artisan2);
-  box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.14);
+  box-shadow: 0 0 0 4px rgba(var(--green2-rgb), 0.14);
 }
 
 .auth-page--artisan .auth-submit {
@@ -1352,7 +1356,7 @@ section {
 }
 
 .auth-page--artisan .auth-submit:hover {
-  box-shadow: 0 12px 28px rgba(15, 92, 90, 0.28);
+  box-shadow: 0 12px 28px rgba(var(--green-rgb), 0.28);
 }
 
 .auth-page--artisan .auth-switch {
@@ -2782,7 +2786,7 @@ section {
 
 .adash-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #f8fffe, var(--artisan-soft) 40%, var(--bg));
+  background: linear-gradient(180deg, var(--bg), var(--artisan-soft) 40%, var(--bg2));
   color: var(--text);
 }
 
@@ -2979,7 +2983,7 @@ section {
 }
 
 .adash-chat-inbox-item--unread {
-  background: rgba(13, 148, 136, 0.06);
+  background: rgba(var(--green2-rgb), 0.06);
 }
 
 .adash-chat-inbox-avatar {
@@ -3242,7 +3246,7 @@ section {
 
 .adash-banner--success {
   background: var(--artisan-soft);
-  border-color: rgba(13, 148, 136, 0.25);
+  border-color: rgba(var(--green2-rgb), 0.25);
 }
 
 .adash-banner--warning {
@@ -3707,7 +3711,6 @@ section {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
   padding: 0.7rem 1.15rem;
   border-radius: 999px;
   border: none;
@@ -3771,7 +3774,7 @@ section {
   font-weight: 800;
   cursor: pointer;
   box-shadow:
-    0 12px 32px rgba(13, 148, 136, 0.35),
+    0 12px 32px rgba(var(--green2-rgb), 0.35),
     0 4px 12px rgba(0, 0, 0, 0.12);
   transition:
     transform var(--transition),
@@ -3781,7 +3784,7 @@ section {
 .adash-fab:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 16px 40px rgba(13, 148, 136, 0.42),
+    0 16px 40px rgba(var(--green2-rgb), 0.42),
     0 6px 16px rgba(0, 0, 0, 0.14);
 }
 
@@ -4234,7 +4237,7 @@ section {
 /* Amana Pro page */
 
 .adash-pro-page {
-  background: linear-gradient(180deg, #f8fffe, var(--artisan-soft) 28%, var(--bg));
+  background: linear-gradient(180deg, var(--bg), var(--artisan-soft) 28%, var(--bg2));
 }
 
 .apro-hero {
@@ -4490,7 +4493,7 @@ section {
   gap: 1rem;
   padding: 1.25rem 1.35rem;
   border-radius: 22px;
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.08), rgba(254, 243, 199, 0.55));
+  background: linear-gradient(135deg, rgba(var(--green2-rgb), 0.08), rgba(254, 243, 199, 0.55));
   border: 1px solid var(--artisan-line);
 }
 
@@ -5169,7 +5172,7 @@ section {
 .adash-agreement-client--selected {
   border-color: var(--artisan);
   background: var(--artisan-soft);
-  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+  box-shadow: 0 0 0 3px rgba(var(--green2-rgb), 0.12);
 }
 
 .adash-agreement-client-avatar {
@@ -5583,7 +5586,7 @@ section {
 .adash-agreement-check--on {
   border-color: var(--artisan);
   background: var(--artisan-soft);
-  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.1);
+  box-shadow: 0 0 0 2px rgba(var(--green2-rgb), 0.1);
 }
 
 .adash-agreement-form--sections {
@@ -5988,7 +5991,7 @@ section {
 
 .adash-input:focus {
   border-color: var(--artisan2);
-  box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.12);
+  box-shadow: 0 0 0 4px rgba(var(--green2-rgb), 0.12);
 }
 
 .adash-input--error {
@@ -6463,7 +6466,7 @@ section {
 
 .adash-select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230d9488' d='M1.4 1.4 6 6l4.6-4.6L12 3.4 6 9.4 0 3.4z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23006b32' d='M1.4 1.4 6 6l4.6-4.6L12 3.4 6 9.4 0 3.4z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
   padding-right: 2.5rem;

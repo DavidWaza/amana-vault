@@ -19,7 +19,7 @@ export function downloadInvoicePdf(
     y += lines.length * (size * 0.42) + 3;
   };
 
-  doc.setFillColor(13, 148, 136);
+  doc.setFillColor(0, 107, 50);
   doc.rect(0, 0, 210, 28, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
