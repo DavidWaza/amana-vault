@@ -3606,6 +3606,12 @@ section {
   color: var(--gold);
   font-weight: 700;
   font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.75rem;
 }
 
 .adash-job-badge {
