@@ -12,6 +12,7 @@ type ClientJobsPanelProps = {
   onPrimaryAction?: (job: ClientJob, action: ClientJobPrimaryAction) => void;
   onMessageArtisan?: (job: ClientJob) => void;
   onCancelInvite?: (jobId: string) => void;
+  onRaiseDispute?: (job: ClientJob) => void;
 };
 
 const TABS: { id: ClientDashboardTab; label: string }[] = [
@@ -26,6 +27,7 @@ export default function ClientJobsPanel({
   onPrimaryAction,
   onMessageArtisan,
   onCancelInvite,
+  onRaiseDispute,
 }: ClientJobsPanelProps) {
   const [tab, setTab] = useState<ClientDashboardTab>("pending");
 
@@ -90,6 +92,7 @@ export default function ClientJobsPanel({
               onPrimaryAction={onPrimaryAction}
               onMessageArtisan={onMessageArtisan}
               onCancelInvite={onCancelInvite}
+              onRaiseDispute={onRaiseDispute}
             />
           ))}
         </div>

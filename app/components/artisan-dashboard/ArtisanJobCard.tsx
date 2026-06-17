@@ -9,6 +9,7 @@ import {
   User,
   ChatsCircle,
   Receipt,
+  Scales,
 } from "phosphor-react";
 import type { ArtisanJob, JobPrimaryAction } from "./types";
 import {
@@ -26,7 +27,10 @@ type ArtisanJobCardProps = {
   onDeclineInvite?: (jobId: string) => void;
   onMessageClient?: (job: ArtisanJob) => void;
   onCreateInvoice?: (job: ArtisanJob) => void;
+  onRaiseDispute?: (job: ArtisanJob) => void;
 };
+
+const DISPUTABLE_STATUSES = ["funds_secured", "in_progress", "proof_submitted"];
 
 export default function ArtisanJobCard({
   job,
@@ -35,12 +39,15 @@ export default function ArtisanJobCard({
   onDeclineInvite,
   onMessageClient,
   onCreateInvoice,
+  onRaiseDispute,
 }: ArtisanJobCardProps) {
   const status = JOB_STATUS_META[job.status];
   const action = getJobPrimaryAction(job);
   const isOverdue =
     job.status === "in_progress" &&
     new Date(job.deadline) < new Date();
+  const canRaiseDispute =
+    onRaiseDispute != null && DISPUTABLE_STATUSES.includes(job.status);
 
   const handlePrimaryClick = () => {
     if (!action?.action || action.disabled || !onPrimaryAction) return;
@@ -155,6 +162,16 @@ export default function ArtisanJobCard({
             >
               <ChatsCircle size={16} weight="bold" />
               Message
+            </button>
+          )}
+          {canRaiseDispute && (
+            <button
+              type="button"
+              className="adash-btn adash-btn--ghost"
+              onClick={() => onRaiseDispute?.(job)}
+            >
+              <Scales size={16} weight="bold" />
+              Dispute
             </button>
           )}
           {job.status === "invitation_pending" && (

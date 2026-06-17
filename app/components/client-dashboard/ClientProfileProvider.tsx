@@ -11,7 +11,7 @@ import {
 import {
   MOCK_CLIENT,
   MOCK_CLIENT_ESCROW,
-  MOCK_CLIENT_JOBS,
+  MOCK_CLIENT_PROJECTS,
   MOCK_CLIENT_JOB_MESSAGES,
   MOCK_CLIENT_NOTIFICATIONS,
 } from "./mock-data";
@@ -65,7 +65,7 @@ const ClientProfileContext = createContext<ClientProfileContextValue | null>(nul
 export function ClientProfileProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<ClientProfile>(MOCK_CLIENT);
   const [escrow, setEscrow] = useState<ClientEscrow>(MOCK_CLIENT_ESCROW);
-  const [jobs, setJobs] = useState<ClientJob[]>(MOCK_CLIENT_JOBS);
+  const [jobs, setJobs] = useState<ClientJob[]>(MOCK_CLIENT_PROJECTS);
   const [jobMessages, setJobMessages] =
     useState<Record<string, JobChatMessage[]>>(MOCK_CLIENT_JOB_MESSAGES);
   const [chatReadAt, setChatReadAt] = useState<Record<string, string>>({});
@@ -191,7 +191,7 @@ export function ClientProfileProvider({ children }: { children: ReactNode }) {
         handlePaymentMethodChange,
       }}
     >
-      <div className="cdash-page">
+      <div className="cdash-page cp-portal">
         {children}
         <ClientProfileSettings
         profile={profile}

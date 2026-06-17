@@ -25,7 +25,7 @@ export default function JoinAmanaHero({
         <h1>
           Why <br /> trust a handshake,
           <br />
-          When you can trust <span>VAULT</span> .
+          when you can trust <span>VAULT</span>.
         </h1>
         <p>The verified marketplace for Nigeria&apos;s most reliable artisans.</p>
 

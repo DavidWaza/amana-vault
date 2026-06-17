@@ -1,31 +1,37 @@
-import type { ClientJob, ClientJobPrimaryAction, JobStatus } from "./types";
+import type { ClientProject, ClientJobPrimaryAction, JobStatus } from "./types";
+import { LIFECYCLE_STAGE_LABELS } from "./mock-data";
 
 export { formatNaira, formatRelativeDate } from "../artisan-dashboard/utils";
 
-export function isClientActiveJob(job: ClientJob): boolean {
-  return ["funds_secured", "in_progress", "disputed"].includes(job.status);
+export function isClientActiveJob(project: ClientProject): boolean {
+  return ["funds_secured", "in_progress", "disputed"].includes(project.status);
 }
 
-export function isClientPendingTab(job: ClientJob): boolean {
+export function isClientPendingTab(project: ClientProject): boolean {
   return (
-    job.status === "awaiting_funding" ||
-    job.status === "invitation_pending" ||
-    job.status === "proof_submitted" ||
-    (job.releaseRequestAmount ?? 0) > 0
+    project.status === "awaiting_funding" ||
+    project.status === "invitation_pending" ||
+    project.status === "proof_submitted" ||
+    (project.releaseRequestAmount ?? 0) > 0 ||
+    project.lifecycleStage === "contractor_bidding" ||
+    project.lifecycleStage === "architect_selection"
   );
 }
 
-export function isClientHistoryJob(job: ClientJob): boolean {
+export function isClientHistoryJob(project: ClientProject): boolean {
   return ["released", "cancelled", "declined", "invitation_expired"].includes(
-    job.status,
+    project.status,
   );
 }
 
-export function canMessageArtisan(job: ClientJob): boolean {
+export function canMessageProfessional(project: ClientProject): boolean {
   return !["declined", "cancelled", "invitation_expired", "released"].includes(
-    job.status,
+    project.status,
   );
 }
+
+/** @deprecated use canMessageProfessional */
+export const canMessageArtisan = canMessageProfessional;
 
 export const CLIENT_JOB_STATUS_META: Record<
   JobStatus,
@@ -36,98 +42,140 @@ export const CLIENT_JOB_STATUS_META: Record<
   }
 > = {
   invitation_pending: {
-    label: "Invite Sent",
+    label: "Setup In Progress",
     tone: "warning",
-    clientHint: "Waiting for the artisan to accept your invite.",
+    clientHint: "Complete architect selection to move forward.",
   },
   invitation_expired: {
-    label: "Invite Expired",
+    label: "Expired",
     tone: "muted",
-    clientHint: "The artisan did not respond in time. Send a new invite.",
+    clientHint: "Restart the project setup flow.",
   },
   awaiting_funding: {
-    label: "Awaiting Your Payment",
+    label: "Vault Activation Needed",
     tone: "warning",
-    clientHint: "Review the agreement and fund escrow to secure this job.",
+    clientHint: "Fund the project vault to secure construction payments.",
   },
   funds_secured: {
-    label: "Funds Secured",
+    label: "Vault Protected",
     tone: "secure",
-    clientHint: "Your payment is held safely until work is approved.",
+    clientHint: "Your project funds are held safely in the vault.",
   },
   in_progress: {
-    label: "Work In Progress",
+    label: "Construction Active",
     tone: "progress",
-    clientHint: "The artisan is working on your job.",
+    clientHint: "Your contractor is executing the build.",
   },
   proof_submitted: {
-    label: "Proof To Review",
+    label: "Inspection Review",
     tone: "warning",
-    clientHint: "Review proof of work and approve or open a dispute.",
+    clientHint: "Review inspector report and approve milestone release.",
   },
   released: {
     label: "Completed",
     tone: "success",
-    clientHint: "Funds were released to the artisan.",
+    clientHint: "Project milestone funds were released.",
   },
   disputed: {
-    label: "In Dispute",
+    label: "Concern Raised",
     tone: "danger",
-    clientHint: "Amana is reviewing evidence from both sides.",
+    clientHint: "Amana is reviewing evidence from all parties.",
   },
   cancelled: { label: "Cancelled", tone: "muted" },
-  declined: { label: "Declined", tone: "muted", clientHint: "The artisan declined your invite." },
+  declined: { label: "Declined", tone: "muted" },
 };
 
-export function getClientJobPrimaryAction(job: ClientJob): {
+export function getProjectStageLabel(project: ClientProject): string {
+  if (project.lifecycleStage === "design" && project.designStage) {
+    return LIFECYCLE_STAGE_LABELS.design;
+  }
+  return LIFECYCLE_STAGE_LABELS[project.lifecycleStage] ?? project.lifecycleStage;
+}
+
+export function getResponsibleParty(project: ClientProject): string {
+  switch (project.lifecycleStage) {
+    case "vision":
+    case "architect_selection":
+      return project.architectName ?? "Select an architect";
+    case "design":
+      return project.architectName ?? "Architect";
+    case "contractor_bidding":
+      return "Awaiting contractor selection";
+    case "vault_setup":
+      return project.contractorName ?? "Contractor";
+    case "construction":
+      return project.contractorName ?? project.artisanName;
+    default:
+      return project.contractorName ?? project.architectName ?? project.artisanName;
+  }
+}
+
+export function getClientJobPrimaryAction(project: ClientProject): {
   label: string;
   variant: "primary" | "secondary" | "danger" | "ghost";
   disabled?: boolean;
   hint?: string;
   action?: ClientJobPrimaryAction;
 } | null {
-  if ((job.releaseRequestAmount ?? 0) > 0 && job.status !== "disputed") {
+  if ((project.releaseRequestAmount ?? 0) > 0 && project.status !== "disputed") {
     return {
       label: "Approve Release",
       variant: "primary",
       action: "approve_release",
-      hint: `${job.artisanName} requested release of secured funds.`,
+      hint: "Inspector verified this milestone. Review evidence before releasing funds.",
     };
   }
 
-  switch (job.status) {
+  if (project.lifecycleStage === "contractor_bidding") {
+    return {
+      label: "Compare Proposals",
+      variant: "primary",
+      action: "review_proposals",
+      hint: "Review contractor bids and select your builder.",
+    };
+  }
+
+  if (project.lifecycleStage === "architect_selection") {
+    return {
+      label: "Browse Architects",
+      variant: "primary",
+      action: "view_architect_proposal",
+      hint: "Find a verified architect for your project.",
+    };
+  }
+
+  switch (project.status) {
     case "invitation_pending":
       return {
-        label: "Waiting for Artisan",
+        label: "Setup In Progress",
         variant: "ghost",
         disabled: true,
         hint: CLIENT_JOB_STATUS_META.invitation_pending.clientHint,
-        action: "cancel_invite",
       };
     case "invitation_expired":
-      return { label: "Resend Invite", variant: "primary", action: "resend_invite" };
+      return { label: "Restart Project", variant: "primary", action: "resend_invite" };
     case "awaiting_funding":
-      return job.sentByArtisan
-        ? { label: "Review & Fund", variant: "primary", action: "review_agreement" }
-        : { label: "Fund Escrow", variant: "primary", action: "fund_escrow" };
+      return project.sentByArtisan
+        ? { label: "Activate Vault", variant: "primary", action: "review_agreement" }
+        : { label: "Fund Vault", variant: "primary", action: "fund_escrow" };
     case "funds_secured":
       return {
-        label: "Work Not Started",
+        label: "Vault Active",
         variant: "ghost",
         disabled: true,
-        hint: "Waiting for the artisan to begin work.",
+        hint: "Funds are protected. Work proceeds per milestone plan.",
       };
     case "in_progress":
       return {
-        label: "Awaiting Proof",
-        variant: "ghost",
-        disabled: true,
-        hint: "The artisan will upload proof when work is done.",
+        label: "View Milestones",
+        variant: "secondary",
+        action: "review_milestone",
+        hint: "Track construction milestones and inspections.",
       };
     case "proof_submitted":
-      return { label: "Review Proof", variant: "primary", action: "approve_proof" };
+      return { label: "Review Inspection", variant: "primary", action: "approve_proof" };
     case "disputed":
-      return { label: "View Dispute", variant: "danger", action: "view_dispute" };
+      return { label: "View Concern", variant: "danger", action: "view_dispute" };
     case "released":
       return { label: "View Receipt", variant: "secondary", action: "view_receipt" };
     default:
@@ -140,6 +188,13 @@ export function calculateClientTotalDue(amount: number, protectionFee?: number):
   return amount + fee;
 }
 
-export function getJobsAwaitingFunding(jobs: ClientJob[]): ClientJob[] {
-  return jobs.filter((job) => job.status === "awaiting_funding");
+export function getJobsAwaitingFunding(projects: ClientProject[]): ClientProject[] {
+  return projects.filter((p) => p.status === "awaiting_funding");
+}
+
+export function formatBuildingType(type: string): string {
+  return type
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }

@@ -25,7 +25,7 @@ export default function ClientStatusBanner({ profile }: ClientStatusBannerProps)
       icon: <UserCircle size={22} weight="bold" />,
       title: "Verify your identity",
       message:
-        "Complete a quick ID check so artisans know they are working with a trusted client.",
+        "Complete a quick ID check so your project team knows they are working with a trusted client.",
       action: { label: "Complete verification", tab: "profile" },
     });
   }
@@ -56,7 +56,7 @@ export default function ClientStatusBanner({ profile }: ClientStatusBannerProps)
       tone: "warning",
       icon: <UserCircle size={22} weight="bold" />,
       title: "Complete your profile",
-      message: "Add your details so artisans can confirm who they are working with.",
+      message: "Add your details so architects and contractors can reach you across time zones.",
       action: { label: "Finish profile", tab: "profile" },
     });
   }
@@ -66,7 +66,7 @@ export default function ClientStatusBanner({ profile }: ClientStatusBannerProps)
       tone: "warning",
       icon: <CreditCard size={22} weight="bold" />,
       title: "Add a payment method",
-      message: "Link a card or bank transfer method before you can fund escrow.",
+      message: "Link a card or bank transfer method before you can activate project vaults.",
       action: { label: "Add payment method", tab: "payment" },
     });
   }
@@ -84,8 +84,9 @@ export default function ClientStatusBanner({ profile }: ClientStatusBannerProps)
     banners.push({
       tone: "success",
       icon: <CheckCircle size={22} weight="bold" />,
-      title: "You're ready to protect payments",
-      message: "Fund escrow on any agreement to keep your money safe until work is approved.",
+      title: "You're ready to build with confidence",
+      message:
+        "Activate project vaults to keep diaspora funds protected until each milestone is inspected and approved.",
     });
   }
 

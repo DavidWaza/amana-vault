@@ -9,6 +9,7 @@ import {
   User,
   ChatsCircle,
   Wrench,
+  Scales,
 } from "phosphor-react";
 import type { ClientJob, ClientJobPrimaryAction } from "./types";
 import {
@@ -26,7 +27,10 @@ type ClientJobCardProps = {
   onPrimaryAction?: (job: ClientJob, action: ClientJobPrimaryAction) => void;
   onMessageArtisan?: (job: ClientJob) => void;
   onCancelInvite?: (jobId: string) => void;
+  onRaiseDispute?: (job: ClientJob) => void;
 };
+
+const DISPUTABLE_STATUSES = ["funds_secured", "in_progress", "proof_submitted"];
 
 export default function ClientJobCard({
   job,
@@ -34,10 +38,13 @@ export default function ClientJobCard({
   onPrimaryAction,
   onMessageArtisan,
   onCancelInvite,
+  onRaiseDispute,
 }: ClientJobCardProps) {
   const status = CLIENT_JOB_STATUS_META[job.status];
   const action = getClientJobPrimaryAction(job);
   const totalDue = calculateClientTotalDue(job.amount, job.protectionFee);
+  const canRaiseDispute =
+    onRaiseDispute != null && DISPUTABLE_STATUSES.includes(job.status);
 
   const handlePrimaryClick = () => {
     if (!action?.action || action.disabled || !onPrimaryAction) return;
@@ -156,6 +163,16 @@ export default function ClientJobCard({
             >
               <ChatsCircle size={16} weight="bold" />
               Message
+            </button>
+          )}
+          {canRaiseDispute && (
+            <button
+              type="button"
+              className="adash-btn adash-btn--ghost"
+              onClick={() => onRaiseDispute?.(job)}
+            >
+              <Scales size={16} weight="bold" />
+              Dispute
             </button>
           )}
           {job.status === "invitation_pending" && (

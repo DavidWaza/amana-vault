@@ -107,7 +107,50 @@ export const MOCK_JOBS: ArtisanJob[] = [
     createdAt: "2026-04-15T09:00:00Z",
     deadline: "2026-05-20T17:00:00Z",
     fundedAt: "2026-04-16T10:00:00Z",
-    disputeReason: "Client claims incomplete finishing work.",
+    disputeReason:
+      "James opened a dispute over finishing work. Respond, or accept an outcome to settle.",
+    dispute: {
+      id: "dsp-104",
+      category: "incomplete_work",
+      raisedBy: "client",
+      reason:
+        "The ceiling edges and two corners were left unfinished, and there is cracking near the light fitting. This does not match what we agreed.",
+      desiredOutcome: "split",
+      stage: "responded",
+      amount: 65000,
+      evidence: [
+        {
+          id: "dsp-104-ev-0",
+          party: "client",
+          label: "unfinished-corner.jpg",
+          kind: "photo",
+          uploadedAt: "2026-05-27T10:00:00Z",
+        },
+        {
+          id: "dsp-104-ev-1",
+          party: "artisan",
+          label: "completed-ceiling-handover.jpg",
+          kind: "photo",
+          uploadedAt: "2026-05-28T08:30:00Z",
+        },
+      ],
+      statements: [
+        {
+          id: "dsp-104-st-0",
+          party: "client",
+          text: "The ceiling edges and two corners were left unfinished, and there is cracking near the light fitting.",
+          createdAt: "2026-05-27T10:00:00Z",
+        },
+        {
+          id: "dsp-104-st-1",
+          party: "artisan",
+          text: "The two corners were added on site without a price change, and the crack is in the existing wall. I finished everything in the signed scope — open to a fair split to close this out.",
+          createdAt: "2026-05-28T08:30:00Z",
+        },
+      ],
+      createdAt: "2026-05-27T10:00:00Z",
+      updatedAt: "2026-05-28T08:30:00Z",
+    },
     lastUpdated: "2026-05-28T11:00:00Z",
   },
   {

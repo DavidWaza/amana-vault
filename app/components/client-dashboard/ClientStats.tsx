@@ -1,51 +1,49 @@
-import { ShieldCheck, Hourglass, Wallet, Briefcase } from "phosphor-react";
+import { Buildings, Wallet, Bell } from "phosphor-react";
 import { formatNaira } from "./utils";
 import VaultIcon from "../artisan-dashboard/VaultIcon";
 
 type ClientStatsProps = {
-  secured: number;
-  pendingApproval: number;
-  pendingFunding: number;
-  activeCount: number;
-  pendingReleaseTotal: number;
+  activeProjectCount: number;
+  vaultProtected: number;
+  fundsReleased: number;
+  pendingActions: number;
 };
 
 export default function ClientStats({
-  secured,
-  pendingApproval,
-  pendingFunding,
-  activeCount,
-  pendingReleaseTotal,
+  activeProjectCount,
+  vaultProtected,
+  fundsReleased,
+  pendingActions,
 }: ClientStatsProps) {
   const stats = [
     {
-      label: "Secured in Escrow",
-      value: formatNaira(secured),
-      hint: "Protected across active jobs",
+      label: "Active Projects",
+      value: String(activeProjectCount),
+      hint: "Builds in progress across Nigeria",
+      icon: <Buildings size={24} weight="bold" />,
+    },
+    {
+      label: "Total Vault Protected",
+      value: formatNaira(vaultProtected),
+      hint: "Funds secured in milestone vaults",
       icon: <VaultIcon size={28} />,
     },
     {
-      label: "Awaiting Your Action",
-      value: formatNaira(pendingApproval + pendingFunding + pendingReleaseTotal),
-      hint: `${activeCount} active job${activeCount === 1 ? "" : "s"}`,
-      icon: <Hourglass size={24} weight="bold" />,
-    },
-    {
-      label: "Pending Funding",
-      value: formatNaira(pendingFunding),
-      hint: "Agreements awaiting payment",
+      label: "Funds Released",
+      value: formatNaira(fundsReleased),
+      hint: "Approved milestone payments",
       icon: <Wallet size={24} weight="bold" />,
     },
     {
-      label: "Active Jobs",
-      value: String(activeCount),
-      hint: pendingReleaseTotal > 0 ? "Release approval needed" : "In progress",
-      icon: <Briefcase size={24} weight="bold" />,
+      label: "Pending Actions",
+      value: String(pendingActions),
+      hint: pendingActions > 0 ? "Requires your attention" : "You're all caught up",
+      icon: <Bell size={24} weight="bold" />,
     },
   ];
 
   return (
-    <section className="adash-stats" aria-label="Protection overview">
+    <section className="adash-stats" aria-label="Project overview">
       {stats.map((stat) => (
         <article key={stat.label} className="adash-stat-card">
           <span className="adash-stat-icon">{stat.icon}</span>

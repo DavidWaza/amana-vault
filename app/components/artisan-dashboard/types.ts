@@ -1,3 +1,7 @@
+import type { Dispute } from "../disputes/types";
+
+export type { Dispute };
+
 export type VerificationStatus =
   | "unverified"
   | "pending"
@@ -181,6 +185,9 @@ export type ArtisanJob = {
   milestones?: AgreementMilestone[];
   sentByArtisan?: boolean;
   invoice?: JobInvoice;
+  // Full dispute record once a dispute is opened. `disputeReason` is the
+  // card's one-line summary.
+  dispute?: Dispute;
   lastUpdated: string;
 };
 

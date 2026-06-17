@@ -16,6 +16,9 @@ import ArtisanJobModals from "./ArtisanJobModals";
 import CreateAgreementModal from "./CreateAgreementModal";
 import CreateInvoiceModal from "./CreateInvoiceModal";
 import ArtisanProPromo from "./ArtisanProPromo";
+import RaiseDisputeModal from "../disputes/RaiseDisputeModal";
+import DisputeWorkspaceModal from "../disputes/DisputeWorkspaceModal";
+import { buildDispute } from "../disputes/constants";
 import { buildAgreementSummary } from "./agreement-summary";
 import { formatNaira } from "./utils";
 import { useArtisanProfile } from "./ArtisanProfileProvider";
@@ -33,6 +36,13 @@ import type {
   JobInvoice,
   JobPrimaryAction,
 } from "./types";
+import type {
+  Dispute,
+  DisputeDecider,
+  DisputeOutcome,
+  DisputeStatement,
+  RaiseDisputeInput,
+} from "../disputes/types";
 
 export default function ArtisanDashboard() {
   const router = useRouter();
@@ -60,6 +70,10 @@ export default function ArtisanDashboard() {
     jobId: string;
     mode: "dispute" | "receipt";
   } | null>(null);
+  const [raiseDisputeJobId, setRaiseDisputeJobId] = useState<string | null>(null);
+  const [disputeWorkspaceJobId, setDisputeWorkspaceJobId] = useState<
+    string | null
+  >(null);
 
   const stats = useMemo(() => buildDashboardStats(jobs), [jobs]);
 
@@ -84,7 +98,7 @@ export default function ArtisanDashboard() {
           setInviteJobId(jobId);
           break;
         case "view_dispute":
-          setDetailState({ jobId, mode: "dispute" });
+          setDisputeWorkspaceJobId(jobId);
           break;
         case "view_receipt":
           setDetailState({ jobId, mode: "receipt" });
@@ -365,12 +379,293 @@ export default function ArtisanDashboard() {
       .forEach((item) => dismissNotification(item.id));
   };
 
+  // ---- Dispute resolution ----------------------------------------------
+
+  const patchDispute = (
+    jobId: string,
+    updater: (dispute: Dispute) => Dispute,
+    extra?: Partial<ArtisanJob>,
+  ) => {
+    setJobs((prev) =>
+      prev.map((item) => {
+        if (item.id !== jobId || !item.dispute) return item;
+        return {
+          ...item,
+          dispute: updater(item.dispute),
+          lastUpdated: new Date().toISOString(),
+          ...extra,
+        };
+      }),
+    );
+  };
+
+  const handleRaiseDispute = (jobId: string, input: RaiseDisputeInput) => {
+    const job = jobs.find((item) => item.id === jobId);
+    if (!job) return;
+    const now = new Date().toISOString();
+    const dispute = buildDispute("artisan", input, job.amount, now);
+
+    setJobs((prev) =>
+      prev.map((item) =>
+        item.id === jobId
+          ? {
+              ...item,
+              status: "disputed",
+              disputeReason: `You opened a dispute — waiting for ${job.clientName} to respond.`,
+              dispute,
+              lastUpdated: now,
+            }
+          : item,
+      ),
+    );
+
+    setJobMessages((prev) => ({
+      ...prev,
+      [jobId]: [
+        ...(prev[jobId] ?? []),
+        {
+          id: `msg-${Date.now()}`,
+          jobId,
+          sender: "artisan",
+          text: `I've opened a dispute on ${job.title}. The ${formatNaira(job.amount)} stays in escrow until Amana or we resolve it.`,
+          createdAt: now,
+        },
+      ],
+    }));
+
+    setNotifications((prev) => [
+      {
+        id: `notif-${Date.now()}`,
+        type: "warning",
+        title: "Dispute opened",
+        message: `Your dispute on ${job.title} was sent to ${job.clientName}.`,
+        actionLabel: "View dispute",
+        actionType: "view_dispute",
+        actionJobId: jobId,
+        createdAt: now,
+        read: false,
+      },
+      ...prev,
+    ]);
+
+    setRaiseDisputeJobId(null);
+    setDisputeWorkspaceJobId(jobId);
+
+    // Simulate the client responding so the negotiation can progress.
+    window.setTimeout(() => {
+      const reply: DisputeStatement = {
+        id: `dsp-reply-${Date.now()}`,
+        party: "client",
+        text: "I've seen your dispute and added my response. Let's try to settle on a fair outcome before escalating to Amana.",
+        createdAt: new Date().toISOString(),
+      };
+      patchDispute(jobId, (d) => ({
+        ...d,
+        stage: d.stage === "open" ? "responded" : d.stage,
+        statements: [...d.statements, reply],
+        updatedAt: new Date().toISOString(),
+      }));
+    }, 2200);
+  };
+
+  const handleDisputeResponse = (
+    jobId: string,
+    text: string,
+    evidenceLabels: string[],
+  ) => {
+    const now = new Date().toISOString();
+    patchDispute(jobId, (d) => ({
+      ...d,
+      statements: text
+        ? [
+            ...d.statements,
+            {
+              id: `dsp-st-${Date.now()}`,
+              party: "artisan",
+              text,
+              createdAt: now,
+            },
+          ]
+        : d.statements,
+      evidence: [
+        ...d.evidence,
+        ...evidenceLabels.map((label, i) => ({
+          id: `dsp-ev-${Date.now()}-${i}`,
+          party: "artisan" as const,
+          label,
+          kind: "photo" as const,
+          uploadedAt: now,
+        })),
+      ],
+      updatedAt: now,
+    }));
+  };
+
+  // Apply the agreed/ruled split to the artisan wallet and close out the job.
+  const settleDispute = (
+    jobId: string,
+    outcome: DisputeOutcome,
+    decidedBy: DisputeDecider,
+    note?: string,
+  ) => {
+    const job = jobs.find((item) => item.id === jobId);
+    if (!job || !job.dispute) return;
+    const amount = job.dispute.amount;
+    const now = new Date().toISOString();
+
+    let artisanAmount = 0;
+    let clientAmount = 0;
+    let nextStatus: ArtisanJob["status"] = "disputed";
+
+    switch (outcome) {
+      case "refund_client":
+        clientAmount = amount;
+        nextStatus = "cancelled";
+        break;
+      case "release_artisan":
+        artisanAmount = amount;
+        nextStatus = "released";
+        break;
+      case "split":
+        artisanAmount = Math.round(amount / 2);
+        clientAmount = amount - artisanAmount;
+        nextStatus = "released";
+        break;
+      case "withdrawn":
+        nextStatus = "funds_secured";
+        break;
+    }
+
+    patchDispute(
+      jobId,
+      (d) => ({
+        ...d,
+        stage: "resolved",
+        resolution: {
+          outcome,
+          decidedBy,
+          clientAmount,
+          artisanAmount,
+          note,
+          decidedAt: now,
+        },
+        updatedAt: now,
+      }),
+      {
+        status: nextStatus,
+        disputeReason:
+          outcome === "withdrawn"
+            ? undefined
+            : `Dispute resolved — ${outcome === "refund_client" ? "refunded to client" : outcome === "release_artisan" ? "released to you" : "split"}.`,
+      },
+    );
+
+    if (artisanAmount > 0) {
+      setWallet((prev) => ({
+        ...prev,
+        availableBalance: prev.availableBalance + artisanAmount,
+        incomingBalance: Math.max(0, prev.incomingBalance - amount),
+        transactions: [
+          {
+            id: `txn-${Date.now()}`,
+            type: "credit",
+            amount: artisanAmount,
+            status: "completed",
+            description: `Dispute settlement — ${job.title}`,
+            date: now,
+          },
+          ...prev.transactions,
+        ],
+      }));
+    }
+
+    setNotifications((prev) => [
+      {
+        id: `notif-${Date.now()}`,
+        type: outcome === "refund_client" ? "warning" : "success",
+        title: "Dispute resolved",
+        message:
+          outcome === "withdrawn"
+            ? `The dispute on ${job.title} was withdrawn. The job is active again.`
+            : `${job.title} settled — ${
+                artisanAmount > 0
+                  ? `${formatNaira(artisanAmount)} credited to your wallet`
+                  : "no funds released to you"
+              }.`,
+        createdAt: now,
+        read: false,
+      },
+      ...prev,
+    ]);
+  };
+
+  const handleAcceptDisputeOutcome = (
+    jobId: string,
+    outcome: DisputeOutcome,
+  ) => {
+    settleDispute(jobId, outcome, "artisan");
+  };
+
+  const handleWithdrawDispute = (jobId: string) => {
+    settleDispute(jobId, "withdrawn", "artisan");
+  };
+
+  const handleEscalateDispute = (jobId: string) => {
+    const job = jobs.find((item) => item.id === jobId);
+    if (!job) return;
+    const now = new Date().toISOString();
+    patchDispute(
+      jobId,
+      (d) => ({
+        ...d,
+        stage: "escalated",
+        statements: [
+          ...d.statements,
+          {
+            id: `dsp-esc-${Date.now()}`,
+            party: "amana",
+            text: "This dispute has been escalated to Amana. A reviewer will assess the evidence from both sides and issue a binding decision.",
+            createdAt: now,
+          },
+        ],
+        updatedAt: now,
+      }),
+      {
+        disputeReason: "Escalated to Amana — awaiting an independent decision.",
+      },
+    );
+    setNotifications((prev) => [
+      {
+        id: `notif-${Date.now()}`,
+        type: "warning",
+        title: "Escalated to Amana",
+        message: `${job.title} is now with Amana for review. Funds stay in escrow until a decision is issued.`,
+        createdAt: now,
+        read: false,
+      },
+      ...prev,
+    ]);
+  };
+
   const proofJob = jobs.find((job) => job.id === proofJobId) ?? null;
   const inviteJob = jobs.find((job) => job.id === inviteJobId) ?? null;
   const detailJob = detailState
     ? (jobs.find((job) => job.id === detailState.jobId) ?? null)
     : null;
   const invoiceJob = jobs.find((job) => job.id === invoiceJobId) ?? null;
+  const raiseDisputeJob = jobs.find((job) => job.id === raiseDisputeJobId) ?? null;
+  const disputeWorkspaceJob =
+    jobs.find((job) => job.id === disputeWorkspaceJobId) ?? null;
+  const disputeView =
+    disputeWorkspaceJob && disputeWorkspaceJob.dispute
+      ? {
+          id: disputeWorkspaceJob.id,
+          title: disputeWorkspaceJob.title,
+          amount: disputeWorkspaceJob.amount,
+          counterpartyName: disputeWorkspaceJob.clientName,
+          dispute: disputeWorkspaceJob.dispute,
+        }
+      : null;
 
   const unreadAlerts = notifications.filter((item) => !item.read);
 
@@ -414,6 +709,7 @@ export default function ArtisanDashboard() {
               onDeclineInvite={handleDeclineInvite}
               onMessageClient={(job) => openChat(job.id)}
               onCreateInvoice={(job) => setInvoiceJobId(job.id)}
+              onRaiseDispute={(job) => setRaiseDisputeJobId(job.id)}
             />
             <ArtisanProfileCard />
           </div>
@@ -443,6 +739,38 @@ export default function ArtisanDashboard() {
         onCloseDetail={() => setDetailState(null)}
         onAcceptInvite={handleAcceptInvite}
         onDeclineInvite={handleDeclineInvite}
+      />
+
+      <RaiseDisputeModal
+        key={`raise-${raiseDisputeJob?.id ?? "none"}`}
+        open={raiseDisputeJob !== null}
+        perspective="artisan"
+        job={
+          raiseDisputeJob
+            ? {
+                id: raiseDisputeJob.id,
+                title: raiseDisputeJob.title,
+                amount: raiseDisputeJob.amount,
+                counterpartyName: raiseDisputeJob.clientName,
+              }
+            : null
+        }
+        formatAmount={formatNaira}
+        onClose={() => setRaiseDisputeJobId(null)}
+        onSubmit={handleRaiseDispute}
+      />
+
+      <DisputeWorkspaceModal
+        key={`ws-${disputeView?.id ?? "none"}`}
+        open={disputeView !== null}
+        perspective="artisan"
+        view={disputeView}
+        formatAmount={formatNaira}
+        onClose={() => setDisputeWorkspaceJobId(null)}
+        onAddResponse={handleDisputeResponse}
+        onAcceptOutcome={handleAcceptDisputeOutcome}
+        onWithdraw={handleWithdrawDispute}
+        onEscalate={handleEscalateDispute}
       />
 
       <CreateAgreementModal

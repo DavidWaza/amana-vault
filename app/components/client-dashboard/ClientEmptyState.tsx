@@ -1,38 +1,41 @@
 import type { ReactNode } from "react";
-import { Briefcase, ClockCounterClockwise, Wallet } from "phosphor-react";
-import Link from "next/link";
+import { Buildings, ClockCounterClockwise, Bell } from "phosphor-react";
 import type { ClientDashboardTab } from "./types";
 
 type ClientEmptyStateProps = {
   tab: ClientDashboardTab;
   canFundJobs: boolean;
+  onStartProject?: () => void;
 };
 
 const EMPTY_COPY: Record<
   ClientDashboardTab,
-  { icon: ReactNode; title: string; message: string; cta?: { label: string; href: string } }
+  { icon: ReactNode; title: string; message: string }
 > = {
   active: {
-    icon: <Briefcase size={40} weight="bold" />,
-    title: "No active protected jobs",
+    icon: <Buildings size={40} weight="bold" />,
+    title: "No active projects",
     message:
-      "When you fund escrow for an artisan, the job appears here until work is completed.",
-    cta: { label: "Find an artisan", href: "/join-amana" },
+      "When your vault is funded and construction begins, active builds appear here.",
   },
   pending: {
-    icon: <Wallet size={40} weight="bold" />,
+    icon: <Bell size={40} weight="bold" />,
     title: "Nothing pending your action",
     message:
-      "Agreements awaiting payment, invites, and release requests will show up here.",
+      "Milestone approvals, contractor bids, and vault activations will show up here.",
   },
   history: {
     icon: <ClockCounterClockwise size={40} weight="bold" />,
-    title: "No job history yet",
-    message: "Completed, cancelled, and expired jobs will appear here for your records.",
+    title: "No project history yet",
+    message: "Completed and archived projects will appear here for your records.",
   },
 };
 
-export default function ClientEmptyState({ tab, canFundJobs }: ClientEmptyStateProps) {
+export default function ClientEmptyState({
+  tab,
+  canFundJobs,
+  onStartProject,
+}: ClientEmptyStateProps) {
   const copy = EMPTY_COPY[tab];
 
   return (
@@ -42,13 +45,13 @@ export default function ClientEmptyState({ tab, canFundJobs }: ClientEmptyStateP
       <p>{copy.message}</p>
       {!canFundJobs && tab === "pending" && (
         <p className="adash-empty-note">
-          Verify your identity and add a payment method to fund escrow.
+          Verify your identity and add a payment method to activate project vaults.
         </p>
       )}
-      {copy.cta && (
-        <Link href={copy.cta.href} className="adash-btn adash-btn--primary">
-          {copy.cta.label}
-        </Link>
+      {onStartProject && tab !== "history" && (
+        <button type="button" className="adash-btn adash-btn--primary" onClick={onStartProject}>
+          Start a project
+        </button>
       )}
     </div>
   );
