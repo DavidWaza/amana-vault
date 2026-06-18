@@ -7,12 +7,14 @@ type JoinAmanaHeroProps = {
   started: boolean;
   onStart: () => void;
   onJoinAsClient: () => void;
+  onJoinAsArchitect: () => void;
 };
 
 export default function JoinAmanaHero({
   started,
   onStart,
   onJoinAsClient,
+  onJoinAsArchitect,
 }: JoinAmanaHeroProps) {
   return (
     <aside className="join-amana-hero">
@@ -27,7 +29,7 @@ export default function JoinAmanaHero({
           <br />
           when you can trust <span>VAULT</span>.
         </h1>
-        <p>The verified marketplace for Nigeria&apos;s most reliable artisans.</p>
+        <p>The verified marketplace for Nigeria&apos;s construction ecosystem.</p>
 
         <ul className="join-amana-trust-list">
           {TRUST_POINTS.map((item) => (
@@ -54,10 +56,23 @@ export default function JoinAmanaHero({
               Join as Client
               <CaretRight size={18} weight="bold" />
             </button>
+            <button
+              type="button"
+              className="join-btn-secondary join-btn-architect"
+              onClick={onJoinAsArchitect}
+            >
+              Join as Architect
+              <CaretRight size={18} weight="bold" />
+            </button>
           </div>
 
           <p className="join-amana-login">
-            Already have an account? <Link href="/auth/artisan">Login</Link>
+            Already have an account?{" "}
+            <Link href="/auth/artisan">Artisan</Link>
+            {" · "}
+            <Link href="/auth/client">Client</Link>
+            {" · "}
+            <Link href="/auth/architect">Architect</Link>
           </p>
         </div>
       )}

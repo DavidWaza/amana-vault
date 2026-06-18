@@ -304,6 +304,7 @@ export default function JoinAmanaPage() {
           started={started}
           onStart={() => setStarted(true)}
           onJoinAsClient={() => router.push("/auth/client")}
+          onJoinAsArchitect={() => router.push("/architect/onboarding")}
         />
 
         <section className="join-amana-panel">
