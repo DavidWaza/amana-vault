@@ -1,3 +1,16 @@
+/*
+ * Tailwind CSS v4 — additive setup for the in-progress CSS→Tailwind migration.
+ *
+ * Preflight (Tailwind's base reset) is intentionally NOT imported: this file
+ * already ships a full reset below, and skipping preflight guarantees the
+ * existing hand-written design is not altered. Only the theme tokens and
+ * utility classes are layered on top, so legacy `.navbar { … }` rules and
+ * Tailwind utilities coexist while components are migrated one at a time.
+ */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
 :root {
   --green: #003d1c;
   --green2: #006b32;
@@ -42,6 +55,53 @@
   --transition: 0.3s ease;
   --font-display: var(--font-geist-sans), "Inter", system-ui, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Code", monospace;
+}
+
+/*
+ * Brand design tokens exposed to Tailwind. These mirror the :root values above
+ * (the source of truth for all legacy CSS) so utilities like `bg-green`,
+ * `text-client2`, `rounded-brand`, `shadow-vault` map 1:1 to the style guide.
+ * Brand radii/shadows are namespaced (`-brand`, `vault`) so Tailwind's built-in
+ * `rounded-md` / `shadow-sm` keep their standard values.
+ */
+@theme {
+  /* Artisan / landing forest greens */
+  --color-green: #003d1c;
+  --color-green2: #006b32;
+  --color-green3: #008a44;
+  --color-soft: #eef8f1;
+  --color-soft2: #e0f7f2;
+  --color-line: #d3eadb;
+  --color-muted: #5b6b60;
+  --color-text: #062b18;
+  --color-bg: #f7fbf8;
+  --color-bg2: #f0f7f2;
+  --color-gold: #f4a300;
+  --color-gold-soft: #fff4da;
+
+  /* Client portal teal-greens */
+  --color-client: #0f5c5a;
+  --color-client2: #0d9488;
+  --color-client3: #14b8a6;
+  --color-client-soft: #f0fdfa;
+  --color-client-line: #ccfbf1;
+
+  /* Vault (dark surfaces) */
+  --color-vault-dark: #071410;
+  --color-vault-panel: #0c1a14;
+
+  /* Brand radii (Tailwind's rounded-md/lg stay default) */
+  --radius-brand: 24px;
+  --radius-brand-lg: 32px;
+
+  /* Brand shadows (Tailwind's shadow-sm/md/lg stay default) */
+  --shadow-brand-sm: 0 6px 20px rgba(0, 75, 36, 0.1);
+  --shadow-brand-md: 0 18px 40px rgba(0, 75, 36, 0.18);
+  --shadow-brand-lg: 0 24px 60px rgba(0, 75, 36, 0.12);
+  --shadow-vault: 0 24px 64px rgba(4, 20, 12, 0.28);
+
+  /* Typography */
+  --font-display: var(--font-geist-sans), "Inter", system-ui, sans-serif;
 }
 
 *,
