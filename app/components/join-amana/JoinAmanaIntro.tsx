@@ -1,26 +1,33 @@
-import { ArrowRight } from "phosphor-react";
-import { HardHatIcon } from "@phosphor-icons/react/dist/ssr";
+import JoinRoleActions from "./JoinRoleActions";
+import type { ProfessionalRole } from "./types";
 
 type JoinAmanaIntroProps = {
-  onStart: () => void;
+  onJoinAsClient: () => void;
+  onJoinAsProfessional: (role: ProfessionalRole) => void;
 };
 
-export default function JoinAmanaIntro({ onStart }: JoinAmanaIntroProps) {
+export default function JoinAmanaIntro({
+  onJoinAsClient,
+  onJoinAsProfessional,
+}: JoinAmanaIntroProps) {
   return (
     <div className="join-amana-intro-card">
-      <div className="join-amana-intro-icon">
-        <HardHatIcon size={40} weight="bold" />
-      </div>
-      <h2>Start your artisan application</h2>
+      <h2>How would you like to join?</h2>
       <p>
-        Complete a short 6-step form to join Amana. Get matched with verified
-        clients and receive guaranteed payments through escrow.
+        Clients protect builds with vault milestones. Professionals get verified, matched, and paid
+        securely through Amana.
       </p>
-      <button type="button" className="join-btn-form" onClick={onStart}>
-        Begin Application
-        <ArrowRight size={18} weight="bold" />
-      </button>
-      <p className="join-amana-panel-note">Takes about 3 minutes</p>
+
+      <div className="join-amana-intro-actions">
+        <JoinRoleActions
+          onJoinAsClient={onJoinAsClient}
+          onJoinAsProfessional={onJoinAsProfessional}
+          menuPlacement="down"
+          className="join-amana-intro-cta"
+        />
+      </div>
+
+      <p className="join-amana-panel-note">Choose a role to continue</p>
     </div>
   );
 }

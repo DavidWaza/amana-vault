@@ -26,7 +26,7 @@ import {
   isProfileStepValid,
   isTradeStepValid,
 } from "./validation";
-import { JOIN_STEPS, type ArtisanFormData, type JoinTouchedState } from "./types";
+import { JOIN_STEPS, type ArtisanFormData, type JoinTouchedState, type ProfessionalRole } from "./types";
 
 export default function JoinAmanaPage() {
   const router = useRouter();
@@ -297,19 +297,35 @@ export default function JoinAmanaPage() {
     }
   };
 
+  const handleJoinAsClient = () => router.push("/auth/client");
+
+  const handleJoinAsProfessional = (role: ProfessionalRole) => {
+    if (role === "architect") {
+      router.push("/architect/onboarding");
+      return;
+    }
+    if (role === "contractor") {
+      router.push("/auth/contractor");
+      return;
+    }
+    setStarted(true);
+  };
+
   return (
     <div className="join-amana-page">
       <div className="join-amana-shell">
         <JoinAmanaHero
           started={started}
-          onStart={() => setStarted(true)}
-          onJoinAsClient={() => router.push("/auth/client")}
-          onJoinAsArchitect={() => router.push("/architect/onboarding")}
+          onJoinAsClient={handleJoinAsClient}
+          onJoinAsProfessional={handleJoinAsProfessional}
         />
 
         <section className="join-amana-panel">
           {!started ? (
-            <JoinAmanaIntro onStart={() => setStarted(true)} />
+            <JoinAmanaIntro
+              onJoinAsClient={handleJoinAsClient}
+              onJoinAsProfessional={handleJoinAsProfessional}
+            />
           ) : complete ? (
             <JoinAmanaSuccess
               fullName={form.fullName}

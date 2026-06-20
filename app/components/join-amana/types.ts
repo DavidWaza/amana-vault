@@ -9,6 +9,8 @@ export const JOIN_STEPS = [
 
 export type JoinStepId = (typeof JOIN_STEPS)[number]["id"];
 
+export type ProfessionalRole = "architect" | "artisan" | "contractor";
+
 export type ArtisanFormData = {
   fullName: string;
   dateOfBirth: string;

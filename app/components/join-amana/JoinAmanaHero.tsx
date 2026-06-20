@@ -1,20 +1,19 @@
 import Link from "next/link";
-import { CaretRight } from "phosphor-react";
 import AmanaLogo from "./AmanaLogo";
 import { TRUST_POINTS } from "./constants";
+import JoinRoleActions from "./JoinRoleActions";
+import type { ProfessionalRole } from "./types";
 
 type JoinAmanaHeroProps = {
   started: boolean;
-  onStart: () => void;
   onJoinAsClient: () => void;
-  onJoinAsArchitect: () => void;
+  onJoinAsProfessional: (role: ProfessionalRole) => void;
 };
 
 export default function JoinAmanaHero({
   started,
-  onStart,
   onJoinAsClient,
-  onJoinAsArchitect,
+  onJoinAsProfessional,
 }: JoinAmanaHeroProps) {
   return (
     <aside className="join-amana-hero">
@@ -43,36 +42,21 @@ export default function JoinAmanaHero({
 
       {!started && (
         <div className="join-amana-hero-cta">
-          <div className="join-amana-hero-cta-content">
-            <button type="button" className="join-btn-primary" onClick={onStart}>
-              Join as Artisan
-              <CaretRight size={18} weight="bold" />
-            </button>
-            <button
-              type="button"
-              className="join-btn-secondary"
-              onClick={onJoinAsClient}
-            >
-              Join as Client
-              <CaretRight size={18} weight="bold" />
-            </button>
-            <button
-              type="button"
-              className="join-btn-secondary join-btn-architect"
-              onClick={onJoinAsArchitect}
-            >
-              Join as Architect
-              <CaretRight size={18} weight="bold" />
-            </button>
-          </div>
+          <JoinRoleActions
+            onJoinAsClient={onJoinAsClient}
+            onJoinAsProfessional={onJoinAsProfessional}
+            menuPlacement="up"
+          />
 
           <p className="join-amana-login">
             Already have an account?{" "}
-            <Link href="/auth/artisan">Artisan</Link>
-            {" · "}
             <Link href="/auth/client">Client</Link>
             {" · "}
             <Link href="/auth/architect">Architect</Link>
+            {" · "}
+            <Link href="/auth/artisan">Artisan</Link>
+            {" · "}
+            <Link href="/auth/contractor">Contractor</Link>
           </p>
         </div>
       )}
