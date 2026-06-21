@@ -56,7 +56,7 @@ export default function ArtisanJobsPanel({
   );
 
   return (
-    <section className="adash-jobs" id="jobs">
+    <section className="grid gap-4" id="jobs">
       <div className="adash-jobs-header">
         <div>
           <h2>Your jobs</h2>
@@ -85,7 +85,7 @@ export default function ArtisanJobsPanel({
       {filteredJobs.length === 0 ? (
         <ArtisanEmptyState tab={tab} canAcceptJobs={canAcceptJobs} />
       ) : (
-        <div className="adash-job-list">
+        <div className="grid gap-4">
           {filteredJobs.map((job) => (
             <ArtisanJobCard
               key={job.id}

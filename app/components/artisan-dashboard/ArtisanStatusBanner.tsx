@@ -134,7 +134,7 @@ export default function ArtisanStatusBanner({ profile }: ArtisanStatusBannerProp
   }
 
   return (
-    <div className="adash-banners">
+    <div className="grid gap-3">
       {banners.map((banner) => {
         const action = banner.action;
 

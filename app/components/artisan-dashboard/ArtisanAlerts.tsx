@@ -16,7 +16,7 @@ export default function ArtisanAlerts({
   if (alerts.length === 0) return null;
 
   return (
-    <section className="adash-alerts" aria-label="Important alerts">
+    <section className="grid gap-[0.65rem]" aria-label="Important alerts">
       {alerts.map((alert) => (
         <div key={alert.id} className={`adash-alert adash-alert--${alert.type}`}>
           <div>
