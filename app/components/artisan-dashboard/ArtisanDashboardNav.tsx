@@ -64,35 +64,44 @@ export default function ArtisanDashboardNav({
 
   const openSettings = () => openProfileSettings("profile");
 
+  const navLink =
+    "px-[0.9rem] py-[0.55rem] rounded-full text-[0.9rem] font-bold text-muted transition-[background,color] duration-300";
+  const navPro =
+    "inline-flex items-center gap-[0.4rem] px-4 py-[0.55rem] rounded-full border border-solid text-[0.82rem] font-black whitespace-nowrap transition-[transform,box-shadow] duration-300";
+
   return (
     <header className="adash-nav">
       <div className="adash-nav-inner">
-        <Link href="/artisan/dashboard" className="adash-nav-brand">
-        <div className="adash-nav-brand-logo">
+        <Link href="/artisan/dashboard" className="flex flex-col gap-[0.1rem] shrink-0">
+        <div className="flex items-center">
         <VaultIcon size={50} variant="green"/>
-          <span className="adash-nav-logo">Amana</span>
+          <span className="text-[1.2rem] font-black tracking-[-0.04em] text-green">Amana</span>
         </div>
         </Link>
 
-        <nav className="adash-nav-links" aria-label="Dashboard navigation">
+        <nav className="flex gap-[0.35rem] flex-1 max-[768px]:hidden" aria-label="Dashboard navigation">
           <Link
             href="/artisan/dashboard#jobs"
-            className={`adash-nav-link${page === "dashboard" ? " adash-nav-link--active" : ""}`}
+            className={`${navLink}${page === "dashboard" ? " text-green bg-soft" : ""}`}
           >
             Jobs
           </Link>
-          <Link href="/artisan/dashboard#wallet" className="adash-nav-link">
+          <Link href="/artisan/dashboard#wallet" className={navLink}>
             Vault
           </Link>
-          <Link href="/artisan/dashboard#reviews" className="adash-nav-link">
+          <Link href="/artisan/dashboard#reviews" className={navLink}>
             Reviews
           </Link>
         </nav>
 
-        <div className="adash-nav-actions">
+        <div className="flex items-center gap-2">
           <Link
             href="/artisan/pro"
-            className={`adash-nav-pro${page === "pro" ? " adash-nav-pro--active" : ""}`}
+            className={`${navPro} ${
+              page === "pro"
+                ? "bg-[linear-gradient(135deg,var(--green),var(--green2))] border-green2 text-white"
+                : "bg-[linear-gradient(135deg,#fef3c7,#fde68a)] border-[rgba(244,163,0,0.35)] text-[#92400e]"
+            }`}
           >
             <Money size={16} weight="fill" />
             <span>Amana Pro</span>
@@ -121,7 +130,7 @@ export default function ArtisanDashboardNav({
 
           <button
             type="button"
-            className="adash-profile-chip"
+            className="inline-flex items-center gap-[0.4rem] pl-[0.55rem] pr-[0.85rem] py-[0.45rem] rounded-full border border-solid border-line bg-white text-green text-[0.88rem] font-extrabold cursor-pointer"
             onClick={openSettings}
           >
             <UserCircle size={22} weight="bold" />
