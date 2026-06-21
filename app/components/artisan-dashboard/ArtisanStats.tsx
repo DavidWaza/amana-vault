@@ -45,14 +45,26 @@ export default function ArtisanStats({
   ];
 
   return (
-    <section className="adash-stats" aria-label="Earnings overview">
+    <section
+      className="grid grid-cols-4 gap-4 max-[1100px]:grid-cols-2 max-[768px]:grid-cols-1"
+      aria-label="Earnings overview"
+    >
       {stats.map((stat) => (
-        <article key={stat.label} className="adash-stat-card">
-          <span className="adash-stat-icon">{stat.icon}</span>
+        <article
+          key={stat.label}
+          className="flex gap-[0.85rem] px-[1.2rem] py-[1.15rem] rounded-[20px] bg-white border border-solid border-line shadow-brand-sm"
+        >
+          <span className="grid place-items-center w-11 h-11 rounded-[14px] bg-soft text-green2 shrink-0">
+            {stat.icon}
+          </span>
           <div>
-            <p className="adash-stat-label">{stat.label}</p>
-            <p className="adash-stat-value">{stat.value}</p>
-            <p className="adash-stat-hint">{stat.hint}</p>
+            <p className="m-0 text-[0.78rem] font-extrabold tracking-[0.06em] uppercase text-muted">
+              {stat.label}
+            </p>
+            <p className="mt-[0.2rem] text-[1.35rem] font-black text-green tracking-[-0.02em]">
+              {stat.value}
+            </p>
+            <p className="mt-[0.15rem] text-[0.8rem] text-muted">{stat.hint}</p>
           </div>
         </article>
       ))}
