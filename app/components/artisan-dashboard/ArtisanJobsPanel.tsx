@@ -5,6 +5,7 @@ import type { ArtisanJob, DashboardTab, JobPrimaryAction } from "./types";
 import { isActiveJob, isHistoryJob, isInvitation } from "./utils";
 import ArtisanJobCard from "./ArtisanJobCard";
 import ArtisanEmptyState from "./ArtisanEmptyState";
+import { adashTab, adashTabActive, adashTabCount, adashTabInactive, adashTabs } from "./ui";
 
 type ArtisanJobsPanelProps = {
   jobs: ArtisanJob[];
@@ -64,19 +65,19 @@ export default function ArtisanJobsPanel({
         </div>
       </div>
 
-      <div className="adash-tabs" role="tablist" aria-label="Job categories">
+      <div className={adashTabs} role="tablist" aria-label="Job categories">
         {TABS.map((item) => (
           <button
             key={item.id}
             type="button"
             role="tab"
             aria-selected={tab === item.id}
-            className={`adash-tab${tab === item.id ? " adash-tab--active" : ""}`}
+            className={`${adashTab} ${tab === item.id ? adashTabActive : adashTabInactive}`}
             onClick={() => setTab(item.id)}
           >
             {item.label}
             {tabCounts[item.id] > 0 && (
-              <span className="adash-tab-count">{tabCounts[item.id]}</span>
+              <span className={adashTabCount}>{tabCounts[item.id]}</span>
             )}
           </button>
         ))}

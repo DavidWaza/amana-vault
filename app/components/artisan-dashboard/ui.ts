@@ -45,6 +45,15 @@ export const adashModalClose =
   "grid place-items-center w-8 h-8 border-0 rounded-[10px] bg-soft text-green";
 export const adashModalActions = "flex gap-[0.65rem] justify-end mt-4";
 
+// Segmented tab control (reused by the jobs panel + reviews filters)
+export const adashTabs = "flex flex-wrap gap-2";
+export const adashTab =
+  "inline-flex items-center gap-[0.45rem] px-4 py-[0.65rem] rounded-full border border-solid text-[0.88rem] font-extrabold transition-all duration-300";
+export const adashTabActive = "bg-green border-green text-white";
+export const adashTabInactive = "bg-white border-line text-muted";
+export const adashTabCount =
+  "min-w-[1.35rem] h-[1.35rem] px-[0.35rem] rounded-full bg-white/20 text-[0.72rem] grid place-items-center";
+
 // Section eyebrow (reused by the welcome header + wallet header)
 export const adashEyebrow =
   "text-[0.82rem] font-extrabold tracking-[0.14em] uppercase text-green2";
