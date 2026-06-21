@@ -7,7 +7,7 @@
  * utility classes are layered on top, so legacy `.navbar { … }` rules and
  * Tailwind utilities coexist while components are migrated one at a time.
  */
-@layer theme, base, components, utilities;
+@layer theme, base, legacy, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
@@ -103,6 +103,16 @@
   /* Typography */
   --font-display: var(--font-geist-sans), "Inter", system-ui, sans-serif;
 }
+
+/*
+ * All hand-written legacy styles live in the `legacy` layer, which is ordered
+ * BEFORE `utilities`. This lets Tailwind utility classes win over the reset
+ * and legacy component classes during the migration (an unlayered rule like
+ * `* { margin: 0 }` would otherwise beat any utility). Legacy rules keep their
+ * normal cascade relative to each other, so unconverted pages are unchanged.
+ * The matching closing brace is at the end of this file.
+ */
+@layer legacy {
 
 *,
 *::before,
@@ -12273,3 +12283,5 @@ section {
     min-height: auto;
   }
 }
+
+} /* end @layer legacy */

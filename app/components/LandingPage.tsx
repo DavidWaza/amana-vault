@@ -42,6 +42,28 @@ import {
   TargetIcon,
 } from "@phosphor-icons/react";
 
+/*
+ * Tailwind migration note (hybrid approach):
+ * Layout, spacing, colour and typography are expressed as Tailwind utilities.
+ * Genuinely bespoke styling is intentionally KEPT as CSS classes in globals.css
+ * and referenced here unchanged — the phone mockup (`hero-phone-*`), scroll
+ * reveal animations (`reveal`), multi-layer gradients + pseudo-elements
+ * (`hero`, `section-alt`, `cta-section`, `trust-card`), shared design-system
+ * primitives (`cta-button`, `btn-secondary`, `page-container`, `eyebrow`,
+ * `section-header`) and the descendant-heavy footer.
+ */
+
+// Shared card primitives (Steps / Features / Use cases share one visual style).
+const CARD =
+  "w-full h-full flex flex-col items-center rounded-brand-lg bg-white text-center border border-solid border-line px-7 py-8 shadow-brand-sm transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-[3px] hover:shadow-brand-md hover:border-green2";
+const CARD_H3 = "mb-3 text-green text-[1.125rem] font-extrabold leading-[1.25]";
+const CARD_P = "m-0 text-muted text-[0.975rem] leading-[1.7] flex-1";
+const CARD_ICON =
+  "w-14 h-14 shrink-0 rounded-[20px] bg-[linear-gradient(145deg,var(--soft),#fff)] border border-solid border-line text-green2 flex items-center justify-center mx-auto mb-4 text-[1.6rem] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]";
+// Stretch the scroll-reveal wrapper so cards in a grid stay equal height
+// (replaces the old `.steps-grid > .reveal { … }` rule).
+const REVEAL_STRETCH = "w-full h-full flex";
+
 function AmanaLogo({
   size = 180,
   variant = "green",
@@ -49,7 +71,6 @@ function AmanaLogo({
   size?: number;
   variant?: "green" | "white";
 }) {
-  const scale = size / 108;
   return (
     <img
       src={variant === "green" ? "/logo-main.png" : "/logo-white.png"}
@@ -79,35 +100,51 @@ function Navbar() {
   ];
 
   return (
-    <nav className={`navbar${scrolled ? " scrolled" : ""}`}>
+    <nav
+      className={`fixed top-0 inset-x-0 z-50 w-full flex items-center justify-between px-6 max-[768px]:px-4 backdrop-blur-[18px] border-b border-solid border-[rgba(211,234,219,0.7)] transition-all duration-300 ${
+        scrolled
+          ? "py-3 bg-[rgba(247,251,248,0.98)] shadow-brand-sm"
+          : "py-[0.57rem] bg-[rgba(247,251,248,0.9)]"
+      }`}
+    >
       <a
         href="#home"
-        className="logo-link"
+        className="inline-flex items-center flex-nowrap"
         onClick={() => setMobileOpen(false)}
       >
         <AmanaLogo size={60} />
 
-        <div className="amana-brand-name-container">
-        <h1 className="amana-brand-name">Amana</h1>
+        <div className="flex flex-col gap-[0.1rem]">
+          <h1 className="m-0 text-[1.6rem] font-black tracking-[-0.03em] leading-[1.1] text-green">
+            Amana
+          </h1>
 
-        <div className="logo-tag">Secure am, relax</div>
+          <div className="text-[0.72rem] font-extrabold text-green2 uppercase tracking-[0.15em]">
+            Secure am, relax
+          </div>
         </div>
       </a>
 
       <button
-        className="nav-toggle"
+        className="hidden max-[768px]:flex w-10 h-10 rounded-2xl items-center justify-center text-[1.2rem] text-green bg-[rgba(255,255,255,0.95)] border border-solid border-[rgba(211,234,219,0.85)]"
         onClick={() => setMobileOpen((prev) => !prev)}
         aria-label="Toggle navigation menu"
       >
         {mobileOpen ? "X" : "MENU"}
       </button>
 
-      <div className={`nav-links${mobileOpen ? " open" : ""}`}>
+      <div
+        className={`flex items-center gap-3 ${
+          mobileOpen
+            ? "max-[768px]:flex max-[768px]:flex-col max-[768px]:w-full max-[768px]:absolute max-[768px]:top-full max-[768px]:left-0 max-[768px]:right-0 max-[768px]:bg-white max-[768px]:p-4 max-[768px]:border-b max-[768px]:border-solid max-[768px]:border-[rgba(211,234,219,0.7)] max-[768px]:shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
+            : "max-[768px]:hidden"
+        }`}
+      >
         {navItems.map((item) => (
           <a
             key={item.href}
             href={item.href}
-            className="nav-link"
+            className="text-muted font-bold text-[0.95rem] px-[0.9rem] py-[0.65rem] rounded-full transition-colors duration-300 hover:text-green hover:bg-[rgba(238,248,241,0.8)]"
             onClick={() => setMobileOpen(false)}
           >
             {item.label}
@@ -302,9 +339,9 @@ function HeroPhonePreview() {
 function HeroSection() {
   return (
     <section className="hero" id="home">
-      <div className="page-container hero-content">
+      <div className="page-container grid gap-12 grid-cols-[1.2fr_1fr] items-center max-[960px]:grid-cols-1">
         <div>
-          <div className="hero-tag">
+          <div className="inline-flex items-center gap-3 bg-[rgba(255,255,255,0.85)] text-green2 border border-solid border-line px-5 py-3 rounded-full font-black text-[0.78rem] uppercase tracking-[0.1em] shadow-brand-sm">
             <LockSimple size={18} weight="bold" /> PROUDLY ABUJA-BASED
           </div>
           <h1 className="hero-title">
@@ -312,12 +349,12 @@ function HeroSection() {
             <br />
             <span>You Can Trust.</span>
           </h1>
-          <p className="hero-text">
+          <p className="text-[1.15rem] text-muted max-w-[35rem]">
             Amana keeps money safe until the agreed work is completed, approved,
             or fairly resolved. No more broken promises.
           </p>
 
-          <div className="hero-actions">
+          <div className="flex flex-wrap gap-4 mt-8 max-[768px]:flex-col">
             <Link href="/auth/client" className="cta-button">
               I&apos;m paying for work
             </Link>
@@ -326,7 +363,7 @@ function HeroSection() {
             </Link>
           </div>
 
-          <div className="regulatory-badge">
+          <div className="flex items-start gap-3 bg-[rgba(238,248,241,0.65)] border border-solid border-line px-5 py-[0.95rem] rounded-[20px] text-[0.88rem] leading-[1.5] text-muted mt-8 max-w-[38rem] shadow-brand-sm backdrop-blur-[8px]">
             <LockSimple
               size={20}
               weight="bold"
@@ -337,22 +374,31 @@ function HeroSection() {
               }}
             />
             <span style={{ textAlign: "left" }}>
-              <strong>Regulatory Notice:</strong> Amana is a technology
-              platform, not a bank or financial institution. All protected funds
-              are secured in escrow by our licensed partner financial
-              institutions.
+              <strong className="text-green font-extrabold">
+                Regulatory Notice:
+              </strong>{" "}
+              Amana is a technology platform, not a bank or financial
+              institution. All protected funds are secured in escrow by our
+              licensed partner financial institutions.
             </span>
           </div>
 
-          <div className="hero-stats">
+          <div className="grid grid-cols-3 gap-4 mt-10 max-w-[38rem] max-[768px]:grid-cols-1">
             {[
               { icon: <ShieldCheck size={24} />, label: "Secure" },
               { icon: <CheckCircle size={24} />, label: "Verified" },
               { icon: <Handshake size={24} />, label: "Resolved" },
             ].map((stat) => (
-              <div key={stat.label} className="hero-stat">
-                <span className="stat-icon">{stat.icon}</span>
-                <span className="stat-text">{stat.label}</span>
+              <div
+                key={stat.label}
+                className="flex flex-col items-center justify-center gap-2 min-h-[7.5rem] bg-white border border-solid border-line rounded-3xl p-5 text-center shadow-brand-sm transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-[3px] hover:shadow-brand-md hover:border-green2"
+              >
+                <span className="inline-flex items-center justify-center w-10 h-10 text-[1.75rem]">
+                  {stat.icon}
+                </span>
+                <span className="block text-[0.78rem] tracking-[0.08em] uppercase text-muted font-extrabold">
+                  {stat.label}
+                </span>
               </div>
             ))}
           </div>
@@ -400,14 +446,16 @@ function HowItWorks() {
           </p>
         </div>
 
-        <div className="steps-grid">
+        <div className="grid gap-6 grid-cols-4 items-stretch max-[1100px]:grid-cols-2 max-[768px]:grid-cols-1">
           {steps.map((step, index) => (
-            <Reveal key={step.title} delay={index * 0.1}>
-              <div className="step-card">
-                <div className="step-index">{index + 1}</div>
-                <div className="step-icon">{step.icon}</div>
-                <h3>{step.title}</h3>
-                <p>{step.desc}</p>
+            <Reveal key={step.title} delay={index * 0.1} className={REVEAL_STRETCH}>
+              <div className={CARD}>
+                <div className="w-12 h-12 shrink-0 rounded-full bg-[linear-gradient(135deg,var(--green),var(--green2))] text-white flex items-center justify-center font-black tabular-nums mx-auto mb-4 shadow-[0_8px_20px_rgba(0,75,36,0.2)]">
+                  {index + 1}
+                </div>
+                <div className={CARD_ICON}>{step.icon}</div>
+                <h3 className={CARD_H3}>{step.title}</h3>
+                <p className={CARD_P}>{step.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -463,13 +511,17 @@ function FeaturesSection() {
           </p>
         </div>
 
-        <div className="features-grid">
+        <div className="grid gap-6 grid-cols-3 items-stretch max-[1100px]:grid-cols-2 max-[768px]:grid-cols-1">
           {features.map((feature, index) => (
-            <Reveal key={feature.title} delay={index * 0.08}>
-              <div className="feature-card">
-                <div className="feature-icon">{feature.icon}</div>
-                <h3>{feature.title}</h3>
-                <p>{feature.desc}</p>
+            <Reveal
+              key={feature.title}
+              delay={index * 0.08}
+              className={REVEAL_STRETCH}
+            >
+              <div className={CARD}>
+                <div className={CARD_ICON}>{feature.icon}</div>
+                <h3 className={CARD_H3}>{feature.title}</h3>
+                <p className={CARD_P}>{feature.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -514,9 +566,10 @@ function TrustSection() {
           </p>
         </div>
 
-        <div className="trust-grid">
+        {/* trust-card kept as CSS — it carries a radial-gradient ::before */}
+        <div className="grid gap-6 grid-cols-3 items-stretch max-[768px]:grid-cols-1">
           {trustSignals.map((item, index) => (
-            <Reveal key={item.text} delay={index * 0.1}>
+            <Reveal key={item.text} delay={index * 0.1} className={REVEAL_STRETCH}>
               <div className="trust-card">
                 <div className="feature-icon">{item.icon}</div>
                 <h3>{item.text}</h3>
@@ -566,13 +619,13 @@ function UseCasesSection() {
           </p>
         </div>
 
-        <div className="use-cases-grid">
+        <div className="grid gap-6 grid-cols-2 items-stretch max-[768px]:grid-cols-1">
           {cases.map((item, index) => (
-            <Reveal key={item.title} delay={index * 0.1}>
-              <div className="use-case-card">
-                <div className="feature-icon">{item.icon}</div>
-                <h3>{item.title}</h3>
-                <p>{item.desc}</p>
+            <Reveal key={item.title} delay={index * 0.1} className={REVEAL_STRETCH}>
+              <div className={CARD}>
+                <div className={CARD_ICON}>{item.icon}</div>
+                <h3 className={CARD_H3}>{item.title}</h3>
+                <p className={CARD_P}>{item.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -629,7 +682,7 @@ function FAQSection() {
           </p>
         </div>
 
-        <div className="faq-list">
+        <div className="max-w-[760px] mx-auto">
           {faqs.map((faq, index) => (
             <div key={faq.q} className="faq-card">
               <button className="faq-question" onClick={() => toggle(index)}>
@@ -667,7 +720,7 @@ function CTASection() {
           Join early access and secure your next agreement with absolute peace
           of mind.
         </p>
-        <div className="hero-actions" style={{ justifyContent: "center" }}>
+        <div className="flex flex-wrap gap-4 mt-8 max-[768px]:flex-col justify-center">
           <Link href="/join-amana" className="cta-button">
             Get Started — It&apos;s Free
           </Link>
