@@ -54,6 +54,14 @@ export const adashTabInactive = "bg-white border-line text-muted";
 export const adashTabCount =
   "min-w-[1.35rem] h-[1.35rem] px-[0.35rem] rounded-full bg-white/20 text-[0.72rem] grid place-items-center";
 
+// Icon button + badge (reused by the notifications dropdown + chat inbox)
+export const adashIconBtn =
+  "relative grid place-items-center w-10 h-10 rounded-xl border border-solid transition-[border-color,background] duration-300 text-green";
+export const adashIconBtnActive = "border-green2 bg-soft";
+export const adashIconBtnInactive = "border-line bg-white";
+export const adashIconBadge =
+  "absolute -top-1 -right-1 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-green2 text-white text-[0.65rem] font-extrabold grid place-items-center";
+
 // Section eyebrow (reused by the welcome header + wallet header)
 export const adashEyebrow =
   "text-[0.82rem] font-extrabold tracking-[0.14em] uppercase text-green2";

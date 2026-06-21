@@ -3,6 +3,12 @@
 import { useEffect, useRef } from "react";
 import { Bell, X } from "phosphor-react";
 import type { ArtisanNotification } from "./types";
+import {
+  adashIconBadge,
+  adashIconBtn,
+  adashIconBtnActive,
+  adashIconBtnInactive,
+} from "./ui";
 
 type ArtisanNotificationsDropdownProps = {
   notifications: ArtisanNotification[];
@@ -57,10 +63,10 @@ export default function ArtisanNotificationsDropdown({
   }, [open, onClose]);
 
   return (
-    <div className="adash-notifications" ref={panelRef}>
+    <div className="relative" ref={panelRef}>
       <button
         type="button"
-        className={`adash-icon-btn${open ? " adash-icon-btn--active" : ""}`}
+        className={`${adashIconBtn} ${open ? adashIconBtnActive : adashIconBtnInactive}`}
         aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ""}`}
         aria-expanded={open}
         aria-haspopup="true"
@@ -68,36 +74,39 @@ export default function ArtisanNotificationsDropdown({
       >
         <Bell size={20} weight="bold" />
         {unreadCount > 0 && (
-          <span className="adash-icon-badge">{unreadCount}</span>
+          <span className={adashIconBadge}>{unreadCount}</span>
         )}
       </button>
 
       {open && (
-        <div className="adash-notifications-panel" role="menu">
-          <div className="adash-notifications-header">
+        <div
+          className="absolute top-[calc(100%+0.5rem)] right-0 z-50 w-[min(22rem,calc(100vw-2rem))] border border-solid border-line rounded-2xl bg-white shadow-[0_16px_40px_rgba(15,118,110,0.14)] overflow-hidden"
+          role="menu"
+        >
+          <div className="flex items-center justify-between gap-3 px-4 py-[0.85rem] border-b border-solid border-line bg-soft">
             <strong>Notifications</strong>
             <span>{unreadCount} unread</span>
           </div>
 
           {notifications.length === 0 ? (
-            <p className="adash-notifications-empty">You&apos;re all caught up.</p>
+            <p className="m-0 px-4 py-5 text-muted text-[0.88rem]">You&apos;re all caught up.</p>
           ) : (
-            <ul className="adash-notifications-list">
+            <ul className="list-none m-0 p-0 max-h-80 overflow-y-auto">
               {notifications.map((notification) => (
                 <li
                   key={notification.id}
-                  className={`adash-notification-item adash-notification-item--${notification.type}${notification.read ? " adash-notification-item--read" : ""}`}
+                  className={`flex items-start justify-between gap-3 px-4 py-[0.9rem] border-b border-solid border-line${notification.read ? " opacity-[0.72]" : ""}`}
                 >
                   <div>
-                    <strong>{notification.title}</strong>
-                    <p>{notification.message}</p>
-                    <span>{formatNotificationTime(notification.createdAt)}</span>
+                    <strong className="block text-green text-[0.86rem]">{notification.title}</strong>
+                    <p className="mt-[0.2rem] mb-[0.35rem] text-muted text-[0.82rem] leading-[1.45]">{notification.message}</p>
+                    <span className="text-muted text-[0.72rem] font-bold">{formatNotificationTime(notification.createdAt)}</span>
                   </div>
-                  <div className="adash-notification-actions">
+                  <div className="flex flex-col items-end gap-[0.35rem] shrink-0">
                     {notification.actionLabel && (
                       <button
                         type="button"
-                        className="adash-notification-action"
+                        className="border-0 bg-transparent text-green2 text-[0.78rem] font-extrabold cursor-pointer whitespace-nowrap"
                         onClick={() => onAction(notification)}
                       >
                         {notification.actionLabel}
@@ -105,7 +114,7 @@ export default function ArtisanNotificationsDropdown({
                     )}
                     <button
                       type="button"
-                      className="adash-notification-dismiss"
+                      className="grid place-items-center w-6 h-6 border border-solid border-line rounded-lg bg-white text-muted cursor-pointer"
                       onClick={() => onDismiss(notification.id)}
                       aria-label="Dismiss notification"
                     >
