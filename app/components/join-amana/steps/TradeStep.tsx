@@ -17,7 +17,7 @@ export default function TradeStep({
 }: TradeStepProps) {
   return (
     <>
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="category">
           Service Category
         </label>
@@ -43,7 +43,7 @@ export default function TradeStep({
       </div>
 
       {data.category === "other" && (
-        <div className="join-field">
+        <div className="grid gap-[0.45rem]">
           <label className="join-label" htmlFor="otherTrade">
             Specify your trade
           </label>
@@ -69,7 +69,7 @@ export default function TradeStep({
         </div>
       )}
 
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="bio">
           Short Bio
         </label>

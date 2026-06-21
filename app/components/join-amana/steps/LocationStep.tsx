@@ -8,7 +8,7 @@ type LocationStepProps = {
 export default function LocationStep({ data, onChange }: LocationStepProps) {
   return (
     <>
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="area">
           Primary Area
         </label>
@@ -32,7 +32,7 @@ export default function LocationStep({ data, onChange }: LocationStepProps) {
         </select>
       </div>
 
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="travelRadius">
           How far can you travel for jobs?
         </label>
