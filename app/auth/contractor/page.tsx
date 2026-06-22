@@ -35,7 +35,9 @@ export default function ContractorAuthPage() {
 
   const handleVerifySubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/join-amana");
+    // Returning contractors land on the dashboard; new sign-ups complete company
+    // onboarding first.
+    router.push(isLogin ? "/contractor/dashboard" : "/contractor/onboarding");
   };
 
   return (
@@ -116,8 +118,7 @@ export default function ContractorAuthPage() {
 
               {!isLogin && (
                 <p className="m-0 mt-3 px-[0.35rem] text-[0.72rem] font-bold text-muted leading-[1.2] text-right">
-                  Full contractor onboarding launches soon. You&apos;ll complete company verification
-                  after sign-up.
+                  After sign-up you&apos;ll complete company onboarding and verification.
                 </p>
               )}
             </form>

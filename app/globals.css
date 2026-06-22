@@ -36,6 +36,15 @@
   --client-rgb: 15, 92, 90;
   --client2-rgb: 13, 148, 136;
   --client3-rgb: 20, 184, 166;
+  /* Contractor portal — amber/bronze (construction command center) */
+  --contractor: #92400e;
+  --contractor2: #b45309;
+  --contractor3: #d97706;
+  --contractor-soft: #fff7ed;
+  --contractor-line: #fed7aa;
+  --contractor-rgb: 146, 64, 14;
+  --contractor2-rgb: 180, 83, 9;
+  --contractor3-rgb: 217, 119, 6;
   /* Artisan dashboard — landing forest green */
   --artisan: var(--green);
   --artisan2: var(--green2);
@@ -85,6 +94,13 @@
   --color-client3: #14b8a6;
   --color-client-soft: #f0fdfa;
   --color-client-line: #ccfbf1;
+
+  /* Contractor portal amber/bronze */
+  --color-contractor: #92400e;
+  --color-contractor2: #b45309;
+  --color-contractor3: #d97706;
+  --color-contractor-soft: #fff7ed;
+  --color-contractor-line: #fed7aa;
 
   /* Vault (dark surfaces) */
   --color-vault-dark: #071410;

@@ -35,12 +35,12 @@ export function ArchitectProjectsPanel({ projects, filter = "all" }: ArchitectPr
                 className="ap-project-card-image"
                 style={{ backgroundImage: `url(${project.imageUrl})` }}
               />
-              <div className="ap-project-card-body">
+              <div className="ap-project-card-body space-y-1">
                 <span className={`ap-status-pill ap-status-pill--${project.status}`}>
                   {project.status.replace("_", " ").toUpperCase()}
                 </span>
                 <h3>{project.title}</h3>
-                <p>
+                <p className="text-base font-medium text-muted flex items-center gap-1">
                   <MapPin size={14} weight="bold" />
                   {project.location} · {project.clientName}
                 </p>
@@ -76,13 +76,16 @@ export function ArchitectDesignRequestsPanel({
           {requests.map((req) => (
             <li key={req.id} className="ap-request-card">
               <div>
+                <div className="flex gap-3">
+
                 <strong>{req.clientName}</strong>
-                <span>{req.projectType}</span>
-                <span>
+                <span className="text-[0.72rem] font-bold uppercase tracking-[0.06em] text-muted">{req.projectType}</span>
+                </div>
+                <span className="flex items-center gap-1">
                   <MapPin size={12} weight="bold" />
                   {req.location} · {req.budgetRange}
                 </span>
-                <time>
+                <time className="text-[0.72rem] font-bold uppercase tracking-[0.06em] text-muted flex items-center gap-1">
                   <Clock size={12} weight="bold" />
                   {formatRelativeTime(req.receivedAt)}
                 </time>
@@ -120,10 +123,12 @@ export function ArchitectProposalsPanel({ proposals }: ArchitectProposalsPanelPr
         <ul className="ap-proposal-list">
           {proposals.map((p) => (
             <li key={p.id} className="ap-proposal-card">
-              <div>
+              <div className="space-x-2">
                 <strong>{p.projectTitle}</strong>
                 <span>{p.clientName}</span>
-                <span>{formatNaira(p.amount)}</span>
+                <span className="text-[0.9
+                
+                2rem] font-bold uppercase tracking-[0.06em] text-muted">{formatNaira(p.amount)}</span>
               </div>
               <span className={`ap-status-pill ap-status-pill--${p.status}`}>
                 {p.status.toUpperCase()}
