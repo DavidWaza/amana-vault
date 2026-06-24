@@ -675,11 +675,15 @@ export default function ArtisanDashboard() {
 
       <main className="adash-main">
         <div className="adash-container">
-          <header className="adash-welcome">
+          <header>
             <div>
-              <p className="adash-eyebrow">Artisan Dashboard</p>
-              <h1>Good {getGreeting()}, {profile.fullName.split(" ")[0]}</h1>
-              <p className="adash-welcome-text">
+              <p className="text-[0.82rem] font-extrabold tracking-[0.14em] uppercase text-green2">
+                Artisan Dashboard
+              </p>
+              <h1 className="mt-[0.35rem] mb-2 text-[clamp(1.75rem,3vw,2.5rem)] text-green">
+                Good {getGreeting()}, {profile.fullName.split(" ")[0]}
+              </h1>
+              <p className="m-0 text-muted max-w-[40rem] leading-[1.7]">
                 Manage secured jobs, upload proof of work, and track payments —
                 all held safely in escrow until approval.
               </p>
@@ -701,7 +705,7 @@ export default function ArtisanDashboard() {
 
           <ArtisanProPromo profile={profile} />
 
-          <div className="adash-layout">
+          <div className="grid grid-cols-[1fr_300px] gap-6 items-start max-[1100px]:grid-cols-1">
             <ArtisanJobsPanel
               jobs={jobs}
               canAcceptJobs={canAcceptJobs}
@@ -716,7 +720,7 @@ export default function ArtisanDashboard() {
 
           <ArtisanReviews reviews={MOCK_REVIEWS} />
 
-          <footer className="adash-disclaimer">
+          <footer className="px-[1.15rem] py-4 rounded-2xl bg-white/80 border border-solid border-line text-[0.8rem] leading-[1.6] text-muted">
             Amana is a technology platform, not a bank or financial institution.
             Escrow custody is provided by our CBN-licensed partner financial
             institution. Never start work until funds show as secured.

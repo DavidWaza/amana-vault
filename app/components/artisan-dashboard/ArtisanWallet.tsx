@@ -13,6 +13,23 @@ import {
 import type { ArtisanProfile, ArtisanWallet, WalletTransactionStatus } from "./types";
 import { formatNaira } from "./utils";
 import VaultIcon from "./VaultIcon";
+import {
+  adashBtn,
+  adashBtnGhost,
+  adashBtnPrimary,
+  adashEyebrow,
+  adashField,
+  adashFieldError,
+  adashInput,
+  adashInputError,
+  adashLabel,
+  adashLinkBtn,
+  adashModal,
+  adashModalActions,
+  adashModalClose,
+  adashModalHeader,
+  adashModalOverlay,
+} from "./ui";
 
 type ArtisanWalletProps = {
   wallet: ArtisanWallet;
@@ -103,49 +120,63 @@ export default function ArtisanWalletSection({
     }
   };
 
+  const txAmountTone: Record<string, string> = {
+    credit: "text-green2",
+    withdrawal: "text-text",
+  };
+  const txStatusTone: Record<string, string> = {
+    completed: "text-green2",
+    awaiting_approval: "text-[#b45309]",
+    pending: "text-green2",
+    failed: "text-[#c53030]",
+  };
+
   return (
-    <section className="adash-wallet" id="wallet">
-      <div className="adash-wallet-header">
+    <section
+      className="grid gap-5 p-6 rounded-3xl bg-white border border-solid border-line shadow-brand-sm"
+      id="wallet"
+    >
+      <div className="flex justify-between items-start gap-4">
         <div>
-          <p className="adash-eyebrow">amana vault</p>
+          <p className={adashEyebrow}>amana vault</p>
         </div>
-        <span className="adash-wallet-icon-wrap">
+        <span className="grid place-items-center w-13 h-13 rounded-2xl bg-soft text-green2 shrink-0">
           <VaultIcon size={72} />
         </span>
       </div>
 
-      <div className="adash-wallet-balance-card">
-        <h2 className="adash-wallet-title">
+      <div className="p-[1.35rem] rounded-[20px] bg-[linear-gradient(135deg,var(--green),var(--green2))] text-white">
+        <h2 className="flex items-center">
           <VaultIcon size={50} variant="white" />
           Secured in Escrow
         </h2>
-        <p className="adash-wallet-balance-value">
+        <p className="mt-[0.35rem] mb-5 text-[clamp(2rem,4vw,2.75rem)] font-black tracking-[-0.03em]">
           {formatNaira(wallet.availableBalance)}
         </p>
 
-        <div className="adash-wallet-breakdown">
-          <div>
-            <span className="adash-wallet-breakdown-label">
+        <div className="grid grid-cols-2 gap-[0.85rem] mb-5">
+          <div className="p-[0.85rem] rounded-[14px] bg-white/12">
+            <span className="inline-flex items-center gap-[0.35rem] text-[0.75rem] font-bold opacity-90">
               <ArrowDown size={14} weight="bold" />
               Incoming
             </span>
-            <strong>{formatNaira(wallet.incomingBalance)}</strong>
-            <small>On secured jobs awaiting release</small>
+            <strong className="block mt-[0.35rem] text-[1.1rem]">{formatNaira(wallet.incomingBalance)}</strong>
+            <small className="block mt-[0.15rem] text-[0.72rem] opacity-80">On secured jobs awaiting release</small>
           </div>
-          <div>
-            <span className="adash-wallet-breakdown-label">
+          <div className="p-[0.85rem] rounded-[14px] bg-white/12">
+            <span className="inline-flex items-center gap-[0.35rem] text-[0.75rem] font-bold opacity-90">
               <ArrowUp size={14} weight="bold" />
               Pending release
             </span>
-            <strong>{formatNaira(wallet.pendingWithdrawal)}</strong>
-            <small>Awaiting client approval</small>
+            <strong className="block mt-[0.35rem] text-[1.1rem]">{formatNaira(wallet.pendingWithdrawal)}</strong>
+            <small className="block mt-[0.15rem] text-[0.72rem] opacity-80">Awaiting client approval</small>
           </div>
         </div>
 
-        <div className="adash-wallet-actions">
+        <div className="flex flex-wrap">
           <button
             type="button"
-            className="adash-btn adash-btn--primary"
+            className={`${adashBtn} bg-white text-green border-0 enabled:hover:bg-soft disabled:bg-white/35 disabled:text-white/70`}
             onClick={() => {
               setShowWithdraw(true);
               setWithdrawError(null);
@@ -166,14 +197,14 @@ export default function ArtisanWalletSection({
         </div>
 
         {!hasBank && (
-          <p className="adash-wallet-blocked">
+          <p className="flex items-start gap-2 mt-[0.85rem] text-[0.85rem] leading-[1.5] text-white/92">
             <Bank size={16} weight="bold" />
             Add a verified bank account in your profile to request fund releases.
           </p>
         )}
 
         {wallet.availableBalance > 0 && wallet.availableBalance < wallet.minWithdrawal && (
-          <p className="adash-wallet-blocked">
+          <p className="flex items-start gap-2 mt-[0.85rem] text-[0.85rem] leading-[1.5] text-white/92">
             <Info size={16} weight="bold" />
             Minimum release request is {formatNaira(wallet.minWithdrawal)}.
           </p>
@@ -181,50 +212,56 @@ export default function ArtisanWalletSection({
       </div>
 
       {withdrawSuccess && (
-        <div className="adash-wallet-success" role="status">
+        <div
+          className="flex items-start gap-[0.6rem] px-4 py-[0.9rem] rounded-[14px] bg-soft border border-solid border-line text-green text-[0.88rem] leading-[1.5]"
+          role="status"
+        >
           <Info size={18} weight="bold" />
           {withdrawSuccess}
         </div>
       )}
 
-      <div className="adash-wallet-bank">
-        <h3>
+      <div>
+        <h3 className="flex items-center gap-[0.45rem] mt-0 mb-3 text-base text-green">
           <Bank size={18} weight="bold" />
           Payout account
         </h3>
         {wallet.bankAccount ? (
-          <div className="adash-wallet-bank-details">
-            <div>
-              <span>Bank</span>
+          <div className="grid gap-[0.55rem]">
+            <div className="flex justify-between gap-3 text-[0.88rem]">
+              <span className="text-muted">Bank</span>
               <strong>{wallet.bankAccount.bankName}</strong>
             </div>
-            <div>
-              <span>Account</span>
+            <div className="flex justify-between gap-3 text-[0.88rem]">
+              <span className="text-muted">Account</span>
               <strong>{maskAccountNumber(wallet.bankAccount.accountNumber)}</strong>
             </div>
-            <div>
-              <span>Name</span>
+            <div className="flex justify-between gap-3 text-[0.88rem]">
+              <span className="text-muted">Name</span>
               <strong>{wallet.bankAccount.accountName}</strong>
             </div>
           </div>
         ) : (
-          <p className="adash-wallet-bank-empty">No bank account linked yet.</p>
+          <p className="m-0 text-[0.88rem] text-muted">No bank account linked yet.</p>
         )}
       </div>
 
-      <div className="adash-wallet-history">
-        <h3>Recent activity</h3>
+      <div>
+        <h3 className="flex items-center gap-[0.45rem] mt-0 mb-3 text-base text-green">Recent activity</h3>
         {wallet.transactions.length === 0 ? (
-          <p className="adash-wallet-history-empty">
+          <p className="m-0 text-[0.88rem] text-muted">
             Completed job payments will appear here.
           </p>
         ) : (
-          <ul className="adash-wallet-tx-list">
+          <ul className="list-none grid gap-[0.65rem]">
             {wallet.transactions.map((tx) => (
-              <li key={tx.id} className="adash-wallet-tx">
+              <li
+                key={tx.id}
+                className="flex justify-between items-start gap-4 py-[0.85rem] border-b border-solid border-line last:border-b-0"
+              >
                 <div>
-                  <strong>{tx.description}</strong>
-                  <span>
+                  <strong className="block text-[0.9rem] text-text">{tx.description}</strong>
+                  <span className="text-[0.8rem] text-muted">
                     {new Date(tx.date).toLocaleDateString("en-NG", {
                       month: "short",
                       day: "numeric",
@@ -232,14 +269,14 @@ export default function ArtisanWalletSection({
                     })}
                   </span>
                 </div>
-                <div className="adash-wallet-tx-right">
-                  <span
-                    className={`adash-wallet-tx-amount adash-wallet-tx-amount--${tx.type}`}
-                  >
+                <div className="text-right shrink-0">
+                  <span className={`block text-[0.95rem] font-black ${txAmountTone[tx.type]}`}>
                     {tx.type === "credit" ? "+" : "-"}
                     {formatNaira(tx.amount)}
                   </span>
-                  <span className={`adash-wallet-tx-status adash-wallet-tx-status--${tx.status}`}>
+                  <span
+                    className={`inline-block mt-[0.2rem] text-[0.72rem] font-extrabold uppercase tracking-[0.06em] ${txStatusTone[tx.status]}`}
+                  >
                     {formatTxStatus(tx.status)}
                   </span>
                 </div>
@@ -249,7 +286,7 @@ export default function ArtisanWalletSection({
         )}
       </div>
 
-      <p className="adash-wallet-disclaimer">
+      <p className="flex items-start gap-[0.45rem] m-0 text-[0.8rem] leading-[1.55] text-muted">
         <LockSimple size={14} weight="bold" />
         Release requests need client approval before funds leave escrow. After
         approval, payment is sent to your linked bank via our CBN-licensed
@@ -257,18 +294,18 @@ export default function ArtisanWalletSection({
       </p>
 
       {showWithdraw && (
-        <div className="adash-modal-overlay" role="presentation" onClick={() => setShowWithdraw(false)}>
+        <div className={adashModalOverlay} role="presentation" onClick={() => setShowWithdraw(false)}>
           <div
-            className="adash-modal"
+            className={adashModal}
             role="dialog"
             aria-labelledby="withdraw-title"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="adash-modal-header">
-              <h3 id="withdraw-title">Request fund release</h3>
+            <div className={adashModalHeader}>
+              <h3 id="withdraw-title" className="m-0 text-[1.2rem] text-green">Request fund release</h3>
               <button
                 type="button"
-                className="adash-modal-close"
+                className={adashModalClose}
                 onClick={() => setShowWithdraw(false)}
                 aria-label="Close"
               >
@@ -276,26 +313,26 @@ export default function ArtisanWalletSection({
               </button>
             </div>
 
-            <p className="adash-modal-subtext">
+            <p className="m-0 mb-4 text-[0.9rem] text-muted">
               Available in escrow: <strong>{formatNaira(wallet.availableBalance)}</strong>
             </p>
 
-            <div className="adash-wallet-release-notice">
-              <UserCircle size={18} weight="bold" />
-              <p>
+            <div className="flex items-start gap-[0.65rem] mb-4 px-4 py-[0.85rem] rounded-xl bg-soft border border-solid border-line text-green">
+              <UserCircle size={18} weight="bold" className="shrink-0 mt-[0.1rem]" />
+              <p className="m-0 text-[0.86rem] leading-[1.55]">
                 Your client must approve this release before any money is sent to
                 your bank. Funds remain secured in escrow until then.
               </p>
             </div>
 
-            <div className="adash-field">
-              <label className="adash-label" htmlFor="withdraw-amount">
+            <div className={adashField}>
+              <label className={adashLabel} htmlFor="withdraw-amount">
                 Amount to release (NGN)
               </label>
               <input
                 id="withdraw-amount"
                 type="number"
-                className={`adash-input${withdrawError ? " adash-input--error" : ""}`}
+                className={`${adashInput}${withdrawError ? ` ${adashInputError}` : ""}`}
                 placeholder={`Min ${wallet.minWithdrawal.toLocaleString()}`}
                 min={wallet.minWithdrawal}
                 max={wallet.availableBalance}
@@ -307,7 +344,7 @@ export default function ArtisanWalletSection({
               />
               <button
                 type="button"
-                className="adash-link-btn"
+                className={adashLinkBtn}
                 onClick={() => setAmount(String(wallet.availableBalance))}
               >
                 Request full balance
@@ -315,7 +352,7 @@ export default function ArtisanWalletSection({
             </div>
 
             {wallet.bankAccount && (
-              <p className="adash-modal-bank">
+              <p className="m-0 mb-4 text-[0.85rem] text-muted">
                 After client approval, funds will be sent to{" "}
                 {wallet.bankAccount.bankName}{" "}
                 {maskAccountNumber(wallet.bankAccount.accountNumber)}
@@ -323,22 +360,22 @@ export default function ArtisanWalletSection({
             )}
 
             {withdrawError && (
-              <p className="adash-field-error" role="alert">
+              <p className={adashFieldError} role="alert">
                 {withdrawError}
               </p>
             )}
 
-            <div className="adash-modal-actions">
+            <div className={adashModalActions}>
               <button
                 type="button"
-                className="adash-btn adash-btn--ghost"
+                className={`${adashBtn} ${adashBtnGhost}`}
                 onClick={() => setShowWithdraw(false)}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="adash-btn adash-btn--primary"
+                className={`${adashBtn} ${adashBtnPrimary}`}
                 onClick={handleRequestRelease}
                 disabled={submitting}
               >

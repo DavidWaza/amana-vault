@@ -11,6 +11,17 @@ import {
   CheckCircle,
 } from "phosphor-react";
 import type { ArtisanJob } from "./types";
+import {
+  adashBtn,
+  adashBtnGhost,
+  adashBtnPrimary,
+  adashFieldError,
+  adashModal,
+  adashModalActions,
+  adashModalClose,
+  adashModalHeader,
+  adashModalOverlay,
+} from "./ui";
 
 const MAX_FILES = 8;
 const MAX_FILE_SIZE_MB = 10;
@@ -136,24 +147,24 @@ export default function ArtisanProofUploadModal({
 
   return (
     <div
-      className="adash-modal-overlay"
+      className={adashModalOverlay}
       role="presentation"
       onClick={onClose}
     >
       <div
-        className="adash-modal adash-modal--proof"
+        className={adashModal}
         role="dialog"
         aria-labelledby="proof-upload-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="adash-modal-header">
+        <div className={adashModalHeader}>
           <div>
-            <h3 id="proof-upload-title">Upload proof of work</h3>
-            <p className="adash-modal-subtext">{job.title}</p>
+            <h3 id="proof-upload-title" className="m-0 text-[1.2rem] text-green">Upload proof of work</h3>
+            <p className="m-0 mt-1 text-[0.9rem] text-muted">{job.title}</p>
           </div>
           <button
             type="button"
-            className="adash-modal-close"
+            className={adashModalClose}
             onClick={onClose}
             aria-label="Close"
           >
@@ -161,33 +172,33 @@ export default function ArtisanProofUploadModal({
           </button>
         </div>
 
-        <p className="adash-proof-intro">
+        <p className="m-0 mb-4 text-[0.9rem] leading-[1.6] text-muted">
           Show the client your completed work. Take a fresh photo on site or
           choose existing shots from your camera roll.
         </p>
 
-        <div className="adash-proof-actions">
+        <div className="grid grid-cols-2 gap-3 mb-4">
           <button
             type="button"
-            className="adash-proof-action-btn"
+            className="flex items-center gap-3 p-4 rounded-[18px] border border-solid border-line bg-soft text-green text-left transition-[border-color,transform] duration-300"
             onClick={() => cameraInputRef.current?.click()}
           >
             <Camera size={22} weight="bold" />
             <span>
-              <strong>Take photo</strong>
-              <small>Opens your phone camera</small>
+              <strong className="block text-[0.92rem]">Take photo</strong>
+              <small className="block mt-[0.15rem] text-[0.78rem] text-muted font-semibold">Opens your phone camera</small>
             </span>
           </button>
 
           <button
             type="button"
-            className="adash-proof-action-btn"
+            className="flex items-center gap-3 p-4 rounded-[18px] border border-solid border-line bg-soft text-green text-left transition-[border-color,transform] duration-300"
             onClick={() => galleryInputRef.current?.click()}
           >
             <Image size={22} weight="bold" />
             <span>
-              <strong>Choose from gallery</strong>
-              <small>Camera roll or photo library</small>
+              <strong className="block text-[0.92rem]">Choose from gallery</strong>
+              <small className="block mt-[0.15rem] text-[0.78rem] text-muted font-semibold">Camera roll or photo library</small>
             </span>
           </button>
         </div>
@@ -197,7 +208,7 @@ export default function ArtisanProofUploadModal({
           type="file"
           accept="image/*"
           capture="environment"
-          className="adash-proof-input"
+          className="hidden"
           onChange={(e) => {
             addFiles(e.target.files);
             e.target.value = "";
@@ -209,7 +220,7 @@ export default function ArtisanProofUploadModal({
           type="file"
           accept="image/*,video/*"
           multiple
-          className="adash-proof-input"
+          className="hidden"
           onChange={(e) => {
             addFiles(e.target.files);
             e.target.value = "";
@@ -217,17 +228,17 @@ export default function ArtisanProofUploadModal({
         />
 
         {previews.length > 0 && (
-          <div className="adash-proof-preview-grid">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(7rem,1fr))] gap-[0.65rem] mb-[0.85rem]">
             {previews.map((item) => (
-              <figure key={item.id} className="adash-proof-preview">
+              <figure key={item.id} className="relative m-0 aspect-square rounded-[14px] overflow-hidden border border-solid border-line bg-[#f8fafc]">
                 {item.file.type.startsWith("video/") ? (
-                  <video src={item.previewUrl} controls muted playsInline />
+                  <video src={item.previewUrl} controls muted playsInline className="w-full h-full object-cover" />
                 ) : (
-                  <img src={item.previewUrl} alt={item.file.name} />
+                  <img src={item.previewUrl} alt={item.file.name} className="w-full h-full object-cover" />
                 )}
                 <button
                   type="button"
-                  className="adash-proof-remove"
+                  className="absolute top-[0.35rem] right-[0.35rem] w-7 h-7 border-0 rounded-full bg-[rgba(15,23,42,0.72)] text-white grid place-items-center"
                   onClick={() => removePreview(item.id)}
                   aria-label={`Remove ${item.file.name}`}
                 >
@@ -238,28 +249,28 @@ export default function ArtisanProofUploadModal({
           </div>
         )}
 
-        <p className="adash-proof-hint">
+        <p className="m-0 mb-4 text-[0.78rem] text-muted">
           JPG, PNG, MP4 · Up to {MAX_FILE_SIZE_MB}MB each · {MAX_FILES} files max
         </p>
 
         {error && (
-          <p className="adash-field-error adash-proof-error" role="alert">
+          <p className={`${adashFieldError} flex items-start gap-[0.45rem] mb-4`} role="alert">
             <Warning size={16} weight="bold" />
             {error}
           </p>
         )}
 
         {success && (
-          <p className="adash-proof-success" role="status">
+          <p className="flex items-center gap-2 mb-4 px-4 py-[0.85rem] rounded-[14px] bg-soft border border-solid border-line text-green text-[0.88rem] font-bold" role="status">
             <CheckCircle size={18} weight="fill" />
             Proof uploaded. Waiting for client approval.
           </p>
         )}
 
-        <div className="adash-modal-actions">
+        <div className={adashModalActions}>
           <button
             type="button"
-            className="adash-btn adash-btn--ghost"
+            className={`${adashBtn} ${adashBtnGhost}`}
             onClick={onClose}
             disabled={submitting}
           >
@@ -267,7 +278,7 @@ export default function ArtisanProofUploadModal({
           </button>
           <button
             type="button"
-            className="adash-btn adash-btn--primary"
+            className={`${adashBtn} ${adashBtnPrimary}`}
             onClick={handleSubmit}
             disabled={submitting || success || previews.length === 0}
           >

@@ -43,7 +43,7 @@ export default function BankStep({
         </p>
       </div>
 
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="bankName">
           Bank
         </label>
@@ -71,7 +71,7 @@ export default function BankStep({
         )}
       </div>
 
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="accountNumber">
           Account Number
         </label>
@@ -94,7 +94,7 @@ export default function BankStep({
         )}
       </div>
 
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="accountName">
           Account Name
         </label>

@@ -38,7 +38,7 @@ export default function ProfileStep({
 
   return (
     <>
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="fullName">
           Full Name
         </label>
@@ -53,7 +53,7 @@ export default function ProfileStep({
         />
       </div>
 
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="dateOfBirth">
           Date of Birth
         </label>
@@ -79,7 +79,7 @@ export default function ProfileStep({
         )}
       </div>
 
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="phone">
           Phone Number
         </label>
@@ -94,7 +94,7 @@ export default function ProfileStep({
         />
       </div>
 
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="email">
           Email 
         </label>
@@ -108,7 +108,7 @@ export default function ProfileStep({
         />
       </div>
 
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="password">
           Password
         </label>
@@ -134,7 +134,7 @@ export default function ProfileStep({
         )}
       </div>
 
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="confirmPassword">
           Confirm Password
         </label>

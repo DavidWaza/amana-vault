@@ -53,7 +53,7 @@ export default function IdentityStep({
 
   return (
     <>
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label" htmlFor="nin">
           National Identification Number (NIN)
         </label>
@@ -76,7 +76,7 @@ export default function IdentityStep({
         )}
       </div>
 
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label">Government ID</label>
         <div
           className={`join-upload-zone${showGovernmentIdError ? " join-upload-zone--error" : ""}${governmentIdPreview ? " has-file" : ""}`}
@@ -120,7 +120,7 @@ export default function IdentityStep({
         )}
       </div>
 
-      <div className="join-field">
+      <div className="grid gap-[0.45rem]">
         <label className="join-label">Selfie Verification</label>
         <div
           className={`join-upload-zone join-upload-zone--selfie${showSelfieError ? " join-upload-zone--error" : ""}${selfiePreview ? " has-file" : ""}`}

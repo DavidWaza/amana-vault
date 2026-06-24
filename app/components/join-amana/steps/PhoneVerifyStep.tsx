@@ -21,7 +21,7 @@ export default function PhoneVerifyStep({
         </p>
       </div>
 
-      <div className="join-otp-grid">
+      <div className="grid grid-cols-4 gap-3">
         {otp.map((digit, index) => (
           <input
             key={index}

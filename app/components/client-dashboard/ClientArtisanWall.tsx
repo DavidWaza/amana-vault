@@ -33,6 +33,7 @@ function getInitials(name: string): string {
 
 export default function ClientArtisanWall({
   artisans,
+
   clientAreaLabel,
   onCreateJob,
   onViewArtisan,

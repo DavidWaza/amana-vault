@@ -133,27 +133,50 @@ export default function ArtisanStatusBanner({ profile }: ArtisanStatusBannerProp
     });
   }
 
+  const card =
+    "flex items-start gap-[0.85rem] px-[1.15rem] py-4 rounded-[18px] border border-solid";
+  const toneCard: Record<string, string> = {
+    success: "bg-soft border-[rgba(0,107,50,0.25)]",
+    warning: "bg-gold-soft border-[rgba(244,163,0,0.25)]",
+    danger: "bg-[#fff5f5] border-[rgba(214,69,69,0.25)]",
+    info: "bg-[#f0f9ff] border-[rgba(14,116,144,0.2)]",
+  };
+  const toneIcon: Record<string, string> = {
+    success: "text-green2",
+    info: "text-green2",
+    warning: "text-gold",
+    danger: "text-[#c53030]",
+  };
+  const actionClass =
+    "shrink-0 px-[0.9rem] py-[0.55rem] rounded-full bg-green text-white text-[0.82rem] font-extrabold whitespace-nowrap inline-block border-0";
+
   return (
-    <div className="adash-banners">
+    <div className="grid gap-3">
       {banners.map((banner) => {
         const action = banner.action;
 
         return (
-          <div key={banner.title} className={`adash-banner adash-banner--${banner.tone}`}>
-            <span className="adash-banner-icon">{banner.icon}</span>
-            <div className="adash-banner-body">
-              <strong>{banner.title}</strong>
-              <p>{banner.message}</p>
+          <div key={banner.title} className={`${card} ${toneCard[banner.tone]}`}>
+            <span className={`shrink-0 ${toneIcon[banner.tone]}`}>
+              {banner.icon}
+            </span>
+            <div className="flex-1 min-w-0">
+              <strong className="block mb-1 text-green text-[0.95rem]">
+                {banner.title}
+              </strong>
+              <p className="m-0 text-[0.88rem] leading-[1.55] text-muted">
+                {banner.message}
+              </p>
             </div>
             {action?.type === "link" && (
-              <Link href={action.href} className="adash-banner-action">
+              <Link href={action.href} className={actionClass}>
                 {action.label}
               </Link>
             )}
             {action?.type === "settings" && (
               <button
                 type="button"
-                className="adash-banner-action"
+                className={actionClass}
                 onClick={() => openProfileSettings(action.tab)}
               >
                 {action.label}

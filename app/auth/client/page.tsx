@@ -11,28 +11,7 @@ import {
   PHONE_DIGIT_LENGTH,
 } from "@/app/lib/phone";
 
-// function AmanaLogo({ size = 48 }: { size?: number }) {
-//   const scale = size / 48;
-
-//   return (
-//     <div
-//       className="logo"
-//       style={{ width: size, height: size, borderWidth: 4 * scale, borderColor: "var(--green2)" }}
-//     >
-//       <div
-//         className="logo-mark"
-//         style={{ width: 24 * scale, height: 24 * scale, borderWidth: 4 * scale, borderColor: "var(--green2)" }}
-//       >
-//         <div className="logo-cross logo-cross-first" />
-//         <div className="logo-cross logo-cross-second" />
-//         <div className="logo-dot" style={{ width: 6 * scale, height: 6 * scale }} />
-//       </div>
-//     </div>
-//   );
-// }
-
 export default function ClientAuthPage() {
-  
   const [isLogin, setIsLogin] = useState(true);
   const [step, setStep] = useState<"auth" | "verify">("auth");
   const [phone, setPhone] = useState("");
@@ -61,35 +40,46 @@ export default function ClientAuthPage() {
 
   return (
     <div className="auth-page auth-page--client">
-      <div className="auth-container">
-        <Link href="/" className="logo-link auth-brand">
-        <AmanaLogo variant="green" size={80} />
+      <div className="max-w-[440px] mx-auto flex flex-col items-center gap-8">
+        <Link href="/" className="flex flex-col items-center text-center">
+          <AmanaLogo variant="green" size={80} />
           <div>
-            <h1 className="logo-text auth-brand-title">Amana</h1>
-            <p className="auth-portal-tag auth-portal-tag--client">Client Portal</p>
+            <h1 className="logo-text m-0">Amana</h1>
+            <p className="auth-portal-tag auth-portal-tag--client">
+              Client Portal
+            </p>
           </div>
         </Link>
 
         <div className="auth-card">
-          <div className="auth-card-header">
+          <div className="mb-8 text-center">
             <h2>{isLogin ? "Welcome back" : "Create an account"}</h2>
-            <p>{isLogin ? "Sign in to manage your protected payments." : "Protect your money before work begins."}</p>
+            <p>
+              {isLogin
+                ? "Sign in to manage your protected payments."
+                : "Protect your money before work begins."}
+            </p>
           </div>
 
           {step === "auth" ? (
             <form onSubmit={handleAuthSubmit}>
               {!isLogin && (
-                <div className="auth-field">
+                <div className="grid gap-2 mb-4">
                   <label className="auth-label">Full Name</label>
-                  <input type="text" placeholder="e.g. Adaeze Obi" required className="auth-input" />
+                  <input
+                    type="text"
+                    placeholder="e.g. Adaeze Obi"
+                    required
+                    className="auth-input"
+                  />
                 </div>
               )}
 
-              <div className="auth-field">
+              <div className="grid gap-2 mb-4">
                 <label className="auth-label" htmlFor="client-phone">
                   Phone Number
                 </label>
-                <div className="auth-input-wrap">
+                <div className="flex flex-col gap-[0.2rem]">
                   <input
                     id="client-phone"
                     type="tel"
@@ -105,14 +95,18 @@ export default function ClientAuthPage() {
                     aria-invalid={phoneError ? true : undefined}
                     className={`auth-input${phoneError ? " auth-input--error" : ""}`}
                   />
-                  <p className="auth-field-hint">
+                  <p className="m-0 px-[0.35rem] text-[0.72rem] font-bold text-muted leading-[1.2] text-right">
                     {phone.length}/{PHONE_DIGIT_LENGTH} digits
                   </p>
                 </div>
-                {phoneError && <p className="auth-field-error">{phoneError}</p>}
+                {phoneError && (
+                  <p className="m-0 text-[0.8rem] font-bold text-[#c53030] leading-[1.45]">
+                    {phoneError}
+                  </p>
+                )}
               </div>
 
-              <div className="auth-actions">
+              <div className="grid gap-4 mt-4">
                 <button
                   type="submit"
                   className="auth-submit"
@@ -124,25 +118,36 @@ export default function ClientAuthPage() {
             </form>
           ) : (
             <form onSubmit={handleVerifySubmit}>
-              <div className="auth-card-header">
+              <div className="mb-8 text-center">
                 <div className="auth-verify-icon">
                   <LockSimple size={32} weight="bold" />
                 </div>
                 <h2>Verify your number</h2>
                 <p>
-                  We sent a 4-digit code to <strong>{phone}</strong>. Enter it below to continue.
+                  We sent a 4-digit code to <strong>{phone}</strong>. Enter it
+                  below to continue.
                 </p>
               </div>
-              <div className="auth-otp-grid">
+              <div className="grid grid-cols-4 gap-3">
                 {[1, 2, 3, 4].map((i) => (
-                  <input key={i} type="text" maxLength={1} required className="auth-otp-input" />
+                  <input
+                    key={i}
+                    type="text"
+                    maxLength={1}
+                    required
+                    className="auth-otp-input"
+                  />
                 ))}
               </div>
-              <div className="auth-actions">
+              <div className="grid gap-4 mt-4">
                 <button type="submit" className="auth-submit">
                   Verify & Continue
                 </button>
-                <button type="button" onClick={() => setStep("auth")} className="auth-switch">
+                <button
+                  type="button"
+                  onClick={() => setStep("auth")}
+                  className="auth-switch"
+                >
                   Change phone number
                 </button>
               </div>
@@ -152,16 +157,24 @@ export default function ClientAuthPage() {
           <div className="auth-divider">
             <p>
               {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-              <button type="button" onClick={() => setIsLogin((prev) => !prev)} className="auth-switch">
+              <button
+                type="button"
+                onClick={() => setIsLogin((prev) => !prev)}
+                className="auth-switch"
+              >
                 {isLogin ? "Sign up" : "Sign in"}
               </button>
             </p>
           </div>
         </div>
 
-        <p className="auth-note">Funds held by CBN-licensed financial partners</p>
-        <p className="auth-disclaimer">
-          Amana is a technology platform, not a bank or financial institution. All escrowed funds are held securely in custody by our licensed partner bank.
+        <p className="auth-note">
+          Funds held by CBN-licensed financial partners
+        </p>
+        <p className="mt-4 text-[0.78rem] text-muted leading-[1.5] text-center">
+          Amana is a technology platform, not a bank or financial institution.
+          All escrowed funds are held securely in custody by our licensed
+          partner bank.
         </p>
       </div>
     </div>

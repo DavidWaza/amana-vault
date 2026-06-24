@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Briefcase, Envelope, ClockCounterClockwise } from "phosphor-react";
 import Link from "next/link";
 import type { DashboardTab } from "./types";
+import { adashBtn, adashBtnPrimary } from "./ui";
 
 type ArtisanEmptyStateProps = {
   tab: DashboardTab;
@@ -37,17 +38,21 @@ export default function ArtisanEmptyState({ tab, canAcceptJobs }: ArtisanEmptySt
   const copy = EMPTY_COPY[tab];
 
   return (
-    <div className="adash-empty">
-      <span className="adash-empty-icon">{copy.icon}</span>
-      <h3>{copy.title}</h3>
-      <p>{copy.message}</p>
+    <div className="text-center px-6 py-12 rounded-[22px] border border-dashed border-line bg-white/70">
+      <span className="inline-grid place-items-center w-18 h-18 mb-4 rounded-full bg-soft text-green2">
+        {copy.icon}
+      </span>
+      <h3 className="mt-0 mb-2 text-green">{copy.title}</h3>
+      <p className="mx-auto mb-4 max-w-[24rem] text-muted leading-[1.6] text-[0.92rem]">
+        {copy.message}
+      </p>
       {!canAcceptJobs && tab === "invitations" && (
-        <p className="adash-empty-note">
+        <p className="mt-0 mb-4 text-[0.85rem] font-bold text-[#b45309]">
           Verify your identity to accept client invitations.
         </p>
       )}
       {copy.cta && (
-        <Link href={copy.cta.href} className="adash-btn adash-btn--primary">
+        <Link href={copy.cta.href} className={`${adashBtn} ${adashBtnPrimary}`}>
           {copy.cta.label}
         </Link>
       )}

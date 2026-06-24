@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Star, ShieldCheck, ChatCircleText } from "phosphor-react";
 import type { ArtisanReview, ReviewFilter } from "./types";
 import { buildReviewSummary } from "./mock-data";
+import { adashTab, adashTabActive, adashTabCount, adashTabInactive, adashTabs } from "./ui";
 
 type ArtisanReviewsProps = {
   reviews: ArtisanReview[];
@@ -27,7 +28,7 @@ function getInitials(name: string): string {
 
 function StarRating({ rating }: { rating: number }) {
   return (
-    <span className="adash-star-rating" aria-label={`${rating} out of 5 stars`}>
+    <span className="inline-flex items-center gap-[0.15rem] text-gold" aria-label={`${rating} out of 5 stars`}>
       {Array.from({ length: 5 }, (_, index) => (
         <Star
           key={index}
@@ -76,104 +77,104 @@ export default function ArtisanReviews({ reviews }: ArtisanReviewsProps) {
   );
 
   return (
-    <section className="adash-reviews" id="reviews">
-      <div className="adash-reviews-header">
+    <section className="grid gap-5 mt-6" id="reviews">
+      <div>
         <div>
-          <p className="adash-eyebrow">Client feedback</p>
-          <h2>Your reviews</h2>
-          <p>See what clients say after funds are released from escrow.</p>
+          <p className="m-0 text-[0.92rem] font-extrabold tracking-[0.14em] uppercase text-muted">Client feedback</p>
+          <h2 className="mt-1 mb-[0.35rem] text-[1.35rem] text-green">Your reviews</h2>
+          <p className="m-0 text-muted text-[0.92rem]">See what clients say after funds are released from escrow.</p>
         </div>
       </div>
 
-      <div className="adash-reviews-layout">
-        <aside className="adash-reviews-summary">
-          <div className="adash-reviews-score">
-            <span className="adash-reviews-score-value">
+      <div className="grid grid-cols-[260px_1fr] gap-5 items-start max-[900px]:grid-cols-1">
+        <aside className="p-5 rounded-[22px] border border-solid border-line bg-white grid gap-[1.15rem]">
+          <div className="text-center pb-4 border-b border-solid border-line">
+            <span className="block text-[2.75rem] font-black tracking-[-0.04em] text-green leading-none">
               {summary.average > 0 ? summary.average.toFixed(1) : "—"}
             </span>
             <StarRating rating={summary.average} />
-            <p>{summary.total} review{summary.total === 1 ? "" : "s"}</p>
+            <p className="mt-2 mb-0 text-[0.85rem] text-muted font-bold">{summary.total} review{summary.total === 1 ? "" : "s"}</p>
           </div>
 
-          <ul className="adash-reviews-breakdown" aria-label="Rating breakdown">
+          <ul className="list-none m-0 p-0 grid gap-[0.55rem]" aria-label="Rating breakdown">
             {([5, 4, 3, 2, 1] as const).map((star) => {
               const count = summary.breakdown[star];
               const percent =
                 summary.total > 0 ? Math.round((count / summary.total) * 100) : 0;
 
               return (
-                <li key={star}>
-                  <span className="adash-reviews-breakdown-label">
+                <li key={star} className="grid grid-cols-[2.5rem_1fr_1.5rem] items-center gap-2">
+                  <span className="inline-flex items-center gap-[0.2rem] text-[0.78rem] font-extrabold text-muted">
                     {star}
-                    <Star size={12} weight="fill" />
+                    <Star size={12} weight="fill" className="text-gold" />
                   </span>
-                  <span className="adash-reviews-breakdown-bar">
-                    <span style={{ width: `${percent}%` }} />
+                  <span className="h-[0.45rem] rounded-full bg-soft overflow-hidden">
+                    <span className="block h-full rounded-[inherit] bg-[linear-gradient(90deg,#f4a300,#fbbf24)]" style={{ width: `${percent}%` }} />
                   </span>
-                  <span className="adash-reviews-breakdown-count">{count}</span>
+                  <span className="text-[0.78rem] font-extrabold text-muted text-right">{count}</span>
                 </li>
               );
             })}
           </ul>
 
-          <p className="adash-reviews-summary-note">
+          <p className="m-0 text-[0.8rem] leading-[1.55] text-muted">
             Reviews are left by clients after a job is completed and payment is
             released from the vault.
           </p>
         </aside>
 
-        <div className="adash-reviews-main">
-          <div className="adash-tabs" role="tablist" aria-label="Review filters">
+        <div className="grid gap-4">
+          <div className={adashTabs} role="tablist" aria-label="Review filters">
             {FILTERS.map((item) => (
               <button
                 key={item.id}
                 type="button"
                 role="tab"
                 aria-selected={filter === item.id}
-                className={`adash-tab${filter === item.id ? " adash-tab--active" : ""}`}
+                className={`${adashTab} ${filter === item.id ? adashTabActive : adashTabInactive}`}
                 onClick={() => setFilter(item.id)}
               >
                 {item.label}
-                <span className="adash-tab-count">{filterCounts[item.id]}</span>
+                <span className={adashTabCount}>{filterCounts[item.id]}</span>
               </button>
             ))}
           </div>
 
           {filteredReviews.length === 0 ? (
-            <div className="adash-empty adash-empty--compact">
-              <span className="adash-empty-icon">
+            <div className="text-center px-5 py-8 rounded-[22px] border border-dashed border-line bg-white/70">
+              <span className="inline-grid place-items-center w-18 h-18 mb-4 rounded-full bg-soft text-green2">
                 <ChatCircleText size={36} weight="bold" />
               </span>
-              <h3>No reviews in this filter</h3>
-              <p>Try another tab or complete more jobs to collect client feedback.</p>
+              <h3 className="mt-0 mb-2 text-green">No reviews in this filter</h3>
+              <p className="mx-auto mb-4 max-w-[24rem] text-muted leading-[1.6] text-[0.92rem]">Try another tab or complete more jobs to collect client feedback.</p>
             </div>
           ) : (
-            <ul className="adash-review-list">
+            <ul className="list-none m-0 p-0 grid gap-[0.85rem]">
               {filteredReviews.map((review) => (
-                <li key={review.id} className="adash-review-card">
-                  <div className="adash-review-card-top">
-                    <div className="adash-review-client">
-                      <span className="adash-review-avatar">
+                <li key={review.id} className="px-5 py-[1.15rem] rounded-[20px] border border-solid border-line bg-white">
+                  <div className="flex justify-between items-start gap-4 mb-[0.85rem] max-[640px]:flex-col">
+                    <div className="flex items-center gap-[0.85rem] min-w-0">
+                      <span className="w-11 h-11 rounded-[14px] grid place-items-center bg-soft text-green2 text-[0.82rem] font-black shrink-0">
                         {getInitials(review.clientName)}
                       </span>
                       <div>
-                        <div className="adash-review-client-name">
-                          <strong>{review.clientName}</strong>
+                        <div className="flex items-center gap-[0.35rem]">
+                          <strong className="text-text text-[0.95rem]">{review.clientName}</strong>
                           {review.clientVerified && (
                             <span
-                              className="adash-review-verified"
+                              className="inline-flex text-green2"
                               title="Verified client"
                             >
                               <ShieldCheck size={14} weight="fill" />
                             </span>
                           )}
                         </div>
-                        <p className="adash-review-job">{review.jobTitle}</p>
+                        <p className="mt-[0.15rem] mb-0 text-[0.82rem] text-muted">{review.jobTitle}</p>
                       </div>
                     </div>
-                    <div className="adash-review-meta">
+                    <div className="grid justify-items-end gap-[0.35rem] shrink-0">
                       <StarRating rating={review.rating} />
-                      <time dateTime={review.createdAt}>
+                      <time dateTime={review.createdAt} className="text-[0.78rem] text-muted font-semibold">
                         {new Date(review.createdAt).toLocaleDateString("en-NG", {
                           month: "short",
                           day: "numeric",
@@ -182,7 +183,7 @@ export default function ArtisanReviews({ reviews }: ArtisanReviewsProps) {
                       </time>
                     </div>
                   </div>
-                  <blockquote className="adash-review-comment">
+                  <blockquote className="m-0 text-[0.92rem] leading-[1.65] text-text">
                     {review.comment}
                   </blockquote>
                 </li>
