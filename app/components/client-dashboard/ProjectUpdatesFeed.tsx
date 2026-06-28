@@ -10,6 +10,7 @@ import {
 } from "phosphor-react";
 import type { ProjectUpdate } from "./types";
 import { formatRelativeDate } from "./utils";
+import ClientPanelEmptyState from "./ClientPanelEmptyState";
 
 type ProjectUpdatesFeedProps = {
   updates: ProjectUpdate[];
@@ -43,10 +44,11 @@ export default function ProjectUpdatesFeed({ updates }: ProjectUpdatesFeedProps)
       </header>
 
       {updates.length === 0 ? (
-        <div className="adash-empty">
-          <h3>No updates yet</h3>
-          <p>Project activity will appear here as your team posts progress.</p>
-        </div>
+        <ClientPanelEmptyState
+          variant="updates"
+          title="No updates yet"
+          message="Project activity will appear here as your team posts progress."
+        />
       ) : (
         <ol className="cdash-updates-timeline">
           {updates.map((update) => {

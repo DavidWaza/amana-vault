@@ -1,0 +1,72 @@
+.cp-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  border-radius: 20px;
+  border: 1px dashed var(--line);
+  background: linear-gradient(180deg, #fff, var(--soft));
+  min-height: 280px;
+}
+
+.cp-empty-state--compact {
+  min-height: auto;
+  padding: 1.5rem 1rem;
+  border: none;
+  background: transparent;
+}
+
+.cp-empty-illustration {
+  width: min(200px, 100%);
+  height: auto;
+  margin-bottom: 1.25rem;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.cp-empty-state--compact .cp-empty-illustration {
+  width: 140px;
+  margin-bottom: 0.85rem;
+  box-shadow: none;
+}
+
+.cp-empty-state h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--green);
+}
+
+.cp-empty-state p {
+  margin: 0;
+  max-width: 26rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.cp-empty-state-note {
+  margin-top: 0.65rem !important;
+  font-size: 0.82rem !important;
+  color: var(--client2) !important;
+  font-weight: 600;
+}
+
+.cp-empty-state .adash-btn,
+.cp-empty-state .cp-outline-btn {
+  margin-top: 1.15rem;
+}
+
+.cp-empty-state--compact h3 {
+  font-size: 0.92rem;
+}
+
+.cp-empty-state--compact p {
+  font-size: 0.82rem;
+}
+
+.cp-panel .cp-empty-state--compact {
+  padding: 1.25rem 0.5rem 0.5rem;
+}

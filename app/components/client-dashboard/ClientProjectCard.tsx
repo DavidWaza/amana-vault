@@ -9,6 +9,7 @@ import {
   Scales,
   Wrench,
   SquaresFour,
+  Scroll,
 } from "phosphor-react";
 import type { ClientProject, ClientJobPrimaryAction } from "./types";
 import {
@@ -25,17 +26,21 @@ import {
 type ClientProjectCardProps = {
   project: ClientProject;
   canFundJobs: boolean;
+  hasBriefTrail?: boolean;
   onPrimaryAction?: (project: ClientProject, action: ClientJobPrimaryAction) => void;
   onMessage?: (project: ClientProject) => void;
   onRaiseConcern?: (project: ClientProject) => void;
+  onViewBrief?: (project: ClientProject) => void;
 };
 
 export default function ClientProjectCard({
   project,
   canFundJobs,
+  hasBriefTrail,
   onPrimaryAction,
   onMessage,
   onRaiseConcern,
+  onViewBrief,
 }: ClientProjectCardProps) {
   const status = CLIENT_JOB_STATUS_META[project.status];
   const action = getClientJobPrimaryAction(project);
@@ -176,6 +181,16 @@ export default function ClientProjectCard({
             onClick={() => onRaiseConcern(project)}
           >
             Raise concern
+          </button>
+        )}
+        {hasBriefTrail && onViewBrief && (
+          <button
+            type="button"
+            className="adash-btn adash-btn--ghost"
+            onClick={() => onViewBrief(project)}
+          >
+            <Scroll size={16} weight="bold" />
+            View submission trail
           </button>
         )}
       </div>

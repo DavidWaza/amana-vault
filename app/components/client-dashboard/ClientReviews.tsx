@@ -1,5 +1,6 @@
 import { Star } from "phosphor-react";
 import type { ClientReview } from "./types";
+import ClientPanelEmptyState from "./ClientPanelEmptyState";
 
 type ClientReviewsProps = {
   reviews: ClientReview[];
@@ -16,9 +17,11 @@ export default function ClientReviews({ reviews }: ClientReviewsProps) {
       </div>
 
       {reviews.length === 0 ? (
-        <div className="adash-empty adash-empty--compact">
-          <p>No reviews yet. Complete a job to rate your artisan.</p>
-        </div>
+        <ClientPanelEmptyState
+          variant="reviews"
+          title="No reviews yet"
+          message="Complete a job to rate your artisan and share feedback."
+        />
       ) : (
         <div className="adash-review-list">
           {reviews.map((review) => (

@@ -73,7 +73,7 @@ export default function ArchitectMarketplace({
               ))}
             </ul>
 
-            <div className="cdash-architect-actions">
+            <div className="flex flex-col gap-2 mt-2">
               <button
                 type="button"
                 className="adash-btn adash-btn--secondary"

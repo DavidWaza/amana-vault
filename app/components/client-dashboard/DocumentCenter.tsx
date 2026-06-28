@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Folder, File, DownloadSimple } from "phosphor-react";
 import type { ProjectDocument, DocumentFolder } from "./types";
 import { DOCUMENT_FOLDER_LABELS } from "./mock-data";
+import ClientPanelEmptyState from "./ClientPanelEmptyState";
 
 type DocumentCenterProps = {
   documents: ProjectDocument[];
@@ -73,10 +74,15 @@ export default function DocumentCenter({ documents }: DocumentCenterProps) {
 
         <div className="cdash-doc-list-wrap">
           {filtered.length === 0 ? (
-            <div className="adash-empty cdash-doc-empty">
-              <h3>No documents in this folder</h3>
-              <p>Files uploaded by your team will appear here.</p>
-            </div>
+            <ClientPanelEmptyState
+              variant="documents"
+              title={
+                activeFolder === "all"
+                  ? "No documents yet"
+                  : "No documents in this folder"
+              }
+              message="Files uploaded by your team will appear here."
+            />
           ) : (
             <ul className="cdash-doc-list">
               {filtered.map((doc) => (

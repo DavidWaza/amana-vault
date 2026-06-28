@@ -7,6 +7,7 @@ import type {
   JobStatus,
 } from "../artisan-dashboard/types";
 import type { Dispute } from "../disputes/types";
+import type { BuildJourneyForm } from "./build-journey/types";
 
 export type { JobChatMessage, JobStatus, JobPriority, AgreementCategoryId };
 export type { Dispute };
@@ -204,6 +205,11 @@ export type ProjectDocument = {
   name: string;
   uploadedAt: string;
   sizeLabel: string;
+};
+
+export type StartProjectSubmitPayload = {
+  startProject: StartProjectForm;
+  brief: BuildJourneyForm;
 };
 
 export type StartProjectForm = {

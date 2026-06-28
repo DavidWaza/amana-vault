@@ -15,19 +15,14 @@ import ProjectUpdatesFeed from "./ProjectUpdatesFeed";
 import DocumentCenter from "./DocumentCenter";
 import ClientReviews from "./ClientReviews";
 import ClientJobModals from "./ClientJobModals";
+import ProjectBriefTrailModal from "./ProjectBriefTrailModal";
 import StartProjectModal from "./StartProjectModal";
 import MilestoneApprovalModal from "./MilestoneApprovalModal";
 import RaiseDisputeModal from "../disputes/RaiseDisputeModal";
 import DisputeWorkspaceModal from "../disputes/DisputeWorkspaceModal";
 import { buildDispute } from "../disputes/constants";
 import { useClientProfile } from "./ClientProfileProvider";
-import {
-  MOCK_ARCHITECTS,
-  MOCK_CONTRACTOR_PROPOSALS,
-  MOCK_PROJECT_DOCUMENTS,
-  MOCK_PROJECT_UPDATES,
-  MOCK_CLIENT_REVIEWS,
-} from "./mock-data";
+import { MOCK_ARCHITECTS } from "./mock-data";
 import {
   formatNaira,
   calculateClientTotalDue,
@@ -35,13 +30,14 @@ import {
   isClientPendingTab,
 } from "./utils";
 import { getActiveProject } from "./portal-utils";
+import { createProjectBriefTrail } from "./build-journey/submission-trail";
 import type {
   ClientDashboardView,
   ClientJobPrimaryAction,
   ClientNotification,
   ClientProject,
   ContractorProposal,
-  StartProjectForm,
+  StartProjectSubmitPayload,
 } from "./types";
 import type {
   Dispute,
@@ -96,10 +92,13 @@ export default function ClientDashboard() {
     dismissNotification,
     markNotificationRead,
     openProfileSettings,
+    proposals,
+    setProposals,
+    briefTrails,
+    setBriefTrails,
   } = useClientProfile();
 
   const [activeView, setActiveView] = useState<ClientDashboardView>("dashboard");
-  const [proposals, setProposals] = useState(MOCK_CONTRACTOR_PROPOSALS);
   const [fundJobId, setFundJobId] = useState<string | null>(null);
   const [agreementJobId, setAgreementJobId] = useState<string | null>(null);
   const [proofJobId, setProofJobId] = useState<string | null>(null);
@@ -114,6 +113,7 @@ export default function ClientDashboard() {
   const [funding, setFunding] = useState(false);
   const [fundingSuccess, setFundingSuccess] = useState<ClientProject | null>(null);
   const [startProjectOpen, setStartProjectOpen] = useState(false);
+  const [briefTrailProjectId, setBriefTrailProjectId] = useState<string | null>(null);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarHydrated, setSidebarHydrated] = useState(false);
@@ -131,6 +131,16 @@ export default function ClientDashboard() {
   const priorityProjects = useMemo(
     () => projects.filter(isClientPendingTab),
     [projects],
+  );
+
+  const briefTrailProjectIds = useMemo(
+    () => new Set(briefTrails.map((trail) => trail.projectId)),
+    [briefTrails],
+  );
+
+  const activeBriefTrail = useMemo(
+    () => briefTrails.find((trail) => trail.projectId === briefTrailProjectId) ?? null,
+    [briefTrails, briefTrailProjectId],
   );
 
   const canFundJobs =
@@ -393,7 +403,7 @@ export default function ClientDashboard() {
       .forEach((n) => dismissNotification(n.id));
   };
 
-  const handleStartProject = async (form: StartProjectForm) => {
+  const handleStartProject = async ({ startProject: form, brief }: StartProjectSubmitPayload) => {
     await new Promise((resolve) => setTimeout(resolve, 600));
     const now = new Date().toISOString();
     const projectId = `proj-${Date.now()}`;
@@ -431,7 +441,11 @@ export default function ClientDashboard() {
     };
 
     setProjects((prev) => [newProject, ...prev]);
-    setStartProjectOpen(false);
+
+    setBriefTrails((prev) => [
+      createProjectBriefTrail(projectId, form.projectName.trim(), brief, now),
+      ...prev,
+    ]);
 
     setNotifications((prev) => [
       {
@@ -662,7 +676,7 @@ export default function ClientDashboard() {
           <ClientDashboardHome
             activeProject={activeProject}
             escrow={escrow}
-            updates={MOCK_PROJECT_UPDATES}
+            updates={[]}
             alerts={unreadAlerts}
             onAlertAction={handleAlertAction}
             onNavigate={(view) => navigate(view as ClientDashboardView)}
@@ -674,10 +688,12 @@ export default function ClientDashboard() {
           <ClientProjectsPanel
             projects={projects}
             canFundJobs={canFundJobs}
+            briefTrailProjectIds={briefTrailProjectIds}
             onPrimaryAction={(project, action) => runProjectAction(action, project.id)}
             onMessage={(project) => openChat(project.id)}
             onRaiseConcern={(project) => setRaiseDisputeJobId(project.id)}
             onStartProject={() => setStartProjectOpen(true)}
+            onViewBrief={(project) => setBriefTrailProjectId(project.id)}
           />
         );
       case "team":
@@ -727,18 +743,20 @@ export default function ClientDashboard() {
           <ClientProjectsPanel
             projects={priorityProjects}
             canFundJobs={canFundJobs}
+            briefTrailProjectIds={briefTrailProjectIds}
             onPrimaryAction={(project, action) => runProjectAction(action, project.id)}
             onMessage={(project) => openChat(project.id)}
             onRaiseConcern={(project) => setRaiseDisputeJobId(project.id)}
             onStartProject={() => setStartProjectOpen(true)}
+            onViewBrief={(project) => setBriefTrailProjectId(project.id)}
           />
         );
       case "updates":
-        return <ProjectUpdatesFeed updates={MOCK_PROJECT_UPDATES} />;
+        return <ProjectUpdatesFeed updates={[]} />;
       case "documents":
-        return <DocumentCenter documents={MOCK_PROJECT_DOCUMENTS} />;
+        return <DocumentCenter documents={[]} />;
       case "reviews":
-        return <ClientReviews reviews={MOCK_CLIENT_REVIEWS} />;
+        return <ClientReviews reviews={[]} />;
       default:
         return null;
     }
@@ -838,6 +856,11 @@ export default function ClientDashboard() {
         open={startProjectOpen}
         onClose={() => setStartProjectOpen(false)}
         onSubmit={handleStartProject}
+      />
+
+      <ProjectBriefTrailModal
+        trail={activeBriefTrail}
+        onClose={() => setBriefTrailProjectId(null)}
       />
 
       <RaiseDisputeModal
