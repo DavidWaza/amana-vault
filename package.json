@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "assets:manifest": "node scripts/generate-asset-manifest.mjs",
+    "dev": "npm run assets:manifest && next dev",
+    "build": "npm run assets:manifest && next build",
     "start": "next start",
     "lint": "eslint"
   },
