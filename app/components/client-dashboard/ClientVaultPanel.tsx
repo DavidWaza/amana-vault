@@ -10,6 +10,7 @@ import {
 import type { ClientEscrow, ClientProject, ClientProfile, VaultMilestone } from "./types";
 import { calculateClientTotalDue, formatNaira } from "./utils";
 import VaultIcon from "../artisan-dashboard/VaultIcon";
+import ClientPanelEmptyState from "./ClientPanelEmptyState";
 
 type ClientVaultPanelProps = {
   escrow: ClientEscrow;
@@ -196,9 +197,12 @@ export default function ClientVaultPanel({
       <div className="adash-wallet-history">
         <h3>Vault activity</h3>
         {escrow.transactions.length === 0 ? (
-          <p className="adash-wallet-history-empty">
-            Deposits and milestone releases will appear here.
-          </p>
+          <ClientPanelEmptyState
+            variant="vault-activity"
+            title="No vault activity yet"
+            message="Deposits and milestone releases will appear here."
+            compact
+          />
         ) : (
           <ul className="adash-wallet-tx-list">
             {escrow.transactions.map((tx) => (

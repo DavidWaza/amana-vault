@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ShieldCheck, Star, Users, Clock, CheckCircle } from "phosphor-react";
 import type { ClientProject, ContractorProposal } from "./types";
 import { formatNaira } from "./utils";
+import ClientPanelEmptyState from "./ClientPanelEmptyState";
 
 type ContractorProposalsProps = {
   projects: ClientProject[];
@@ -39,10 +40,11 @@ export default function ContractorProposals({
             </p>
           </div>
         </header>
-        <div className="adash-empty">
-          <h3>No proposals yet</h3>
-          <p>Proposals appear here when contractor bidding opens on a project.</p>
-        </div>
+        <ClientPanelEmptyState
+          variant="proposals"
+          title="No proposals yet"
+          message="Proposals appear here when contractor bidding opens on a project."
+        />
       </section>
     );
   }
@@ -83,7 +85,14 @@ export default function ContractorProposals({
       )}
 
       <div className="cdash-proposal-cards">
-        {projectProposals.map((proposal) => (
+        {projectProposals.length === 0 ? (
+          <ClientPanelEmptyState
+            variant="proposals"
+            title="No bids for this project yet"
+            message="Contractors will submit competitive bids once bidding opens."
+          />
+        ) : (
+          projectProposals.map((proposal) => (
           <article
             key={proposal.id}
             className={`cdash-proposal-card${proposal.accepted ? " cdash-proposal-card--accepted" : ""}`}
@@ -167,7 +176,8 @@ export default function ContractorProposals({
               )}
             </footer>
           </article>
-        ))}
+          ))
+        )}
       </div>
     </section>
   );

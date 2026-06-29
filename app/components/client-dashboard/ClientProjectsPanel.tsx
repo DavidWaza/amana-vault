@@ -9,10 +9,12 @@ import ClientEmptyState from "./ClientEmptyState";
 type ClientProjectsPanelProps = {
   projects: ClientProject[];
   canFundJobs: boolean;
+  briefTrailProjectIds?: Set<string>;
   onPrimaryAction?: (project: ClientProject, action: ClientJobPrimaryAction) => void;
   onMessage?: (project: ClientProject) => void;
   onRaiseConcern?: (project: ClientProject) => void;
   onStartProject?: () => void;
+  onViewBrief?: (project: ClientProject) => void;
 };
 
 const TABS: { id: ClientDashboardTab; label: string }[] = [
@@ -24,10 +26,12 @@ const TABS: { id: ClientDashboardTab; label: string }[] = [
 export default function ClientProjectsPanel({
   projects,
   canFundJobs,
+  briefTrailProjectIds,
   onPrimaryAction,
   onMessage,
   onRaiseConcern,
   onStartProject,
+  onViewBrief,
 }: ClientProjectsPanelProps) {
   const [tab, setTab] = useState<ClientDashboardTab>("pending");
 
@@ -101,9 +105,11 @@ export default function ClientProjectsPanel({
               key={project.id}
               project={project}
               canFundJobs={canFundJobs}
+              hasBriefTrail={briefTrailProjectIds?.has(project.id)}
               onPrimaryAction={onPrimaryAction}
               onMessage={onMessage}
               onRaiseConcern={onRaiseConcern}
+              onViewBrief={onViewBrief}
             />
           ))}
         </div>

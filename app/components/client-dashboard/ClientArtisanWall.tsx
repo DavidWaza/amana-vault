@@ -14,6 +14,7 @@ import type { AgreementCategoryId } from "../artisan-dashboard/types";
 import type { RecommendedArtisan } from "./types";
 import { searchRecommendedArtisans } from "./artisan-search";
 import { ThumbsUpIcon } from "@phosphor-icons/react";
+import ClientPanelEmptyState from "./ClientPanelEmptyState";
 
 type ClientArtisanWallProps = {
   artisans: RecommendedArtisan[];
@@ -131,20 +132,20 @@ export default function ClientArtisanWall({
       </p>
 
       {filteredArtisans.length === 0 ? (
-        <div className="adash-empty adash-empty--compact">
-          <h3>No artisans match your search</h3>
-          <p>
-            Try another trade or create a job and we will surface matching pros
-            first.
-          </p>
-          <button
-            type="button"
-            className="adash-btn adash-btn--primary"
-            onClick={() => onCreateJob()}
-          >
-            Create a job
-          </button>
-        </div>
+        <ClientPanelEmptyState
+          variant="artisans"
+          title="No artisans match your search"
+          message="Try another trade or create a job and we will surface matching pros first."
+          action={
+            <button
+              type="button"
+              className="adash-btn adash-btn--primary"
+              onClick={() => onCreateJob()}
+            >
+              Create a job
+            </button>
+          }
+        />
       ) : (
         <div className="cdash-artisan-grid">
           {filteredArtisans.map((artisan) => (

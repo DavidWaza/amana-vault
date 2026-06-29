@@ -1,7 +1,7 @@
 "use client";
 
-import { UsersThree } from "phosphor-react";
 import type { ClientProject } from "./types";
+import ClientPanelEmptyState from "./ClientPanelEmptyState";
 import { getInitials } from "./portal-utils";
 import { MOCK_ARCHITECTS } from "./mock-data";
 
@@ -89,14 +89,20 @@ export default function ClientBuildTeamPanel({
       </div>
 
       {activeProjects.length === 0 && (
-        <div className="adash-empty">
-          <UsersThree size={40} weight="bold" />
-          <h3>No build team yet</h3>
-          <p>Start a project and find verified professionals for your build.</p>
-          <button type="button" className="adash-btn adash-btn--primary" onClick={onFindProfessionals}>
-            Find Professionals
-          </button>
-        </div>
+        <ClientPanelEmptyState
+          variant="build-team"
+          title="No build team yet"
+          message="Start a project and find verified professionals for your build."
+          action={
+            <button
+              type="button"
+              className="adash-btn adash-btn--primary"
+              onClick={onFindProfessionals}
+            >
+              Find Professionals
+            </button>
+          }
+        />
       )}
     </section>
   );

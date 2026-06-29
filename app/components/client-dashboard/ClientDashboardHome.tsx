@@ -24,6 +24,8 @@ import type {
 import { formatNaira, formatRelativeDate } from "./utils";
 import { getProjectProgress, getInitials } from "./portal-utils";
 import { MOCK_ARCHITECTS } from "./mock-data";
+import ClientPanelEmptyState from "./ClientPanelEmptyState";
+import ClientDashboardGridFill from "./ClientDashboardGridFill";
 
 type BuildTeamMember = {
   id: string;
@@ -282,7 +284,17 @@ export default function ClientDashboardHome({
             </button>
           </header>
           <ul className="cp-team-list">
-            {team.map((member) => (
+            {team.length === 0 ? (
+              <li>
+                <ClientPanelEmptyState
+                  variant="build-team"
+                  title="No team assigned"
+                  message="Assign your build team to get started."
+                  compact
+                />
+              </li>
+            ) : (
+              team.map((member) => (
               <li key={member.id} className="cp-team-item">
                 <span className="cp-avatar cp-avatar--sm">{getInitials(member.name)}</span>
                 <div className="cp-team-info">
@@ -304,9 +316,7 @@ export default function ClientDashboardHome({
                   View Details
                 </button>
               </li>
-            ))}
-            {team.length === 0 && (
-              <li className="cp-empty-inline">Assign your build team to get started.</li>
+            ))
             )}
           </ul>
           <button type="button" className="cp-outline-btn" onClick={() => onNavigate("architects")}>
@@ -322,7 +332,17 @@ export default function ClientDashboardHome({
             </button>
           </header>
           <ul className="cp-updates-list">
-            {recentUpdates.map((update) => (
+            {recentUpdates.length === 0 ? (
+              <li>
+                <ClientPanelEmptyState
+                  variant="updates"
+                  title="No updates yet"
+                  message="Progress from your team will show up here."
+                  compact
+                />
+              </li>
+            ) : (
+              recentUpdates.map((update) => (
               <li key={update.id} className="cp-update-item">
                 <span className={`cp-update-icon cp-update-icon--${update.professionalRole}`}>
                   <CheckCircle size={16} weight="fill" />
@@ -339,7 +359,8 @@ export default function ClientDashboardHome({
                   )}
                 </div>
               </li>
-            ))}
+            ))
+            )}
           </ul>
         </article>
 
@@ -379,7 +400,14 @@ export default function ClientDashboardHome({
             </header>
             <ul className="cp-pending-list">
               {pendingAlerts.length === 0 ? (
-                <li className="cp-empty-inline">No pending actions right now.</li>
+                <li>
+                  <ClientPanelEmptyState
+                    variant="pending-actions"
+                    title="All caught up"
+                    message="No pending actions right now."
+                    compact
+                  />
+                </li>
               ) : (
                 pendingAlerts.map((alert) => (
                   <li key={alert.id}>
@@ -411,6 +439,8 @@ export default function ClientDashboardHome({
             </ul>
           </article>
         </div>
+
+        <ClientDashboardGridFill activeProject={activeProject} onNavigate={onNavigate} />
       </section>
     </div>
   );

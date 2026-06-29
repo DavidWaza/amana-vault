@@ -10,6 +10,7 @@ import {
 } from "phosphor-react";
 import type { ClientEscrow, ClientJob, ClientProfile } from "./types";
 import { calculateClientTotalDue, formatNaira } from "./utils";
+import ClientPanelEmptyState from "./ClientPanelEmptyState";
 import VaultIcon from "../artisan-dashboard/VaultIcon";
 
 type ClientEscrowPanelProps = {
@@ -201,9 +202,12 @@ export default function ClientEscrowPanel({
       <div className="adash-wallet-history">
         <h3>Escrow activity</h3>
         {escrow.transactions.length === 0 ? (
-          <p className="adash-wallet-history-empty">
-            Deposits and releases will appear here once you fund jobs.
-          </p>
+          <ClientPanelEmptyState
+            variant="vault-activity"
+            title="No escrow activity yet"
+            message="Deposits and releases will appear here once you fund jobs."
+            compact
+          />
         ) : (
           <ul className="adash-wallet-tx-list">
             {escrow.transactions.map((tx) => (

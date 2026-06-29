@@ -9,12 +9,10 @@ import {
   type ReactNode,
 } from "react";
 import {
-  MOCK_CLIENT,
-  MOCK_CLIENT_ESCROW,
-  MOCK_CLIENT_PROJECTS,
-  MOCK_CLIENT_JOB_MESSAGES,
-  MOCK_CLIENT_NOTIFICATIONS,
-} from "./mock-data";
+  DEFAULT_CLIENT_SESSION,
+  loadClientSession,
+  saveClientSession,
+} from "./client-store";
 import ClientProfileSettings from "./ClientProfileSettings";
 import ClientJobChat from "./ClientJobChat";
 import type {
@@ -23,10 +21,10 @@ import type {
   ClientNotification,
   ClientProfile,
   ClientProfileSettingsTab,
+  ContractorProposal,
   JobChatMessage,
 } from "./types";
-
-const STORAGE_KEY = "amana-client-profile";
+import type { ProjectBriefTrail } from "./build-journey/submission-trail";
 
 type ClientProfileContextValue = {
   profile: ClientProfile;
@@ -46,6 +44,10 @@ type ClientProfileContextValue = {
   sendChatMessage: (jobId: string, text: string) => void;
   notifications: ClientNotification[];
   setNotifications: React.Dispatch<React.SetStateAction<ClientNotification[]>>;
+  proposals: ContractorProposal[];
+  setProposals: React.Dispatch<React.SetStateAction<ContractorProposal[]>>;
+  briefTrails: ProjectBriefTrail[];
+  setBriefTrails: React.Dispatch<React.SetStateAction<ProjectBriefTrail[]>>;
   dismissNotification: (id: string) => void;
   markNotificationRead: (id: string) => void;
   settingsOpen: boolean;
@@ -63,14 +65,27 @@ type ClientProfileContextValue = {
 const ClientProfileContext = createContext<ClientProfileContextValue | null>(null);
 
 export function ClientProfileProvider({ children }: { children: ReactNode }) {
-  const [profile, setProfile] = useState<ClientProfile>(MOCK_CLIENT);
-  const [escrow, setEscrow] = useState<ClientEscrow>(MOCK_CLIENT_ESCROW);
-  const [jobs, setJobs] = useState<ClientJob[]>(MOCK_CLIENT_PROJECTS);
-  const [jobMessages, setJobMessages] =
-    useState<Record<string, JobChatMessage[]>>(MOCK_CLIENT_JOB_MESSAGES);
+  const [profile, setProfile] = useState<ClientProfile>(
+    DEFAULT_CLIENT_SESSION.profile,
+  );
+  const [escrow, setEscrow] = useState<ClientEscrow>(
+    DEFAULT_CLIENT_SESSION.escrow,
+  );
+  const [jobs, setJobs] = useState<ClientJob[]>(DEFAULT_CLIENT_SESSION.jobs);
+  const [jobMessages, setJobMessages] = useState<
+    Record<string, JobChatMessage[]>
+  >(DEFAULT_CLIENT_SESSION.jobMessages);
+  const [proposals, setProposals] = useState<ContractorProposal[]>(
+    DEFAULT_CLIENT_SESSION.proposals,
+  );
+  const [briefTrails, setBriefTrails] = useState<ProjectBriefTrail[]>(
+    DEFAULT_CLIENT_SESSION.briefTrails,
+  );
   const [chatReadAt, setChatReadAt] = useState<Record<string, string>>({});
   const [chatJobId, setChatJobId] = useState<string | null>(null);
-  const [notifications, setNotifications] = useState(MOCK_CLIENT_NOTIFICATIONS);
+  const [notifications, setNotifications] = useState<ClientNotification[]>(
+    DEFAULT_CLIENT_SESSION.notifications,
+  );
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settingsTab, setSettingsTab] =
     useState<ClientProfileSettingsTab>("profile");
@@ -78,18 +93,45 @@ export function ClientProfileProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) setProfile(JSON.parse(saved) as ClientProfile);
+      localStorage.removeItem("amana-client-profile");
     } catch {
-      /* use default */
+      /* ignore */
+    }
+
+    const saved = loadClientSession();
+    if (saved) {
+      setProfile(saved.profile);
+      setEscrow(saved.escrow);
+      setJobs(saved.jobs);
+      setJobMessages(saved.jobMessages);
+      setNotifications(saved.notifications);
+      setProposals(saved.proposals);
+      setBriefTrails(saved.briefTrails ?? []);
     }
     setHydrated(true);
   }, []);
 
   useEffect(() => {
     if (!hydrated) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
-  }, [profile, hydrated]);
+    saveClientSession({
+      profile,
+      escrow,
+      jobs,
+      jobMessages,
+      notifications,
+      proposals,
+      briefTrails,
+    });
+  }, [
+    profile,
+    escrow,
+    jobs,
+    jobMessages,
+    notifications,
+    proposals,
+    briefTrails,
+    hydrated,
+  ]);
 
   const openProfileSettings = useCallback(
     (tab: ClientProfileSettingsTab = "profile") => {
@@ -181,6 +223,10 @@ export function ClientProfileProvider({ children }: { children: ReactNode }) {
         sendChatMessage,
         notifications,
         setNotifications,
+        proposals,
+        setProposals,
+        briefTrails,
+        setBriefTrails,
         dismissNotification,
         markNotificationRead,
         settingsOpen,
