@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BUILD_JOURNEY_HERO_IMAGE, IMG, homeTypeImage, styleImage } from "./asset-images";
 
 export type JourneyOption = {
   id: string;
@@ -8,25 +9,9 @@ export type JourneyOption = {
   image?: string;
 };
 
-/** Local Lagos / Nigeria residential photography (Ferdinand Asakome @oshorhenoya, Unsplash). */
-const BJ = "/build-journey";
+export const BUILD_JOURNEY_HERO = BUILD_JOURNEY_HERO_IMAGE;
 
-const IMG = {
-  duplex: `${BJ}/duplex.jpg`,
-  bungalow: `${BJ}/bungalow.jpg`,
-  villa: `${BJ}/villa.jpg`,
-  apartments: `${BJ}/apartments.jpg`,
-  investment: `${BJ}/investment.jpg`,
-  multiFamily: `${BJ}/multi-family.jpg`,
-  modernTropical: `${BJ}/modern-tropical.jpg`,
-  afroModern: `${BJ}/afro-modern.jpg`,
-  contemporary: `${BJ}/interior-1.jpg`,
-  classicNigerian: `${BJ}/classic-nigerian.jpg`,
-  ecoFriendly: `${BJ}/eco-friendly.jpg`,
-  hero: `${BJ}/hero.jpg`,
-};
-
-export const BUILD_JOURNEY_HERO = IMG.hero;
+export { homeTypeImage, styleImage };
 
 export const PROJECT_TYPE_OPTIONS: JourneyOption[] = [
   {
@@ -71,7 +56,7 @@ export const HOME_TYPE_OPTIONS: JourneyOption[] = [
     id: "duplex",
     label: "Duplex",
     description: "Two-level home with shared or separate living spaces.",
-    image: IMG.duplex,
+    image: IMG.duplexSuplex,
   },
   {
     id: "bungalow",
@@ -83,13 +68,7 @@ export const HOME_TYPE_OPTIONS: JourneyOption[] = [
     id: "villa",
     label: "Villa / Mansion",
     description: "Spacious luxury residence with premium finishes.",
-    image: IMG.villa,
-  },
-  {
-    id: "apartments",
-    label: "Apartments",
-    description: "Stacked units designed for density and rental yield.",
-    image: IMG.apartments,
+    image: IMG.duplex,
   },
   {
     id: "investment",
@@ -108,33 +87,33 @@ export const HOME_TYPE_OPTIONS: JourneyOption[] = [
 export const STYLE_OPTIONS: JourneyOption[] = [
   {
     id: "modern_tropical",
-    label: "Modern Tropical",
+    label: "Modern Minimalist",
     description: "Open plans, natural ventilation, and warm contemporary lines.",
-    image: IMG.modernTropical,
+    image: IMG.modernMinimalist,
   },
   {
     id: "afro_modern",
     label: "Afro Modern",
     description: "Contemporary design rooted in African materials and identity.",
-    image: `${BJ}/interior-2.jpg`,
+    image: IMG.afroModern,
   },
   {
     id: "contemporary_luxury",
     label: "Contemporary Luxury",
     description: "Premium finishes, statement architecture, and refined detail.",
-    image: IMG.contemporary,
+    image: IMG.luxuryContemporary,
   },
   {
     id: "classic_nigerian",
-    label: "Classic Nigerian",
+    label: "Neo Classical",
     description: "Timeless forms with familiar proportions and local character.",
-    image: IMG.classicNigerian,
+    image: IMG.neoClassical,
   },
   {
     id: "eco_friendly",
-    label: "Eco-Friendly",
+    label: "Classical",
     description: "Sustainable materials, passive cooling, and efficient systems.",
-    image: IMG.ecoFriendly,
+    image: IMG.classical,
   },
 ];
 

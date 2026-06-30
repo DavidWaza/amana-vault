@@ -75,11 +75,11 @@ export function ImageOptionCard({
       onClick={onClick}
       className="bj-card--image"
     >
-      <span
+      <img
         className="bj-card-image"
-        style={{ backgroundImage: `url(${image})` }}
-        role="img"
-        aria-label={label}
+        src={image}
+        alt={label}
+        loading="lazy"
       />
       <span className="bj-card-copy">
         <strong>{label}</strong>
