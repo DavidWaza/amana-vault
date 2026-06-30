@@ -1,6 +1,7 @@
 "use client";
 
 import { X, Warning, CheckCircle, Question } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import type { ClientProject } from "./types";
 import { formatNaira } from "./utils";
 
@@ -105,13 +106,14 @@ export default function MilestoneApprovalModal({
           >
             Raise concern
           </button>
-          <button
+          <Button
             type="button"
             className="adash-btn adash-btn--primary"
             onClick={() => onApprove(project.id)}
+            loadingLabel="Approving…"
           >
             Approve release
-          </button>
+          </Button>
         </div>
       </div>
     </div>

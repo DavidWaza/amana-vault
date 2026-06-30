@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   Wallet,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import type { ClientEscrow, ClientJob, ClientProfile } from "./types";
 import { calculateClientTotalDue, formatNaira } from "./utils";
 import ClientPanelEmptyState from "./ClientPanelEmptyState";
@@ -99,7 +100,7 @@ export default function ClientEscrowPanel({
                         {job.artisanName} · {formatNaira(totalDue)} total
                       </span>
                     </div>
-                    <button
+                    <Button
                       type="button"
                       className="adash-btn adash-btn--primary cdash-fund-queue-btn"
                       disabled={!canFundJobs}
@@ -113,7 +114,7 @@ export default function ClientEscrowPanel({
                       }
                     >
                       {job.sentByArtisan ? "Review & Fund" : "Fund escrow"}
-                    </button>
+                    </Button>
                   </li>
                 );
               })}
@@ -123,7 +124,7 @@ export default function ClientEscrowPanel({
 
         <div className="adash-wallet-actions">
           {escrow.pendingFunding > 0 && awaitingFundingJobs.length > 0 ? (
-            <button
+            <Button
               type="button"
               className="adash-btn adash-btn--primary"
               disabled={!canFundJobs}
@@ -137,7 +138,7 @@ export default function ClientEscrowPanel({
             >
               <ShieldCheck size={18} weight="bold" />
               Fund escrow — {formatNaira(escrow.pendingFunding)}
-            </button>
+            </Button>
           ) : escrow.securedBalance === 0 && awaitingFundingJobs.length === 0 ? (
             <p className="adash-wallet-blocked adash-wallet-blocked--muted">
               <LockSimple size={16} weight="bold" />

@@ -13,6 +13,8 @@ import {
   Lock,
   Receipt,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 import {
   AGREEMENT_CATEGORIES,
   CHANGES_OPTIONS,
@@ -81,7 +83,6 @@ export default function CreateAgreementModal({
   const [form, setForm] = useState<CreateAgreementForm>(DEFAULT_FORM);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [search, setSearch] = useState("");
-  const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [sentJobId, setSentJobId] = useState<string | null>(null);
   const [sendError, setSendError] = useState<string | null>(null);
@@ -110,7 +111,6 @@ export default function CreateAgreementModal({
     });
     setErrors({});
     setSearch("");
-    setSending(false);
     setSent(false);
     setSentJobId(null);
     setSendError(null);
@@ -143,6 +143,25 @@ export default function CreateAgreementModal({
     [protectedPrice],
   );
   const totalDue = protectedPrice + protectionFee;
+
+  const [handleSend, sendLoading] = useAsyncAction(async () => {
+    const stepErrors = validateAgreementStep(form, "summary");
+    if (Object.keys(stepErrors).length > 0) {
+      setErrors(stepErrors);
+      return;
+    }
+    const client = clients.find((item) => item.id === form.clientId);
+    if (!client) return;
+
+    setSendError(null);
+    try {
+      const jobId = await onSend(form, client);
+      setSentJobId(jobId);
+      setSent(true);
+    } catch {
+      setSendError("Could not send agreement. Please try again.");
+    }
+  });
 
   if (!open) return null;
 
@@ -221,34 +240,13 @@ export default function CreateAgreementModal({
     });
   };
 
-  const handleSend = async () => {
-    const stepErrors = validateAgreementStep(form, "summary");
-    if (Object.keys(stepErrors).length > 0) {
-      setErrors(stepErrors);
-      return;
-    }
-    if (!selectedClient) return;
-
-    setSending(true);
-    setSendError(null);
-    try {
-      const jobId = await onSend(form, selectedClient);
-      setSentJobId(jobId);
-      setSent(true);
-    } catch {
-      setSendError("Could not send agreement. Please try again.");
-    } finally {
-      setSending(false);
-    }
-  };
-
   const displaySummary = sent && summary ? summary : summary;
 
   return (
     <div
       className="adash-modal-overlay"
       role="presentation"
-      onClick={() => !sending && onClose()}
+      onClick={() => !sendLoading && onClose()}
     >
       <div
         className="adash-modal adash-modal--proof adash-modal--agreement"
@@ -276,7 +274,7 @@ export default function CreateAgreementModal({
             type="button"
             className="adash-modal-close"
             onClick={onClose}
-            disabled={sending}
+            disabled={sendLoading}
             aria-label="Close"
           >
             <X size={18} weight="bold" />
@@ -334,7 +332,7 @@ export default function CreateAgreementModal({
             </div>
             <div className="adash-modal-actions adash-modal-actions--stack">
               {sentJobId && onCreateInvoice && (
-                <button
+                <Button
                   type="button"
                   className="adash-btn adash-btn--primary"
                   onClick={() => {
@@ -344,7 +342,7 @@ export default function CreateAgreementModal({
                 >
                   <Receipt size={16} weight="bold" />
                   Create invoice & send
-                </button>
+                </Button>
               )}
               {sentJobId && onOpenChat && (
                 <button
@@ -751,29 +749,31 @@ export default function CreateAgreementModal({
                   type="button"
                   className="adash-btn adash-btn--ghost"
                   onClick={goBack}
-                  disabled={sending}
+                  disabled={sendLoading}
                 >
                   Back
                 </button>
               )}
               {step !== "summary" ? (
-                <button
+                <Button
                   type="button"
                   className="adash-btn adash-btn--primary"
                   onClick={goNext}
                 >
                   Continue
-                </button>
+                </Button>
               ) : (
-                <button
+                <Button
                   type="button"
                   className="adash-btn adash-btn--primary"
                   onClick={handleSend}
-                  disabled={sending || !displaySummary}
+                  disabled={sendLoading || !displaySummary}
+                  loading={sendLoading}
+                  loadingLabel="Sending…"
                 >
                   <PaperPlaneTilt size={16} weight="bold" />
-                  {sending ? "Sending…" : "Send agreement"}
-                </button>
+                  Send agreement
+                </Button>
               )}
             </div>
           </>

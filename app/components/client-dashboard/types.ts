@@ -33,6 +33,8 @@ export type RecommendedArtisan = {
   verified: boolean;
   isRecommended: boolean;
   avatarUrl: string | null;
+  phone: string;
+  email: string;
   memberSince: string;
   travelRadiusLabel: string;
   responseTime: string;
@@ -143,6 +145,8 @@ export type Architect = {
   id: string;
   name: string;
   company: string;
+  phone: string;
+  email: string;
   verified: boolean;
   portfolioCount: number;
   specialty: string;
@@ -151,6 +155,41 @@ export type Architect = {
   bio: string;
   services: string[];
   avatarUrl: string | null;
+};
+
+export type MarketplaceContractor = {
+  id: string;
+  name: string;
+  company: string;
+  phone: string;
+  email: string;
+  verified: boolean;
+  experienceYears: number;
+  rating: number;
+  reviewCount: number;
+  bio: string;
+  specialty: string;
+  services: string[];
+};
+
+export type ProfessionalProfileTarget =
+  | { role: "architect"; professional: Architect }
+  | { role: "contractor"; professional: MarketplaceContractor }
+  | { role: "artisan"; professional: RecommendedArtisan };
+
+export type BuildTeamRole = "architect" | "contractor" | "artisan";
+
+export type BuildTeamMember = {
+  id: string;
+  role: BuildTeamRole;
+  sourceId: string;
+  name: string;
+  subtitle: string;
+  detail?: string;
+  phone: string;
+  email: string;
+  addedAt: string;
+  status?: "shortlisted" | "assigned";
 };
 
 export type ContractorTeamMember = {
@@ -163,6 +202,8 @@ export type ContractorProposal = {
   projectId: string;
   contractorName: string;
   company: string;
+  phone: string;
+  email: string;
   verified: boolean;
   totalPrice: number;
   timelineMonths: number;

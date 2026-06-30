@@ -1,0 +1,367 @@
+/* Unified professional marketplace — Build Team design system */
+
+section.cp-pro-market-page {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 0 2rem;
+}
+
+.cp-pro-market-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding: 1.5rem 1.65rem;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(0, 107, 50, 0.08), rgba(0, 122, 61, 0.02)),
+    #fff;
+  border: 1px solid var(--client-line);
+  box-shadow: var(--shadow-sm);
+}
+
+.cp-pro-market-hero-copy h2 {
+  margin: 0.35rem 0 0.5rem;
+  font-size: 1.55rem;
+  color: var(--client);
+}
+
+.cp-pro-market-hero-copy p:last-child {
+  margin: 0;
+  max-width: 38rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.cp-pro-market-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.cp-pro-market-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 5.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--client-line);
+  text-align: center;
+}
+
+.cp-pro-market-stat strong {
+  display: block;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.cp-pro-market-stat span {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cp-pro-market-stat--architect {
+  color: var(--client);
+}
+
+.cp-pro-market-stat--contractor {
+  color: #2563eb;
+}
+
+.cp-pro-market-stat--artisan {
+  color: #c05621;
+}
+
+.cp-pro-market-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.cp-pro-market-search {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 14px;
+  border: 1px solid var(--client-line);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  color: var(--muted);
+}
+
+.cp-pro-market-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: var(--text);
+  outline: none;
+}
+
+.cp-pro-market-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 0.4rem;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid var(--client-line);
+  box-shadow: var(--shadow-sm);
+}
+
+.cp-pro-market-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  flex: 1 1 auto;
+  min-width: fit-content;
+  padding: 0.65rem 1rem;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.cp-pro-market-tab:hover {
+  background: var(--client-soft);
+  color: var(--client);
+}
+
+.cp-pro-market-tab--active {
+  background: linear-gradient(135deg, rgba(0, 107, 50, 0.12), rgba(0, 122, 61, 0.06));
+  color: var(--client);
+}
+
+.cp-pro-market-tab-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: rgba(0, 122, 61, 0.1);
+  color: var(--client);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.cp-pro-market-tab--active .cp-pro-market-tab-count {
+  background: var(--client);
+  color: #fff;
+}
+
+.cp-pro-market-bid-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #eef4ff, #f8fbff);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: #1e40af;
+  font-size: 0.86rem;
+}
+
+.cp-pro-market-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+.cp-pro-market-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.1rem 1.15rem;
+  border-radius: 16px;
+  border: 1px solid var(--client-line);
+  background: #fff;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cp-pro-market-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.cp-pro-market-card-glow {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 3px;
+  opacity: 0.9;
+}
+
+.cp-pro-market-card--architect .cp-pro-market-card-glow {
+  background: linear-gradient(90deg, var(--green), var(--green2));
+}
+
+.cp-pro-market-card--contractor .cp-pro-market-card-glow {
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.cp-pro-market-card--artisan .cp-pro-market-card-glow {
+  background: linear-gradient(90deg, #ed8936, #c05621);
+}
+
+.cp-pro-market-card-top {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cp-pro-market-card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+
+.cp-pro-market-role-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.cp-pro-market-role-tag--architect {
+  background: #e8f5ef;
+  color: var(--client);
+}
+
+.cp-pro-market-role-tag--contractor {
+  background: #eef4ff;
+  color: #2563eb;
+}
+
+.cp-pro-market-role-tag--artisan {
+  background: #fff4e8;
+  color: #c05621;
+}
+
+.cp-pro-market-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--client);
+}
+
+.cp-pro-market-card-title {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.cp-pro-market-card-subtitle {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.cp-pro-market-card-bio {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cp-pro-market-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.cp-pro-market-card-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cp-pro-market-card-specialty {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text);
+}
+
+.cp-pro-market-card-specialty strong {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.cp-pro-market-services {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.cp-pro-market-services li {
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: var(--soft);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--client);
+}
+
+.cp-pro-market-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.15rem;
+}
+
+.cp-pro-market-card-actions .adash-btn,
+.cp-pro-market-card-actions .amana-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .cp-pro-market-hero {
+    padding: 1.15rem 1.2rem;
+  }
+
+  .cp-pro-market-tab {
+    flex: 1 1 100%;
+  }
+}

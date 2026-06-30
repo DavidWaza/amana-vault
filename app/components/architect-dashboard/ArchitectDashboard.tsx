@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Warning, X } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 import ArchitectPortalSidebar from "./ArchitectPortalSidebar";
 import ArchitectPortalHeader from "./ArchitectPortalHeader";
 import ArchitectDashboardHome from "./ArchitectDashboardHome";
@@ -86,7 +88,6 @@ export default function ArchitectDashboard() {
   const [sidebarHydrated, setSidebarHydrated] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [releaseModalOpen, setReleaseModalOpen] = useState(false);
-  const [releasing, setReleasing] = useState(false);
   const [proposalRequestId, setProposalRequestId] = useState<string | null>(null);
   const [newProjectOpen, setNewProjectOpen] = useState(false);
   const toastTimer = useRef<number | null>(null);
@@ -191,12 +192,9 @@ export default function ArchitectDashboard() {
     setReleaseModalOpen(true);
   };
 
-  const handleConfirmRelease = () => {
-    // Re-check at confirm time: verification/bank status could have changed
-    // while the modal was open.
-    if (!canRequestRelease || releasing) return;
+  const [handleConfirmRelease, releaseLoading] = useAsyncAction(() => {
+    if (!canRequestRelease) return;
     const amount = vault.pendingRelease;
-    setReleasing(true);
 
     setVault((prev) => ({ ...prev, pendingRelease: 0 }));
     setNotifications((prev) => [
@@ -211,10 +209,9 @@ export default function ArchitectDashboard() {
     ]);
     pushActivity(`Release requested — ${formatNaira(amount)} (awaiting client approval)`, "info");
 
-    setReleasing(false);
     setReleaseModalOpen(false);
     showToast("Release request submitted. Client approval may be required.");
-  };
+  });
 
   const handleSendProposal = (request: DesignRequest, draft: ProposalDraft) => {
     const now = new Date().toISOString();
@@ -432,14 +429,16 @@ export default function ArchitectDashboard() {
               <button type="button" className="ap-btn-outline" onClick={() => setReleaseModalOpen(false)}>
                 Cancel
               </button>
-              <button
+              <Button
                 type="button"
                 className="ap-btn-primary"
                 onClick={handleConfirmRelease}
-                disabled={!canRequestRelease || releasing}
+                disabled={!canRequestRelease}
+                loading={releaseLoading}
+                loadingLabel="Submitting…"
               >
-                {releasing ? "Submitting…" : "Submit Request"}
-              </button>
+                Submit Request
+              </Button>
             </div>
           </div>
         </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { MapPin, ShieldCheck, Gear, SignOut } from "phosphor-react";
-import Link from "next/link";
 import { useClientProfile } from "./ClientProfileProvider";
 
 function getInitials(name: string): string {
@@ -9,7 +8,7 @@ function getInitials(name: string): string {
 }
 
 export default function ClientProfileCard() {
-  const { profile, openProfileSettings } = useClientProfile();
+  const { profile, openProfileSettings, logout } = useClientProfile();
 
   return (
     <aside className="adash-profile-card" id="profile">
@@ -76,10 +75,14 @@ export default function ClientProfileCard() {
           <Gear size={16} weight="bold" />
           Profile Settings
         </button>
-        <Link href="/" className="adash-btn adash-btn--danger adash-btn--block">
+        <button
+          type="button"
+          className="adash-btn adash-btn--danger adash-btn--block"
+          onClick={logout}
+        >
           <SignOut size={16} weight="bold" />
           Sign out
-        </Link>
+        </button>
       </div>
     </aside>
   );

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { X } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 import type { DesignRequest } from "./types";
 
 export type ProposalDraft = {
@@ -46,8 +48,6 @@ export default function ArchitectProposalModal({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [request, onClose]);
 
-  if (!request) return null;
-
   const amountValue = Number(amount);
   const timelineValue = Number(timelineWeeks);
   const canSubmit =
@@ -55,16 +55,22 @@ export default function ArchitectProposalModal({
     Number.isFinite(amountValue) &&
     amountValue > 0;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [handleSubmit, submitLoading] = useAsyncAction((e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (!request) return;
+    const parsedAmount = Number(amount);
+    const parsedTimeline = Number(timelineWeeks);
+    if (!projectTitle.trim() || !Number.isFinite(parsedAmount) || parsedAmount <= 0) return;
     onSubmit(request, {
       projectTitle: projectTitle.trim(),
-      amount: amountValue,
-      timelineWeeks: Number.isFinite(timelineValue) && timelineValue > 0 ? timelineValue : 0,
+      amount: parsedAmount,
+      timelineWeeks:
+        Number.isFinite(parsedTimeline) && parsedTimeline > 0 ? parsedTimeline : 0,
       note: note.trim(),
     });
-  };
+  });
+
+  if (!request) return null;
 
   return (
     <div className="ap-modal-backdrop" role="presentation" onClick={onClose}>
@@ -128,9 +134,15 @@ export default function ArchitectProposalModal({
             <button type="button" className="ap-btn-outline" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="ap-btn-primary" disabled={!canSubmit}>
+            <Button
+              type="submit"
+              className="ap-btn-primary"
+              disabled={!canSubmit}
+              loading={submitLoading}
+              loadingLabel="Sending…"
+            >
               Send Proposal
-            </button>
+            </Button>
           </div>
         </form>
       </div>

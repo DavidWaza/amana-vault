@@ -4,11 +4,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Plus, ShieldCheck, CaretRight } from "phosphor-react";
 import ClientPortalSidebar from "./ClientPortalSidebar";
+import { Button } from "@/app/components/ui/Button";
 import ClientPortalHeader from "./ClientPortalHeader";
 import ClientDashboardHome from "./ClientDashboardHome";
 import ClientBuildTeamPanel from "./ClientBuildTeamPanel";
 import ClientProjectsPanel from "./ClientProjectsPanel";
-import ArchitectMarketplace from "./ArchitectMarketplace";
+import ProfessionalMarketplace from "./ProfessionalMarketplace";
+import ProfessionalProfileModal from "./ProfessionalProfileModal";
 import ContractorProposals from "./ContractorProposals";
 import ClientVaultPanel from "./ClientVaultPanel";
 import ProjectUpdatesFeed from "./ProjectUpdatesFeed";
@@ -22,7 +24,14 @@ import RaiseDisputeModal from "../disputes/RaiseDisputeModal";
 import DisputeWorkspaceModal from "../disputes/DisputeWorkspaceModal";
 import { buildDispute } from "../disputes/constants";
 import { useClientProfile } from "./ClientProfileProvider";
-import { MOCK_ARCHITECTS } from "./mock-data";
+import { MOCK_ARCHITECTS, MOCK_CONTRACTORS, MOCK_RECOMMENDED_ARTISANS } from "./mock-data";
+import {
+  isOnBuildTeam,
+  memberFromArchitect,
+  memberFromArtisan,
+  memberFromContractor,
+  memberFromProposal,
+} from "./build-team-utils";
 import {
   formatNaira,
   calculateClientTotalDue,
@@ -32,11 +41,16 @@ import {
 import { getActiveProject } from "./portal-utils";
 import { createProjectBriefTrail } from "./build-journey/submission-trail";
 import type {
+  Architect,
+  BuildTeamRole,
   ClientDashboardView,
   ClientJobPrimaryAction,
   ClientNotification,
   ClientProject,
   ContractorProposal,
+  MarketplaceContractor,
+  ProfessionalProfileTarget,
+  RecommendedArtisan,
   StartProjectSubmitPayload,
 } from "./types";
 import type {
@@ -96,6 +110,9 @@ export default function ClientDashboard() {
     setProposals,
     briefTrails,
     setBriefTrails,
+    buildTeam,
+    addToBuildTeam,
+    removeFromBuildTeam,
   } = useClientProfile();
 
   const [activeView, setActiveView] = useState<ClientDashboardView>("dashboard");
@@ -117,6 +134,8 @@ export default function ClientDashboard() {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarHydrated, setSidebarHydrated] = useState(false);
+  const [highlightMemberId, setHighlightMemberId] = useState<string | null>(null);
+  const [profileTarget, setProfileTarget] = useState<ProfessionalProfileTarget | null>(null);
 
   const activeProject = useMemo(() => {
     if (selectedProjectId) {
@@ -159,6 +178,16 @@ export default function ClientDashboard() {
   }, []);
 
   useEffect(() => {
+    if (!highlightMemberId || activeView !== "team") return;
+    const timer = window.setTimeout(() => setHighlightMemberId(null), 2800);
+    return () => window.clearTimeout(timer);
+  }, [highlightMemberId, activeView]);
+
+  const flashBuildTeamMember = useCallback((memberId: string) => {
+    setHighlightMemberId(memberId);
+  }, []);
+
+  useEffect(() => {
     if (!sidebarHydrated) return;
     localStorage.setItem("amana-client-sidebar-collapsed", String(sidebarCollapsed));
   }, [sidebarCollapsed, sidebarHydrated]);
@@ -175,9 +204,11 @@ export default function ClientDashboard() {
   }, [openProfileSettings]);
 
   const navigate = useCallback(
-    (view: ClientDashboardView) => {
+    (view: ClientDashboardView, options?: { profession?: BuildTeamRole }) => {
       setActiveView(view);
-      router.replace(`/client/dashboard?view=${view}`, { scroll: false });
+      const params = new URLSearchParams({ view });
+      if (options?.profession) params.set("profession", options.profession);
+      router.replace(`/client/dashboard?${params.toString()}`, { scroll: false });
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
     [router],
@@ -477,6 +508,9 @@ export default function ClientDashboard() {
   };
 
   const handleAcceptProposal = (proposal: ContractorProposal) => {
+    const member = memberFromProposal(proposal);
+    addToBuildTeam(member);
+    flashBuildTeamMember(member.id);
     const now = new Date().toISOString();
     setProposals((prev) =>
       prev.map((p) => ({
@@ -522,6 +556,141 @@ export default function ClientDashboard() {
     ]);
     navigate("vault");
   };
+
+  const handleAddArchitectToTeam = (architect: Architect) => {
+    const member = memberFromArchitect(architect);
+    addToBuildTeam(member);
+    flashBuildTeamMember(member.id);
+    setNotifications((prev) => [
+      {
+        id: `cnotif-${Date.now()}`,
+        type: "success",
+        title: "Added to build team",
+        message: `${architect.name} was added to your architect shortlist.`,
+        dashboardView: "team",
+        createdAt: new Date().toISOString(),
+        read: false,
+      },
+      ...prev,
+    ]);
+  };
+
+  const openProfessionalProfile = useCallback((target: ProfessionalProfileTarget) => {
+    setProfileTarget(target);
+  }, []);
+
+  const handleAddContractorToTeam = (contractor: MarketplaceContractor) => {
+    const member = memberFromContractor(contractor);
+    addToBuildTeam(member);
+    flashBuildTeamMember(member.id);
+    setNotifications((prev) => [
+      {
+        id: `cnotif-${Date.now()}`,
+        type: "success",
+        title: "Added to build team",
+        message: `${contractor.name} was added to your contractor shortlist.`,
+        dashboardView: "team",
+        createdAt: new Date().toISOString(),
+        read: false,
+      },
+      ...prev,
+    ]);
+  };
+
+  const handleRequestContractorQuote = () => {
+    setStartProjectOpen(true);
+  };
+
+  const handleRequestArtisanJob = () => {
+    setStartProjectOpen(true);
+  };
+
+  const handleAddProposalToTeam = (proposal: ContractorProposal) => {
+    const member = memberFromProposal(proposal);
+    addToBuildTeam(member);
+    flashBuildTeamMember(member.id);
+    setNotifications((prev) => [
+      {
+        id: `cnotif-${Date.now()}`,
+        type: "success",
+        title: "Added to build team",
+        message: `${proposal.contractorName} was added to your contractor shortlist.`,
+        dashboardView: "team",
+        createdAt: new Date().toISOString(),
+        read: false,
+      },
+      ...prev,
+    ]);
+  };
+
+  const handleAddArtisanToTeam = (artisan: RecommendedArtisan) => {
+    const member = memberFromArtisan(artisan);
+    addToBuildTeam(member);
+    flashBuildTeamMember(member.id);
+    setNotifications((prev) => [
+      {
+        id: `cnotif-${Date.now()}`,
+        type: "success",
+        title: "Added to build team",
+        message: `${artisan.fullName} was added to your artisan shortlist.`,
+        dashboardView: "team",
+        createdAt: new Date().toISOString(),
+        read: false,
+      },
+      ...prev,
+    ]);
+  };
+
+  const handleRequestArchitectProposal = (architect: Architect) => {
+    handleAddArchitectToTeam(architect);
+    setStartProjectOpen(true);
+  };
+
+  const profileIsOnTeam = useMemo(() => {
+    if (!profileTarget) return false;
+    if (profileTarget.role === "architect") {
+      return isOnBuildTeam(buildTeam, "architect", profileTarget.professional.id);
+    }
+    if (profileTarget.role === "contractor") {
+      return isOnBuildTeam(buildTeam, "contractor", profileTarget.professional.id);
+    }
+    return isOnBuildTeam(buildTeam, "artisan", profileTarget.professional.id);
+  }, [profileTarget, buildTeam]);
+
+  const handleProfileAddToTeam = useCallback(() => {
+    if (!profileTarget) return;
+    if (profileTarget.role === "architect") {
+      handleAddArchitectToTeam(profileTarget.professional);
+    } else if (profileTarget.role === "contractor") {
+      handleAddContractorToTeam(profileTarget.professional);
+    } else {
+      handleAddArtisanToTeam(profileTarget.professional);
+    }
+  }, [profileTarget]);
+
+  const handleProfilePrimaryAction = useCallback(() => {
+    if (!profileTarget) return;
+    if (profileTarget.role === "architect") {
+      const architect = profileTarget.professional;
+      setProfileTarget(null);
+      handleRequestArchitectProposal(architect);
+      return;
+    }
+    if (profileTarget.role === "contractor") {
+      setProfileTarget(null);
+      setStartProjectOpen(true);
+      return;
+    }
+    setProfileTarget(null);
+    setStartProjectOpen(true);
+  }, [profileTarget]);
+
+  const profilePrimaryLabel = useMemo(() => {
+    if (!profileTarget) return undefined;
+    if (profileTarget.role === "architect") return "Request proposal";
+    if (profileTarget.role === "contractor") return "Request quote";
+    return "Request for a job";
+  }, [profileTarget]);
 
   const patchDispute = (
     projectId: string,
@@ -700,24 +869,62 @@ export default function ClientDashboard() {
         return (
           <ClientBuildTeamPanel
             projects={projects}
-            onOpenChat={openChat}
-            onFindProfessionals={() => navigate("architects")}
+            shortlisted={buildTeam}
+            highlightMemberId={highlightMemberId}
+            onRemove={removeFromBuildTeam}
+            onFindArchitects={() => navigate("architects", { profession: "architect" })}
+            onFindContractors={() => navigate("architects", { profession: "contractor" })}
+            onFindArtisans={() => navigate("architects", { profession: "artisan" })}
           />
         );
-      case "architects":
+      case "architects": {
+        const professionParam = searchParams.get("profession");
+        const initialRole =
+          professionParam === "architect" ||
+          professionParam === "contractor" ||
+          professionParam === "artisan"
+            ? professionParam
+            : "all";
+
         return (
-          <ArchitectMarketplace
+          <ProfessionalMarketplace
             architects={MOCK_ARCHITECTS}
-            onRequestProposal={() => setStartProjectOpen(true)}
-            onViewProfile={() => setStartProjectOpen(true)}
+            contractors={MOCK_CONTRACTORS}
+            artisans={MOCK_RECOMMENDED_ARTISANS}
+            clientAreaLabel={profile.areaLabel || "your area"}
+            initialRole={initialRole}
+            hasProjectBids={proposals.length > 0}
+            onRequestArchitectProposal={handleRequestArchitectProposal}
+            onViewArchitect={(architect) =>
+              openProfessionalProfile({ role: "architect", professional: architect })
+            }
+            onAddArchitect={handleAddArchitectToTeam}
+            onAddContractor={handleAddContractorToTeam}
+            onViewContractor={(contractor) =>
+              openProfessionalProfile({ role: "contractor", professional: contractor })
+            }
+            onRequestContractorQuote={handleRequestContractorQuote}
+            onAddArtisan={handleAddArtisanToTeam}
+            onViewArtisan={(artisan) =>
+              openProfessionalProfile({ role: "artisan", professional: artisan })
+            }
+            onRequestArtisanJob={handleRequestArtisanJob}
+            onCreateJob={() => setStartProjectOpen(true)}
+            onViewProposals={() => navigate("proposals")}
+            isArchitectOnTeam={(id) => isOnBuildTeam(buildTeam, "architect", id)}
+            isContractorOnTeam={(id) => isOnBuildTeam(buildTeam, "contractor", id)}
+            isArtisanOnTeam={(id) => isOnBuildTeam(buildTeam, "artisan", id)}
           />
         );
+      }
       case "proposals":
         return (
           <ContractorProposals
             projects={projects}
             proposals={proposals}
             onAcceptProposal={handleAcceptProposal}
+            onAddToTeam={handleAddProposalToTeam}
+            isOnTeam={(id) => isOnBuildTeam(buildTeam, "contractor", id)}
           />
         );
       case "vault":
@@ -782,10 +989,23 @@ export default function ClientDashboard() {
             selectedProjectId={selectedProjectId}
             onSelectProject={setSelectedProjectId}
             onNotificationAction={handleAlertAction}
+            onStartProject={() => setStartProjectOpen(true)}
           />
         ) : (
-          <header className="cp-subpage-header cp-subpage-header--bar">
+          <header
+            className={`cp-subpage-header cp-subpage-header--bar${projects.length === 0 ? " cp-subpage-header--with-actions" : ""}`}
+          >
             <h1>{PAGE_TITLES[activeView]}</h1>
+            {projects.length === 0 && (
+              <Button
+                type="button"
+                className="adash-btn adash-btn--primary cp-subpage-create-build"
+                onClick={() => setStartProjectOpen(true)}
+              >
+                <Plus size={18} weight="bold" />
+                Create New Build
+              </Button>
+            )}
           </header>
         )}
 
@@ -850,6 +1070,15 @@ export default function ClientDashboard() {
           setMilestoneApprovalId(null);
           setRaiseDisputeJobId(id);
         }}
+      />
+
+      <ProfessionalProfileModal
+        target={profileTarget}
+        isOnTeam={profileIsOnTeam}
+        onClose={() => setProfileTarget(null)}
+        onAddToTeam={handleProfileAddToTeam}
+        onPrimaryAction={handleProfilePrimaryAction}
+        primaryLabel={profilePrimaryLabel}
       />
 
       <StartProjectModal

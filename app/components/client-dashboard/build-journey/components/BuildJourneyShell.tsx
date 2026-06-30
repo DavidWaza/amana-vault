@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { ArrowLeft, ArrowRight } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import AmanaLogo from "../../../join-amana/AmanaLogo";
 
 type BuildJourneyShellProps = {
@@ -90,7 +91,7 @@ export default function BuildJourneyShell({
           <div className="bj-footer-right">
             {footerExtra}
             {onNext && (
-              <button
+              <Button
                 type="button"
                 className="bj-btn-primary"
                 onClick={onNext}
@@ -98,7 +99,7 @@ export default function BuildJourneyShell({
               >
                 {nextLabel}
                 <ArrowRight size={16} weight="bold" />
-              </button>
+              </Button>
             )}
           </div>
         </footer>

@@ -11,6 +11,7 @@ import {
   CheckCircle,
   Plus,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import type { DisputeJobView, DisputeOutcome, DisputeParty } from "./types";
 import {
   DISPUTE_CATEGORY_META,
@@ -299,15 +300,16 @@ export default function DisputeWorkspaceModal({
                 <Scales size={16} weight="bold" />
                 Reject & escalate
               </button>
-              <button
+              <Button
                 type="button"
                 className="adash-btn adash-btn--primary"
                 onClick={() => onAcceptOutcome(view.id, dispute.desiredOutcome)}
+                loadingLabel="Accepting…"
               >
                 <ShieldCheck size={16} weight="bold" />
                 Accept ·{" "}
                 {DISPUTE_OUTCOME_META[dispute.desiredOutcome].label}
-              </button>
+              </Button>
             </>
           )}
         </div>

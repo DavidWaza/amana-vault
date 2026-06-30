@@ -7,6 +7,7 @@ import {
   LockSimple,
   ShieldCheck,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import type { ClientEscrow, ClientProject, ClientProfile, VaultMilestone } from "./types";
 import { calculateClientTotalDue, formatNaira } from "./utils";
 import VaultIcon from "../artisan-dashboard/VaultIcon";
@@ -109,13 +110,14 @@ export default function ClientVaultPanel({
                   </div>
                   <span>{formatNaira(milestone.amount)}</span>
                   {milestone.status === "inspection" && onApproveMilestone && (
-                    <button
+                    <Button
                       type="button"
                       className="adash-btn adash-btn--primary adash-btn--sm"
                       onClick={() => onApproveMilestone(project)}
+                      loadingLabel="Opening…"
                     >
                       Review & Approve
-                    </button>
+                    </Button>
                   )}
                   {milestone.inspectorName && milestone.status !== "locked" && (
                     <small>Inspector: {milestone.inspectorName}</small>
@@ -162,7 +164,7 @@ export default function ClientVaultPanel({
                       <strong>{project.title}</strong>
                       <span>{formatNaira(totalDue)} total</span>
                     </div>
-                    <button
+                    <Button
                       type="button"
                       className="adash-btn adash-btn--primary cdash-fund-queue-btn"
                       disabled={!canFundJobs}
@@ -171,7 +173,7 @@ export default function ClientVaultPanel({
                       }
                     >
                       Activate Vault
-                    </button>
+                    </Button>
                   </li>
                 );
               })}

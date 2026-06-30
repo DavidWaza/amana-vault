@@ -54,7 +54,7 @@ export default function ClientEmptyState({
       action={
         onStartProject && tab !== "history" ? (
           <button type="button" className="adash-btn adash-btn--primary" onClick={onStartProject}>
-            Start a project
+            Create New Build
           </button>
         ) : undefined
       }

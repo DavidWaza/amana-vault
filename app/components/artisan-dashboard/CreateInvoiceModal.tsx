@@ -9,6 +9,8 @@ import {
   Calendar,
   DownloadSimple,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 import { buildInvoiceDraft } from "./invoice-utils";
 import { downloadInvoicePdf } from "./invoice-pdf";
 import type { ArtisanJob, JobInvoice } from "./types";
@@ -31,7 +33,6 @@ export default function CreateInvoiceModal({
 }: CreateInvoiceModalProps) {
   const [notes, setNotes] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [sentInvoice, setSentInvoice] = useState<JobInvoice | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -58,21 +59,16 @@ export default function CreateInvoiceModal({
       setSent(false);
       setSentInvoice(null);
     }
-    setSending(false);
     setError(null);
   }, [open, job]);
 
-  if (!open || !job || !draft) return null;
-
-  const invoiceForDownload = sentInvoice ?? existingInvoice;
-
-  const handleSend = async () => {
+  const [handleSend, sendLoading] = useAsyncAction(async () => {
+    if (!job) return;
     if (!dueDate) {
       setError("Due date is required.");
       return;
     }
 
-    setSending(true);
     setError(null);
 
     const built = buildInvoiceDraft(job, notes, dueDate);
@@ -92,10 +88,12 @@ export default function CreateInvoiceModal({
       setSent(true);
     } catch {
       setError("Could not send invoice. Please try again.");
-    } finally {
-      setSending(false);
     }
-  };
+  });
+
+  if (!open || !job || !draft) return null;
+
+  const invoiceForDownload = sentInvoice ?? existingInvoice;
 
   const handleDownload = () => {
     if (!invoiceForDownload) return;
@@ -118,7 +116,7 @@ export default function CreateInvoiceModal({
     <div
       className="adash-modal-overlay"
       role="presentation"
-      onClick={() => !sending && onClose()}
+      onClick={() => !sendLoading && onClose()}
     >
       <div
         className="adash-modal adash-modal--proof adash-modal--invoice"
@@ -146,7 +144,7 @@ export default function CreateInvoiceModal({
             type="button"
             className="adash-modal-close"
             onClick={onClose}
-            disabled={sending}
+            disabled={sendLoading}
             aria-label="Close"
           >
             <X size={18} weight="bold" />
@@ -164,14 +162,14 @@ export default function CreateInvoiceModal({
               Download a PDF copy for your records.
             </p>
             <div className="adash-modal-actions adash-modal-actions--stack">
-              <button
+              <Button
                 type="button"
                 className="adash-btn adash-btn--primary"
                 onClick={handleDownload}
               >
                 <DownloadSimple size={16} weight="bold" />
                 Download PDF
-              </button>
+              </Button>
               <button type="button" className="adash-btn adash-btn--ghost" onClick={onClose}>
                 Done
               </button>
@@ -280,19 +278,20 @@ export default function CreateInvoiceModal({
                 type="button"
                 className="adash-btn adash-btn--ghost"
                 onClick={onClose}
-                disabled={sending}
+                disabled={sendLoading}
               >
                 Cancel
               </button>
-              <button
+              <Button
                 type="button"
                 className="adash-btn adash-btn--primary"
                 onClick={handleSend}
-                disabled={sending}
+                loading={sendLoading}
+                loadingLabel="Sending…"
               >
                 <PaperPlaneTilt size={16} weight="bold" />
-                {sending ? "Sending…" : "Send to client"}
-              </button>
+                Send to client
+              </Button>
             </div>
           </>
         )}

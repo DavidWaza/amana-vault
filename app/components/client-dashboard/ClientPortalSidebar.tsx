@@ -18,6 +18,7 @@ import {
   Headset,
   CaretRight,
   CaretLeft,
+  SignOut,
 } from "phosphor-react";
 import { useClientProfile } from "./ClientProfileProvider";
 import VaultIcon from "../artisan-dashboard/VaultIcon";
@@ -61,7 +62,7 @@ export default function ClientPortalSidebar({
 }: ClientPortalSidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { jobs, jobMessages, chatReadAt } = useClientProfile();
+  const { jobs, jobMessages, chatReadAt, logout } = useClientProfile();
 
   const unreadMessages = getClientUnreadChatCount(jobs, jobMessages, chatReadAt);
 
@@ -211,6 +212,16 @@ export default function ClientPortalSidebar({
             </button>
           </div>
         </div>
+
+        <button
+          type="button"
+          className="cp-sidebar-signout"
+          onClick={logout}
+          title={collapsed ? "Sign out" : undefined}
+        >
+          <SignOut size={18} weight="bold" />
+          <span className="cp-sidebar-signout-label">Sign out</span>
+        </button>
       </div>
     </aside>
   );

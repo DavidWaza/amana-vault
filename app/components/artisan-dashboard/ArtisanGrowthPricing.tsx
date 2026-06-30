@@ -8,6 +8,7 @@ import {
   Sparkle,
   CheckCircle,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import type { ArtisanProfile, GrowthFeatureId } from "./types";
 import { GROWTH_FEATURES } from "./growth-constants";
 import {
@@ -112,13 +113,13 @@ export default function ArtisanGrowthPricing({
     }
 
     return (
-      <button
+      <Button
         type="button"
         className="adash-btn adash-btn--primary"
         onClick={() => openCheckout(featureId)}
       >
         Pay {formatNaira(config.price)}
-      </button>
+      </Button>
     );
   };
 

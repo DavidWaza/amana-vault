@@ -5,41 +5,35 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LockSimple } from "phosphor-react";
 import AmanaLogo from "@/app/components/join-amana/AmanaLogo";
-import {
-  isValidPhoneDigits,
-  normalizePhoneInput,
-  PHONE_DIGIT_LENGTH,
-} from "@/app/lib/phone";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 
 export default function ClientAuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [step, setStep] = useState<"auth" | "verify">("auth");
-  const [phone, setPhone] = useState("");
-  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
   const router = useRouter();
 
-  const handlePhoneChange = (value: string) => {
-    setPhone(normalizePhoneInput(value));
-    if (phoneError) setPhoneError(null);
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
   };
 
-  const handleAuthSubmit = (e: React.FormEvent) => {
+  const [handleAuthSubmit, authLoading] = useAsyncAction((e: React.FormEvent) => {
     e.preventDefault();
-    if (!isValidPhoneDigits(phone)) {
-      setPhoneError(`Enter exactly ${PHONE_DIGIT_LENGTH} digits.`);
-      return;
-    }
-    setPhoneError(null);
     setStep("verify");
-  };
+  });
 
-  const handleVerifySubmit = (e: React.FormEvent) => {
+  const [handleVerifySubmit, verifyLoading] = useAsyncAction((e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/client/dashboard");
-  };
+    if (isLogin) {
+      router.push("/client/dashboard");
+    } else {
+      router.push("/client/onboarding");
+    }
+  });
 
   return (
-    <div className="auth-page auth-page--client">
+    <div className=" auth-page--client">
       <div className="max-w-[440px] mx-auto flex flex-col items-center gap-8">
         <Link href="/" className="flex flex-col items-center text-center">
           <AmanaLogo variant="green" size={80} />
@@ -52,79 +46,70 @@ export default function ClientAuthPage() {
         </Link>
 
         <div className="auth-card">
-          <div className="mb-8 text-center">
-            <h2>{isLogin ? "Welcome back" : "Create an account"}</h2>
-            <p>
-              {isLogin
-                ? "Sign in to manage your protected payments."
-                : "Protect your money before work begins."}
-            </p>
-          </div>
-
           {step === "auth" ? (
-            <form onSubmit={handleAuthSubmit}>
-              {!isLogin && (
-                <div className="grid gap-2 mb-4">
-                  <label className="auth-label">Full Name</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Adaeze Obi"
-                    required
-                    className="auth-input"
-                  />
-                </div>
-              )}
+            <div>
+              <div className="mb-8 text-center">
+                <h2>{isLogin ? "Welcome back" : "Create an account"}</h2>
+                <p className="text-sm text-muted -mt-1">
+                  {isLogin
+                    ? "Sign in to manage your protected payments."
+                    : "Protect your money before work begins."}
+                </p>
+              </div>
 
-              <div className="grid gap-2 mb-4">
-                <label className="auth-label" htmlFor="client-phone">
-                  Phone Number
-                </label>
-                <div className="flex flex-col gap-[0.2rem]">
-                  <input
-                    id="client-phone"
-                    type="tel"
-                    inputMode="numeric"
-                    autoComplete="tel"
-                    placeholder="e.g. 08030000000"
-                    value={phone}
-                    onChange={(e) => handlePhoneChange(e.target.value)}
-                    minLength={PHONE_DIGIT_LENGTH}
-                    maxLength={PHONE_DIGIT_LENGTH}
-                    pattern="\d{11}"
-                    required
-                    aria-invalid={phoneError ? true : undefined}
-                    className={`auth-input${phoneError ? " auth-input--error" : ""}`}
-                  />
-                  <p className="m-0 px-[0.35rem] text-[0.72rem] font-bold text-muted leading-[1.2] text-right">
-                    {phone.length}/{PHONE_DIGIT_LENGTH} digits
-                  </p>
-                </div>
-                {phoneError && (
-                  <p className="m-0 text-[0.8rem] font-bold text-[#c53030] leading-[1.45]">
-                    {phoneError}
-                  </p>
+              <form onSubmit={handleAuthSubmit}>
+                {!isLogin && (
+                  <div className="grid gap-2 mb-4">
+                    <label className="auth-label">Full Name</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Adaeze Obi"
+                      required
+                      className="auth-input"
+                    />
+                  </div>
                 )}
-              </div>
 
-              <div className="grid gap-4 mt-4">
-                <button
-                  type="submit"
-                  className="auth-submit"
-                  disabled={!isValidPhoneDigits(phone)}
-                >
-                  {isLogin ? "Sign In" : "Create Account"}
-                </button>
-              </div>
-            </form>
+                <div className="grid gap-2 mb-4">
+                  <label className="auth-label" htmlFor="client-email">
+                    Email
+                  </label>
+                  <div className="flex flex-col gap-[0.2rem]">
+                    <input
+                      id="client-email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder="e.g. musa@email.com"
+                      value={email}
+                      onChange={(e) => handleEmailChange(e.target.value)}
+                      required
+                      className={`auth-input`}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-4 mt-4">
+                  <Button
+                    type="submit"
+                    className="auth-submit"
+                    disabled={!email}
+                    loading={authLoading}
+                    loadingLabel={isLogin ? "Signing in…" : "Creating account…"}
+                  >
+                    {isLogin ? "Sign In" : "Create Account"}
+                  </Button>
+                </div>
+              </form>
+            </div>
           ) : (
             <form onSubmit={handleVerifySubmit}>
               <div className="mb-8 text-center">
                 <div className="auth-verify-icon">
                   <LockSimple size={32} weight="bold" />
                 </div>
-                <h2>Verify your number</h2>
+                <h2>Verify your email</h2>
                 <p>
-                  We sent a 4-digit code to <strong>{phone}</strong>. Enter it
+                  We sent a 4-digit code to <strong>{email}</strong>. Enter it
                   below to continue.
                 </p>
               </div>
@@ -140,15 +125,20 @@ export default function ClientAuthPage() {
                 ))}
               </div>
               <div className="grid gap-4 mt-4">
-                <button type="submit" className="auth-submit">
+                <Button
+                  type="submit"
+                  className="auth-submit"
+                  loading={verifyLoading}
+                  loadingLabel="Verifying…"
+                >
                   Verify & Continue
-                </button>
+                </Button>
                 <button
                   type="button"
                   onClick={() => setStep("auth")}
                   className="auth-switch"
                 >
-                  Change phone number
+                  Change email
                 </button>
               </div>
             </form>

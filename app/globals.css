@@ -1542,6 +1542,51 @@ section {
   cursor: not-allowed;
 }
 
+/* Reusable button loader (used by app/components/ui/Button.tsx) */
+.amana-btn {
+  position: relative;
+}
+
+.amana-btn--loading {
+  cursor: wait;
+}
+
+.amana-btn__content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+  width: 100%;
+}
+
+.amana-btn__content--hidden {
+  visibility: hidden;
+}
+
+.amana-btn__loader {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.amana-btn__spinner {
+  animation: amana-btn-spin 0.75s linear infinite;
+}
+
+.amana-btn__loading-label {
+  font-size: 0.9em;
+  font-weight: inherit;
+}
+
+@keyframes amana-btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .auth-label {
   font-size: 0.75rem;
   font-weight: 900;
@@ -1556,7 +1601,7 @@ section {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: 20px;
-  padding: 1rem;
+  padding: 0.75rem;
   font-size: 1rem;
   color: var(--text);
   background: #fff;
@@ -9090,6 +9135,13 @@ section {
   padding-top: 0.25rem;
 }
 
+.cdash-proposal-card-footer--actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+}
+
 .cdash-proposal-team {
   margin: 0.35rem 0 0;
   padding-left: 1rem;
@@ -10031,7 +10083,8 @@ section {
 .cp-sidebar--collapsed .cp-sidebar-link-label,
 .cp-sidebar--collapsed .cp-sidebar-badge,
 .cp-sidebar--collapsed .cp-sidebar-cta-label,
-.cp-sidebar--collapsed .cp-sidebar-help-text {
+.cp-sidebar--collapsed .cp-sidebar-help-text,
+.cp-sidebar--collapsed .cp-sidebar-signout-label {
   width: 0;
   height: 0;
   opacity: 0;
@@ -10229,6 +10282,35 @@ section {
   cursor: pointer;
 }
 
+.cp-sidebar-signout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(197, 48, 48, 0.2);
+  border-radius: 12px;
+  background: #fff;
+  color: #c53030;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.cp-sidebar-signout:hover {
+  background: #fef2f2;
+  border-color: rgba(197, 48, 48, 0.35);
+}
+
+.cp-sidebar--collapsed .cp-sidebar-signout {
+  width: auto;
+  padding: 0.65rem;
+  aspect-ratio: 1;
+}
+
 /* ── Main area ── */
 .cp-main {
   flex: 1;
@@ -10354,6 +10436,14 @@ section {
 
 .cp-dropdown button:hover {
   background: var(--client-soft);
+}
+
+.cp-dropdown-item--danger {
+  color: #c53030;
+}
+
+.cp-dropdown-item--danger:hover {
+  background: #fef2f2;
 }
 
 .cp-dropdown--projects {
@@ -11061,11 +11151,36 @@ section {
   color: #7c3aed;
 }
 
+.cp-role-tag--artisan {
+  background: #fff4e8;
+  color: #c05621;
+}
+
+.cp-team-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  margin-left: 0.35rem;
+  border: 1px solid var(--client-line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.cp-team-remove:hover {
+  color: #c53030;
+  border-color: rgba(197, 48, 48, 0.35);
+}
+
 .cp-team-status {
   grid-column: 3;
-  grid-row: 1;
+  grid-row: 1 / span 2;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.3rem;
   font-size: 0.75rem;
   font-weight: 600;
@@ -11316,6 +11431,26 @@ section {
 
 .cp-subpage-header--bar {
   padding: 1.25rem 1.75rem 0;
+}
+
+.cp-subpage-header--with-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.cp-subpage-header--with-actions h1 {
+  margin-bottom: 0;
+}
+
+.cp-subpage-create-build,
+.cp-header-create-build {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
 }
 
 .cp-team-grid {

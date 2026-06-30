@@ -19,6 +19,7 @@ import {
   Wrench,
 } from "phosphor-react";
 import AmanaLogo from "../../join-amana/AmanaLogo";
+import { Button } from "@/app/components/ui/Button";
 import {
   ARCHITECT_FEE_PERCENTS,
   BUILD_JOURNEY_HERO,
@@ -97,14 +98,14 @@ export function WelcomeStep({ onBegin }: Pick<StepProps, "onBegin">) {
             </li>
           ))}
         </ul>
-        <button
+        <Button
           type="button"
           className="bj-btn-primary bj-btn-primary--lg"
           onClick={onBegin}
         >
           Begin Your Build Journey
           <ArrowRight size={18} weight="bold" />
-        </button>
+        </Button>
         <p className="bj-welcome-note">Takes about 5–7 minutes</p>
       </div>
       <div
@@ -714,14 +715,15 @@ export function ReviewStep({ form, onEditStep, onSubmit }: StepProps) {
             professionals.
           </span>
         </div>
-        <button
+        <Button
           type="button"
           className="bj-btn-primary bj-btn-primary--lg bj-btn-primary--full"
           onClick={onSubmit}
+          loadingLabel="Submitting…"
         >
           Send Idea to Architect Marketplace
           <ArrowRight size={18} weight="bold" />
-        </button>
+        </Button>
       </aside>
     </div>
   );

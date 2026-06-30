@@ -9,6 +9,7 @@ import {
   WarningCircle,
   XCircle,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import SubmissionTrailPreview from "./SubmissionTrailPreview";
 import type { BriefTrailStep } from "../submission-trail";
 
@@ -109,14 +110,14 @@ export default function SubmitVerificationScreen({
               <SubmissionTrailPreview steps={submissionTrail} />
             </div>
           )}
-          <button
+          <Button
             type="button"
             className="bj-btn-primary bj-btn-primary--lg bj-btn-primary--full"
             onClick={onContinue}
           >
             Go to Architect Marketplace
             <ArrowRight size={18} weight="bold" />
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -138,13 +139,14 @@ export default function SubmitVerificationScreen({
           <span>No changes were lost. You can retry or return to review your details.</span>
         </div>
         <div className="bj-submit-actions">
-          <button
+          <Button
             type="button"
             className="bj-btn-primary bj-btn-primary--lg"
             onClick={onRetry}
+            loadingLabel="Retrying…"
           >
             Try Again
-          </button>
+          </Button>
           <button type="button" className="bj-btn-outline" onClick={onBackToReview}>
             Back to Review
           </button>

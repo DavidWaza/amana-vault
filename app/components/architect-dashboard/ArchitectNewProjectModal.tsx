@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { X } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 
 export type NewProjectDraft = {
   title: string;
@@ -44,21 +46,22 @@ export default function ArchitectNewProjectModal({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
 
-  if (!open) return null;
-
   const valueNumber = Number(contractValue);
   const canSubmit = title.trim().length > 0 && clientName.trim().length > 0;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [handleSubmit, submitLoading] = useAsyncAction((e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (!title.trim() || !clientName.trim()) return;
+    const parsedValue = Number(contractValue);
     onSubmit({
       title: title.trim(),
       clientName: clientName.trim(),
       location: location.trim() || "Location TBC",
-      contractValue: Number.isFinite(valueNumber) && valueNumber > 0 ? valueNumber : 0,
+      contractValue: Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 0,
     });
-  };
+  });
+
+  if (!open) return null;
 
   return (
     <div className="ap-modal-backdrop" role="presentation" onClick={onClose}>
@@ -118,9 +121,15 @@ export default function ArchitectNewProjectModal({
             <button type="button" className="ap-btn-outline" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="ap-btn-primary" disabled={!canSubmit}>
+            <Button
+              type="submit"
+              className="ap-btn-primary"
+              disabled={!canSubmit}
+              loading={submitLoading}
+              loadingLabel="Creating…"
+            >
               Create Project
-            </button>
+            </Button>
           </div>
         </form>
       </div>

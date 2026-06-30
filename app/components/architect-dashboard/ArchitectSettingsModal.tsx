@@ -1,6 +1,8 @@
 "use client";
 
 import { X } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 import { useArchitectProfile } from "./ArchitectProfileProvider";
 
 type ArchitectSettingsModalProps = {
@@ -11,6 +13,11 @@ type ArchitectSettingsModalProps = {
 export default function ArchitectSettingsModal({ open, onClose }: ArchitectSettingsModalProps) {
   const { profile, setProfile } = useArchitectProfile();
 
+  const [handleSubmit, saveLoading] = useAsyncAction((e: React.FormEvent) => {
+    e.preventDefault();
+    onClose();
+  });
+
   if (!open) return null;
 
   return (
@@ -20,13 +27,7 @@ export default function ArchitectSettingsModal({ open, onClose }: ArchitectSetti
           <X size={20} weight="bold" />
         </button>
         <h2>Studio Settings</h2>
-        <form
-          className="ap-settings-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onClose();
-          }}
-        >
+        <form className="ap-settings-form" onSubmit={handleSubmit}>
           <label>
             Studio Name
             <input
@@ -68,9 +69,14 @@ export default function ArchitectSettingsModal({ open, onClose }: ArchitectSetti
             <button type="button" className="ap-btn-outline" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="ap-btn-primary">
+            <Button
+              type="submit"
+              className="ap-btn-primary"
+              loading={saveLoading}
+              loadingLabel="Saving…"
+            >
               Save Changes
-            </button>
+            </Button>
           </div>
         </form>
       </div>

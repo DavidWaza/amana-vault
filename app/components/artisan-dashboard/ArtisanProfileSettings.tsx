@@ -12,6 +12,8 @@ import {
   Warning,
   SignOut,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 import type {
   ArtisanProfile,
   ArtisanAccountForm,
@@ -84,7 +86,6 @@ export default function ArtisanProfileSettings({
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
   const [mounted, setMounted] = useState(open);
   const [visible, setVisible] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -149,18 +150,6 @@ export default function ArtisanProfileSettings({
     };
   }, [avatarPreview, profile.avatarUrl]);
 
-  if (!mounted) return null;
-
-  const handleAvatarChange = (file: File | null) => {
-    if (avatarPreview && avatarPreview !== profile.avatarUrl) {
-      URL.revokeObjectURL(avatarPreview);
-    }
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    setAvatarPreview(url);
-    setProfileForm((prev) => ({ ...prev, avatarUrl: url }));
-  };
-
   const validateProfile = (): boolean => {
     const next: Record<string, string> = {};
     if (profileForm.fullName.trim().length < 3) {
@@ -211,9 +200,8 @@ export default function ArtisanProfileSettings({
     return Object.keys(next).length === 0;
   };
 
-  const handleSaveProfile = () => {
+  const [handleSaveProfile, profileSaveLoading] = useAsyncAction(() => {
     if (!validateProfile()) return;
-    setSaving(true);
     onSaveProfile({
       ...profileForm,
       categoryLabel: getCategoryLabel(profileForm.category, profileForm.otherTrade),
@@ -221,15 +209,13 @@ export default function ArtisanProfileSettings({
       profileComplete: true,
     });
     setSuccess("Profile updated successfully.");
-    setSaving(false);
-  };
+  });
 
-  const handleSaveAccount = async () => {
+  const [handleSaveAccount, accountSaveLoading] = useAsyncAction(async () => {
     const changingPassword =
       accountForm.newPassword.length > 0 || accountForm.currentPassword.length > 0;
     if (!validateAccount(changingPassword)) return;
 
-    setSaving(true);
     try {
       onSaveAccount({
         phone: accountForm.phone,
@@ -254,17 +240,25 @@ export default function ArtisanProfileSettings({
       );
     } catch {
       setErrors({ currentPassword: "Current password is incorrect." });
-    } finally {
-      setSaving(false);
     }
-  };
+  });
 
-  const handleSavePayout = () => {
+  const [handleSavePayout, payoutSaveLoading] = useAsyncAction(() => {
     if (!validatePayout()) return;
-    setSaving(true);
     onSavePayout(payoutForm);
     setSuccess("Payout details submitted for verification.");
-    setSaving(false);
+  });
+
+  if (!mounted) return null;
+
+  const handleAvatarChange = (file: File | null) => {
+    if (avatarPreview && avatarPreview !== profile.avatarUrl) {
+      URL.revokeObjectURL(avatarPreview);
+    }
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setAvatarPreview(url);
+    setProfileForm((prev) => ({ ...prev, avatarUrl: url }));
   };
 
   const tabs: { id: ProfileSettingsTab; label: string; icon: ReactNode }[] = [
@@ -455,14 +449,15 @@ export default function ArtisanProfileSettings({
                 </select>
               </div>
 
-              <button
+              <Button
                 type="button"
                 className="adash-btn adash-btn--primary"
                 onClick={handleSaveProfile}
-                disabled={saving}
+                loading={profileSaveLoading}
+                loadingLabel="Saving…"
               >
                 Save profile
-              </button>
+              </Button>
             </div>
           )}
 
@@ -554,14 +549,15 @@ export default function ArtisanProfileSettings({
                 </div>
               </div>
 
-              <button
+              <Button
                 type="button"
                 className="adash-btn adash-btn--primary"
                 onClick={handleSaveAccount}
-                disabled={saving}
+                loading={accountSaveLoading}
+                loadingLabel="Saving…"
               >
                 Save account details
-              </button>
+              </Button>
             </div>
           )}
 
@@ -631,15 +627,16 @@ export default function ArtisanProfileSettings({
                 {errors.accountName && <p className="adash-field-error">{errors.accountName}</p>}
               </div>
 
-              <button
+              <Button
                 type="button"
                 className="adash-btn adash-btn--primary"
                 onClick={handleSavePayout}
-                disabled={saving}
+                loading={payoutSaveLoading}
+                loadingLabel="Saving…"
               >
                 <UploadSimple size={16} weight="bold" />
                 Update payout account
-              </button>
+              </Button>
             </div>
           )}
         </div>

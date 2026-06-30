@@ -5,11 +5,14 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { useRouter } from "next/navigation";
 import {
   DEFAULT_CLIENT_SESSION,
+  clearClientLogoutData,
   loadClientSession,
   saveClientSession,
 } from "./client-store";
@@ -23,7 +26,12 @@ import type {
   ClientProfileSettingsTab,
   ContractorProposal,
   JobChatMessage,
+  BuildTeamMember,
 } from "./types";
+import {
+  removeBuildTeamMember,
+  upsertBuildTeamMember,
+} from "./build-team-utils";
 import type { ProjectBriefTrail } from "./build-journey/submission-trail";
 
 type ClientProfileContextValue = {
@@ -48,6 +56,10 @@ type ClientProfileContextValue = {
   setProposals: React.Dispatch<React.SetStateAction<ContractorProposal[]>>;
   briefTrails: ProjectBriefTrail[];
   setBriefTrails: React.Dispatch<React.SetStateAction<ProjectBriefTrail[]>>;
+  buildTeam: BuildTeamMember[];
+  setBuildTeam: React.Dispatch<React.SetStateAction<BuildTeamMember[]>>;
+  addToBuildTeam: (member: BuildTeamMember) => void;
+  removeFromBuildTeam: (memberId: string) => void;
   dismissNotification: (id: string) => void;
   markNotificationRead: (id: string) => void;
   settingsOpen: boolean;
@@ -60,11 +72,14 @@ type ClientProfileContextValue = {
     label: string;
     lastFour: string;
   }) => void;
+  logout: () => void;
 };
 
 const ClientProfileContext = createContext<ClientProfileContextValue | null>(null);
 
 export function ClientProfileProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const persistSession = useRef(true);
   const [profile, setProfile] = useState<ClientProfile>(
     DEFAULT_CLIENT_SESSION.profile,
   );
@@ -80,6 +95,9 @@ export function ClientProfileProvider({ children }: { children: ReactNode }) {
   );
   const [briefTrails, setBriefTrails] = useState<ProjectBriefTrail[]>(
     DEFAULT_CLIENT_SESSION.briefTrails,
+  );
+  const [buildTeam, setBuildTeam] = useState<BuildTeamMember[]>(
+    DEFAULT_CLIENT_SESSION.buildTeam,
   );
   const [chatReadAt, setChatReadAt] = useState<Record<string, string>>({});
   const [chatJobId, setChatJobId] = useState<string | null>(null);
@@ -107,12 +125,19 @@ export function ClientProfileProvider({ children }: { children: ReactNode }) {
       setNotifications(saved.notifications);
       setProposals(saved.proposals);
       setBriefTrails(saved.briefTrails ?? []);
+      setBuildTeam(
+        (saved.buildTeam ?? []).map((member) => ({
+          ...member,
+          phone: member.phone ?? "08030000000",
+          email: member.email ?? "contact@amana.ng",
+        })),
+      );
     }
     setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || !persistSession.current) return;
     saveClientSession({
       profile,
       escrow,
@@ -121,6 +146,7 @@ export function ClientProfileProvider({ children }: { children: ReactNode }) {
       notifications,
       proposals,
       briefTrails,
+      buildTeam,
     });
   }, [
     profile,
@@ -130,8 +156,17 @@ export function ClientProfileProvider({ children }: { children: ReactNode }) {
     notifications,
     proposals,
     briefTrails,
+    buildTeam,
     hydrated,
   ]);
+
+  const addToBuildTeam = useCallback((member: BuildTeamMember) => {
+    setBuildTeam((prev) => upsertBuildTeamMember(prev, member));
+  }, []);
+
+  const removeFromBuildTeam = useCallback((memberId: string) => {
+    setBuildTeam((prev) => removeBuildTeamMember(prev, memberId));
+  }, []);
 
   const openProfileSettings = useCallback(
     (tab: ClientProfileSettingsTab = "profile") => {
@@ -203,6 +238,23 @@ export function ClientProfileProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const logout = useCallback(() => {
+    persistSession.current = false;
+    clearClientLogoutData();
+    setProfile(DEFAULT_CLIENT_SESSION.profile);
+    setEscrow(DEFAULT_CLIENT_SESSION.escrow);
+    setJobs(DEFAULT_CLIENT_SESSION.jobs);
+    setJobMessages(DEFAULT_CLIENT_SESSION.jobMessages);
+    setProposals(DEFAULT_CLIENT_SESSION.proposals);
+    setBriefTrails(DEFAULT_CLIENT_SESSION.briefTrails);
+    setBuildTeam(DEFAULT_CLIENT_SESSION.buildTeam);
+    setNotifications(DEFAULT_CLIENT_SESSION.notifications);
+    setChatReadAt({});
+    setChatJobId(null);
+    setSettingsOpen(false);
+    router.push("/auth/client");
+  }, [router]);
+
   const chatJob = jobs.find((job) => job.id === chatJobId) ?? null;
 
   return (
@@ -227,6 +279,10 @@ export function ClientProfileProvider({ children }: { children: ReactNode }) {
         setProposals,
         briefTrails,
         setBriefTrails,
+        buildTeam,
+        setBuildTeam,
+        addToBuildTeam,
+        removeFromBuildTeam,
         dismissNotification,
         markNotificationRead,
         settingsOpen,
@@ -235,6 +291,7 @@ export function ClientProfileProvider({ children }: { children: ReactNode }) {
         closeProfileSettings,
         handleAccountChange,
         handlePaymentMethodChange,
+        logout,
       }}
     >
       <div className="cdash-page cp-portal">
@@ -257,6 +314,7 @@ export function ClientProfileProvider({ children }: { children: ReactNode }) {
           handlePaymentMethodChange(method);
           closeProfileSettings();
         }}
+        onLogout={logout}
         />
         <ClientJobChat
         job={chatJob}
