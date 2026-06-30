@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, UserCircle, Gear, CreditCard } from "phosphor-react";
+import { X, UserCircle, Gear, CreditCard, SignOut } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 import type { ClientProfile, ClientProfileSettingsTab, ClientPaymentMethod } from "./types";
 import PasswordInput from "../PasswordInput";
 
@@ -20,6 +22,7 @@ type ClientProfileSettingsProps = {
     newPassword: string;
   }) => Promise<void> | void;
   onSavePayment: (method: ClientPaymentMethod) => void;
+  onLogout: () => void;
 };
 
 export default function ClientProfileSettings({
@@ -32,6 +35,7 @@ export default function ClientProfileSettings({
   onSaveAccount,
   onSavePassword,
   onSavePayment,
+  onLogout,
 }: ClientProfileSettingsProps) {
   const [tab, setTab] = useState<ClientProfileSettingsTab>("profile");
   const [profileForm, setProfileForm] = useState(profile);
@@ -80,6 +84,31 @@ export default function ClientProfileSettings({
     });
     setTab(initialTab);
   }, [open, profile, paymentMethod, initialTab]);
+
+  const [handleSaveProfile, profileSaveLoading] = useAsyncAction(() => {
+    onSaveProfile({ ...profileForm, profileComplete: true });
+  });
+
+  const [handleSaveAccount, accountSaveLoading] = useAsyncAction(async () => {
+    onSaveAccount({
+      phone: accountForm.phone,
+      email: accountForm.email,
+    });
+    if (accountForm.newPassword) {
+      await onSavePassword({
+        currentPassword: accountForm.currentPassword,
+        newPassword: accountForm.newPassword,
+      });
+    }
+  });
+
+  const [handleSavePayment, paymentSaveLoading] = useAsyncAction(() => {
+    onSavePayment({
+      type: paymentForm.type as "card" | "bank_transfer",
+      label: paymentForm.label,
+      lastFour: paymentForm.lastFour,
+    });
+  });
 
   if (!mounted) return null;
 
@@ -152,15 +181,15 @@ export default function ClientProfileSettings({
                   }
                 />
               </div>
-              <button
+              <Button
                 type="button"
                 className="adash-btn adash-btn--primary"
-                onClick={() =>
-                  onSaveProfile({ ...profileForm, profileComplete: true })
-                }
+                onClick={handleSaveProfile}
+                loading={profileSaveLoading}
+                loadingLabel="Saving…"
               >
                 Save profile
-              </button>
+              </Button>
             </div>
           )}
 
@@ -199,24 +228,15 @@ export default function ClientProfileSettings({
                   }
                 />
               </div>
-              <button
+              <Button
                 type="button"
                 className="adash-btn adash-btn--primary"
-                onClick={() => {
-                  onSaveAccount({
-                    phone: accountForm.phone,
-                    email: accountForm.email,
-                  });
-                  if (accountForm.newPassword) {
-                    onSavePassword({
-                      currentPassword: accountForm.currentPassword,
-                      newPassword: accountForm.newPassword,
-                    });
-                  }
-                }}
+                onClick={handleSaveAccount}
+                loading={accountSaveLoading}
+                loadingLabel="Saving…"
               >
                 Save account
-              </button>
+              </Button>
             </div>
           )}
 
@@ -269,27 +289,28 @@ export default function ClientProfileSettings({
                   }
                 />
               </div>
-              <button
+              <Button
                 type="button"
                 className="adash-btn adash-btn--primary"
-                onClick={() =>
-                  onSavePayment({
-                    type: paymentForm.type as "card" | "bank_transfer",
-                    label: paymentForm.label,
-                    lastFour: paymentForm.lastFour,
-                  })
-                }
+                onClick={handleSavePayment}
+                loading={paymentSaveLoading}
+                loadingLabel="Saving…"
               >
                 Save payment method
-              </button>
+              </Button>
             </div>
           )}
         </div>
 
         <div className="adash-settings-footer">
-          <a href="/" className="adash-btn adash-btn--danger adash-btn--block">
+          <button
+            type="button"
+            className="adash-btn adash-btn--danger adash-btn--block"
+            onClick={onLogout}
+          >
+            <SignOut size={16} weight="bold" />
             Sign out
-          </a>
+          </button>
         </div>
       </div>
     </div>

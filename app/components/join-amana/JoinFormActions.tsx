@@ -1,9 +1,11 @@
 import { ArrowLeft, ArrowRight } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 
 type JoinFormActionsProps = {
   isFirstStep: boolean;
   isLastStep: boolean;
   canProceed: boolean;
+  loading?: boolean;
   onBack: () => void;
 };
 
@@ -11,6 +13,7 @@ export default function JoinFormActions({
   isFirstStep,
   isLastStep,
   canProceed,
+  loading = false,
   onBack,
 }: JoinFormActionsProps) {
   return (
@@ -19,14 +22,16 @@ export default function JoinFormActions({
         <ArrowLeft size={16} weight="bold" />
         {isFirstStep ? "Cancel" : "Back"}
       </button>
-      <button
+      <Button
         type="submit"
         className="join-btn-form flex-1 w-auto min-w-0 min-h-[3.25rem] m-0"
         disabled={!canProceed}
+        loading={loading}
+        loadingLabel={isLastStep ? "Submitting…" : "Continuing…"}
       >
         {isLastStep ? "Submit Application" : "Continue"}
         <ArrowRight size={16} weight="bold" />
-      </button>
+      </Button>
     </div>
   );
 }

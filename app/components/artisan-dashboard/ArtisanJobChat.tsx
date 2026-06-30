@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { X, PaperPlaneTilt, ChatsCircle } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 import type { ArtisanJob, JobChatMessage } from "./types";
 
 const CHAT_ANIMATION_MS = 360;
@@ -76,15 +78,16 @@ export default function ArtisanJobChat({
     if (visible) inputRef.current?.focus();
   }, [visible, job?.id]);
 
-  if (!mounted || !job) return null;
-
-  const handleSubmit = (event: React.FormEvent) => {
+  const [handleSubmit, sendLoading] = useAsyncAction((event: React.FormEvent) => {
     event.preventDefault();
+    if (!job) return;
     const text = draft.trim();
     if (!text) return;
     onSend(job.id, text);
     setDraft("");
-  };
+  });
+
+  if (!mounted || !job) return null;
 
   return (
     <div
@@ -152,18 +155,20 @@ export default function ArtisanJobChat({
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                handleSubmit(e);
+                void handleSubmit(e);
               }
             }}
           />
-          <button
+          <Button
             type="submit"
             className="adash-btn adash-btn--primary adash-chat-send"
             disabled={!draft.trim()}
+            loading={sendLoading}
+            loadingLabel="Sending…"
           >
             <PaperPlaneTilt size={16} weight="bold" />
             Send
-          </button>
+          </Button>
         </form>
       </div>
     </div>

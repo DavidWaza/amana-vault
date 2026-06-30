@@ -7,6 +7,7 @@ import type {
   JobChatMessage,
 } from "./types";
 import type { ProjectBriefTrail } from "./build-journey/submission-trail";
+import type { BuildTeamMember } from "./types";
 
 export const CLIENT_SESSION_STORAGE_KEY = "amana-client-session";
 
@@ -18,6 +19,7 @@ export type ClientSession = {
   notifications: ClientNotification[];
   proposals: ContractorProposal[];
   briefTrails: ProjectBriefTrail[];
+  buildTeam: BuildTeamMember[];
 };
 
 export const EMPTY_CLIENT_PROFILE: ClientProfile = {
@@ -57,6 +59,7 @@ export const DEFAULT_CLIENT_SESSION: ClientSession = {
   notifications: [],
   proposals: [],
   briefTrails: [],
+  buildTeam: [],
 };
 
 export function loadClientSession(): ClientSession | null {
@@ -79,4 +82,14 @@ export function saveClientSession(session: ClientSession): void {
 export function clearClientSession(): void {
   if (typeof window === "undefined") return;
   localStorage.removeItem(CLIENT_SESSION_STORAGE_KEY);
+}
+
+export function clearClientLogoutData(): void {
+  clearClientSession();
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem("amana-client-build-journey-draft");
+  } catch {
+    /* ignore */
+  }
 }

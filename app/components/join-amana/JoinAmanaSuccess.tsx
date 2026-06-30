@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CheckCircle } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 
 type JoinAmanaSuccessProps = {
   fullName: string;
@@ -23,9 +24,9 @@ export default function JoinAmanaSuccess({
         application. Our team will review your profile and reach out via{" "}
         <strong>{phone}</strong> within 48 hours.
       </p>
-      <button type="button" className="join-btn-form" onClick={onGoToPortal}>
+      <Button type="button" className="join-btn-form" onClick={onGoToPortal}>
         Go to Artisan Portal
-      </button>
+      </Button>
       <Link href="/" className="join-amana-back-home">
         Back to homepage
       </Link>

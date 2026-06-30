@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LockSimple } from "phosphor-react";
 import AmanaLogo from "@/app/components/join-amana/AmanaLogo";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 import {
   isValidPhoneDigits,
   normalizePhoneInput,
@@ -23,7 +25,7 @@ export default function ArchitectAuthPage() {
     if (phoneError) setPhoneError(null);
   };
 
-  const handleAuthSubmit = (e: React.FormEvent) => {
+  const [handleAuthSubmit, authLoading] = useAsyncAction((e: React.FormEvent) => {
     e.preventDefault();
     if (!isValidPhoneDigits(phone)) {
       setPhoneError(`Enter exactly ${PHONE_DIGIT_LENGTH} digits.`);
@@ -31,9 +33,9 @@ export default function ArchitectAuthPage() {
     }
     setPhoneError(null);
     setStep("verify");
-  };
+  });
 
-  const handleVerifySubmit = (e: React.FormEvent) => {
+  const [handleVerifySubmit, verifyLoading] = useAsyncAction((e: React.FormEvent) => {
     e.preventDefault();
     try {
       const saved = localStorage.getItem("amana-architect-profile");
@@ -48,7 +50,7 @@ export default function ArchitectAuthPage() {
       /* fall through to dashboard */
     }
     router.push("/architect/dashboard");
-  };
+  });
 
   return (
     <div className="auth-page auth-page--architect">
@@ -117,13 +119,15 @@ export default function ArchitectAuthPage() {
               </div>
 
               <div className="grid gap-4 mt-4">
-                <button
+                <Button
                   type="submit"
                   className="auth-submit auth-submit--architect"
                   disabled={!isValidPhoneDigits(phone)}
+                  loading={authLoading}
+                  loadingLabel={isLogin ? "Signing in…" : "Continuing…"}
                 >
                   {isLogin ? "Sign In" : "Continue"}
-                </button>
+                </Button>
               </div>
 
               {!isLogin && (
@@ -149,9 +153,14 @@ export default function ArchitectAuthPage() {
                 ))}
               </div>
               <div className="grid gap-4 mt-4">
-                <button type="submit" className="auth-submit auth-submit--architect">
+                <Button
+                  type="submit"
+                  className="auth-submit auth-submit--architect"
+                  loading={verifyLoading}
+                  loadingLabel="Verifying…"
+                >
                   Verify & Continue
-                </button>
+                </Button>
                 <button type="button" onClick={() => setStep("auth")} className="auth-switch">
                   Change phone number
                 </button>

@@ -9,6 +9,7 @@ import {
   Briefcase,
   Sparkle,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import { AGREEMENT_CATEGORIES } from "../artisan-dashboard/agreement-templates";
 import type { AgreementCategoryId } from "../artisan-dashboard/types";
 import type { RecommendedArtisan } from "./types";
@@ -21,6 +22,8 @@ type ClientArtisanWallProps = {
   clientAreaLabel: string;
   onCreateJob: () => void;
   onViewArtisan: (artisan: RecommendedArtisan) => void;
+  onAddToTeam?: (artisan: RecommendedArtisan) => void;
+  isOnTeam?: (artisanId: string) => boolean;
 };
 
 function getInitials(name: string): string {
@@ -38,6 +41,8 @@ export default function ClientArtisanWall({
   clientAreaLabel,
   onCreateJob,
   onViewArtisan,
+  onAddToTeam,
+  isOnTeam,
 }: ClientArtisanWallProps) {
   const [query, setQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<
@@ -67,14 +72,14 @@ export default function ClientArtisanWall({
             in search.
           </p>
         </div>
-        <button
+        <Button
           type="button"
           className="adash-btn adash-btn--primary"
           onClick={() => onCreateJob()}
         >
           <Briefcase size={18} weight="bold" />
           Create a job
-        </button>
+        </Button>
       </div>
 
       <div className="cdash-artisan-wall-toolbar">
@@ -137,13 +142,13 @@ export default function ClientArtisanWall({
           title="No artisans match your search"
           message="Try another trade or create a job and we will surface matching pros first."
           action={
-            <button
+            <Button
               type="button"
               className="adash-btn adash-btn--primary"
               onClick={() => onCreateJob()}
             >
               Create a job
-            </button>
+            </Button>
           }
         />
       ) : (
@@ -202,13 +207,31 @@ export default function ClientArtisanWall({
                 >
                   View profile
                 </button>
-                <button
+                {isOnTeam?.(artisan.id) ? (
+                  <button
+                    type="button"
+                    className="adash-btn adash-btn--secondary adash-btn--block"
+                    disabled
+                  >
+                    On your build team
+                  </button>
+                ) : (
+                  <Button
+                    type="button"
+                    className="adash-btn adash-btn--secondary adash-btn--block"
+                    onClick={() => onAddToTeam?.(artisan)}
+                    loadingLabel="Adding…"
+                  >
+                    Add to Team
+                  </Button>
+                )}
+                <Button
                   type="button"
                   className="adash-btn adash-btn--primary adash-btn--block"
                   onClick={() => onViewArtisan(artisan)}
                 >
                   Request for a job
-                </button>
+                </Button>
               </div>
             </article>
           ))}

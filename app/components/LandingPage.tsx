@@ -771,7 +771,7 @@ function Footer() {
       </div>
 
       <div className="page-container lp-footer-bottom">
-        <p>© 2024 Amana Vault. All rights reserved.</p>
+        <p>© 2026 Amana Vault. All rights reserved.</p>
       </div>
     </footer>
   );

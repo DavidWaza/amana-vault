@@ -1,6 +1,9 @@
 "use client";
 
+import "./projects-panel.css";
 import { useMemo, useState } from "react";
+import { ClockCounterClockwise, Plus, Wrench, WarningCircle } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import type { ClientProject, ClientDashboardTab, ClientJobPrimaryAction } from "./types";
 import { isClientActiveJob, isClientHistoryJob, isClientPendingTab } from "./utils";
 import ClientProjectCard from "./ClientProjectCard";
@@ -17,10 +20,15 @@ type ClientProjectsPanelProps = {
   onViewBrief?: (project: ClientProject) => void;
 };
 
-const TABS: { id: ClientDashboardTab; label: string }[] = [
-  { id: "active", label: "Active" },
-  { id: "pending", label: "Needs Action" },
-  { id: "history", label: "History" },
+const TABS: {
+  id: ClientDashboardTab;
+  label: string;
+  statKey: "active" | "pending" | "history";
+  icon: typeof Wrench;
+}[] = [
+  { id: "active", label: "Active", statKey: "active", icon: Wrench },
+  { id: "pending", label: "Needs Action", statKey: "pending", icon: WarningCircle },
+  { id: "history", label: "History", statKey: "history", icon: ClockCounterClockwise },
 ];
 
 export default function ClientProjectsPanel({
@@ -58,39 +66,70 @@ export default function ClientProjectsPanel({
   );
 
   return (
-    <section className="adash-jobs" id="projects">
-      <div className="adash-jobs-header">
-        <div>
-          <h2>My Projects</h2>
-          <p>
-            Track every build from vision to completion — know your stage, your team,
-            and what action is needed.
-          </p>
-        </div>
-        {onStartProject && (
-          <button
-            type="button"
-            className="adash-btn adash-btn--primary cdash-jobs-header-btn"
-            onClick={onStartProject}
-          >
-            Start Project
-          </button>
-        )}
-      </div>
+    <section className="cp-subpage cp-proj-page" id="projects">
+      <header
+        className={`cp-proj-hero${projects.length === 0 ? " cp-proj-hero--empty" : ""}`}
+      >
+        <div className="cp-proj-hero-body">
+          <div className="cp-proj-hero-copy">
+            <p className="adash-eyebrow">My Projects</p>
+            <h2>
+              {projects.length === 0
+                ? "Start your first build"
+                : "Every build, from vision to keys"}
+            </h2>
+            <p>
+              {projects.length === 0
+                ? "Tell us about your land, budget, and timeline — we will guide you from brief to keys."
+                : "Track your stage, your team, and what needs your attention — all in one place."}
+            </p>
+          </div>
 
-      <div className="adash-tabs" role="tablist" aria-label="Project categories">
+          {projects.length > 0 && (
+            <div className="cp-proj-hero-aside">
+              <div className="cp-proj-stats" aria-label="Project counts">
+                {TABS.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.id}
+                      className={`cp-proj-stat cp-proj-stat--${item.statKey}`}
+                    >
+                      <Icon size={20} weight="bold" />
+                      <strong>{tabCounts[item.statKey]}</strong>
+                      <span>{item.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              {onStartProject && (
+                <Button
+                  type="button"
+                  className="adash-btn adash-btn--primary cp-proj-hero-start"
+                  onClick={onStartProject}
+                >
+                  <Plus size={18} weight="bold" />
+                  Create New Build
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      </header>
+
+      <div className="cp-proj-tabs" role="tablist" aria-label="Project categories">
         {TABS.map((item) => (
           <button
             key={item.id}
             type="button"
             role="tab"
             aria-selected={tab === item.id}
-            className={`adash-tab${tab === item.id ? " adash-tab--active" : ""}`}
+            className={`cp-proj-tab${tab === item.id ? " cp-proj-tab--active" : ""}`}
             onClick={() => setTab(item.id)}
           >
             {item.label}
-            {tabCounts[item.id] > 0 && (
-              <span className="adash-tab-count">{tabCounts[item.id]}</span>
+            {tabCounts[item.statKey] > 0 && (
+              <span className="cp-proj-tab-count">{tabCounts[item.statKey]}</span>
             )}
           </button>
         ))}
@@ -99,7 +138,7 @@ export default function ClientProjectsPanel({
       {filteredProjects.length === 0 ? (
         <ClientEmptyState tab={tab} canFundJobs={canFundJobs} onStartProject={onStartProject} />
       ) : (
-        <div className="adash-job-list">
+        <div className="cp-proj-card-grid">
           {filteredProjects.map((project) => (
             <ClientProjectCard
               key={project.id}

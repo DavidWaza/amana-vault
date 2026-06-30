@@ -1,6 +1,7 @@
 "use client";
 
 import { X, CreditCard } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import type { GrowthFeatureConfig } from "./growth-constants";
 import { formatNaira } from "./utils";
 
@@ -86,14 +87,16 @@ export default function GrowthPaymentModal({
           >
             Cancel
           </button>
-          <button
+          <Button
             type="button"
             className="adash-btn adash-btn--primary"
             onClick={onConfirm}
             disabled={paying}
+            loading={paying}
+            loadingLabel="Processing…"
           >
-            {paying ? "Processing..." : `Pay ${formatNaira(feature.price)}`}
-          </button>
+            {`Pay ${formatNaira(feature.price)}`}
+          </Button>
         </div>
       </div>
     </div>

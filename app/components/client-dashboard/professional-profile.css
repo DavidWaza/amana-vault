@@ -1,0 +1,82 @@
+.pro-profile-contacts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.pro-profile-contact {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 12px;
+  background: var(--soft);
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.pro-profile-contact:hover {
+  background: #eef6f1;
+}
+
+.pro-profile-contact-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--client);
+  flex-shrink: 0;
+}
+
+.pro-profile-contact span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.pro-profile-contact small {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.pro-profile-contact strong {
+  font-size: 0.8rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.pro-profile-role-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.pro-profile-role-tag--architect {
+  background: #e8f5ef;
+  color: var(--client);
+}
+
+.pro-profile-role-tag--contractor {
+  background: #eef4ff;
+  color: #2563eb;
+}
+
+.pro-profile-role-tag--artisan {
+  background: #fff4e8;
+  color: #c05621;
+}

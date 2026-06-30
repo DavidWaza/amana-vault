@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 import JoinAmanaHero from "./JoinAmanaHero";
 import JoinAmanaIntro from "./JoinAmanaIntro";
 import JoinAmanaSuccess from "./JoinAmanaSuccess";
@@ -311,6 +312,12 @@ export default function JoinAmanaPage() {
     setStarted(true);
   };
 
+  const [handleFormSubmit, submitLoading] = useAsyncAction((e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateCurrentStep()) return;
+    handleNext();
+  });
+
   return (
     <div className="join-amana-page">
       <div className="join-amana-shell">
@@ -336,19 +343,13 @@ export default function JoinAmanaPage() {
             <div className="join-amana-form-card">
               <JoinFormHeader stepIndex={stepIndex} progress={progress} />
 
-              <form
-                className="join-amana-form"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!validateCurrentStep()) return;
-                  handleNext();
-                }}
-              >
+              <form className="join-amana-form" onSubmit={handleFormSubmit}>
                 <div className="join-amana-form-scroll">{renderStep()}</div>
                 <JoinFormActions
                   isFirstStep={stepIndex === 0}
                   isLastStep={stepIndex === JOIN_STEPS.length - 1}
                   canProceed={canProceed()}
+                  loading={submitLoading}
                   onBack={handleBack}
                 />
               </form>

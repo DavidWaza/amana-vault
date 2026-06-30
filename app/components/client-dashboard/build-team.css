@@ -1,0 +1,483 @@
+/* Client Build Team panel — scoped outside @layer legacy for reliable layout */
+
+section.cp-team-page {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 0 2rem;
+}
+
+section.cp-team-section {
+  padding: 0;
+}
+
+.cp-team-sections {
+  display: grid;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.cp-team-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding: 1.5rem 1.65rem;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(0, 107, 50, 0.08), rgba(0, 122, 61, 0.02)),
+    #fff;
+  border: 1px solid var(--client-line);
+  box-shadow: var(--shadow-sm);
+}
+
+.cp-team-hero-copy h2 {
+  margin: 0.35rem 0 0.5rem;
+  font-size: 1.55rem;
+}
+
+.cp-team-hero-copy p:last-child {
+  margin: 0;
+  max-width: 36rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.cp-team-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.cp-team-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 5.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--client-line);
+  text-align: center;
+}
+
+.cp-team-stat strong {
+  display: block;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.cp-team-stat span {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cp-team-stat--architect {
+  color: var(--client);
+}
+
+.cp-team-stat--contractor {
+  color: #2563eb;
+}
+
+.cp-team-stat--artisan {
+  color: #c05621;
+}
+
+.cp-team-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1.1rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #e8f5ef, #f4fbf7);
+  border: 1px solid rgba(0, 122, 61, 0.2);
+  color: var(--client);
+  font-size: 0.9rem;
+}
+
+.cp-team-toast strong {
+  font-weight: 800;
+}
+
+.cp-team-toast--enter {
+  animation: cp-team-toast-in 0.45s ease-out;
+}
+
+@keyframes cp-team-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cp-team-section {
+  border-radius: 18px;
+  border: 1px solid var(--client-line);
+  background: #fff;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.cp-team-section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1.15rem;
+  border-bottom: 1px solid var(--client-line);
+  background: linear-gradient(180deg, #fafcfb, #fff);
+}
+
+.cp-team-section-head h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.cp-team-section-head p {
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.cp-team-section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.cp-team-section-icon--architect {
+  background: #e8f5ef;
+  color: var(--client);
+}
+
+.cp-team-section-icon--contractor {
+  background: #eef4ff;
+  color: #2563eb;
+}
+
+.cp-team-section-icon--artisan {
+  background: #fff4e8;
+  color: #c05621;
+}
+
+.cp-team-section-add {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--client-line);
+  background: #fff;
+  color: var(--client);
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.cp-team-section-add:hover {
+  transform: translateY(-1px);
+  border-color: var(--green2);
+}
+
+.cp-team-section-empty-card {
+  padding: 1.25rem 1.15rem 1.35rem;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.cp-team-section-empty-card p {
+  margin: 0 0 0.65rem;
+}
+
+.cp-team-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 0.85rem;
+  padding: 1rem 1.15rem 1.15rem;
+}
+
+.cp-team-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid var(--client-line);
+  background: #fff;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cp-team-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.cp-team-card-glow {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 3px;
+  opacity: 0.9;
+}
+
+.cp-team-card--architect .cp-team-card-glow {
+  background: linear-gradient(90deg, var(--green), var(--green2));
+}
+
+.cp-team-card--contractor .cp-team-card-glow {
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.cp-team-card--artisan .cp-team-card-glow {
+  background: linear-gradient(90deg, #ed8936, #c05621);
+}
+
+.cp-team-card--new {
+  animation:
+    cp-team-card-enter 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    cp-team-card-pulse 1.4s ease 0.15s 2;
+}
+
+@keyframes cp-team-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes cp-team-card-pulse {
+  0%,
+  100% {
+    box-shadow: var(--shadow-sm);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(0, 122, 61, 0.18),
+      var(--shadow-md);
+  }
+}
+
+.cp-team-card-top {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.cp-team-card-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 14px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.cp-team-card-avatar--architect {
+  background: linear-gradient(135deg, var(--green), var(--green2));
+}
+
+.cp-team-card-avatar--contractor {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.cp-team-card-avatar--artisan {
+  background: linear-gradient(135deg, #ed8936, #c05621);
+}
+
+.cp-team-card-avatar-icon {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 999px;
+  background: #fff;
+  color: inherit;
+  border: 2px solid #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.cp-team-card-avatar--architect .cp-team-card-avatar-icon {
+  color: var(--client);
+}
+
+.cp-team-card-avatar--contractor .cp-team-card-avatar-icon {
+  color: #2563eb;
+}
+
+.cp-team-card-avatar--artisan .cp-team-card-avatar-icon {
+  color: #c05621;
+}
+
+.cp-team-card-heading {
+  min-width: 0;
+}
+
+.cp-team-card-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cp-team-card-title-row h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.cp-team-card-subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.cp-team-card-detail {
+  margin: 0.15rem 0 0;
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.cp-team-card-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--client-line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--muted);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.cp-team-card-remove:hover {
+  color: #c53030;
+  border-color: rgba(197, 48, 48, 0.35);
+}
+
+.cp-team-card-contacts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.cp-team-contact {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 12px;
+  background: var(--soft);
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.cp-team-contact:hover {
+  background: #eef6f1;
+}
+
+.cp-team-contact-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--client);
+  flex-shrink: 0;
+}
+
+.cp-team-contact span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.cp-team-contact small {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cp-team-contact strong {
+  font-size: 0.8rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.cp-team-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.15rem;
+}
+
+.cp-team-card-role-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.cp-team-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.cp-team-badge--shortlisted {
+  background: #eef6f1;
+  color: var(--client);
+}
+
+.cp-team-badge--assigned {
+  background: #eef4ff;
+  color: #2563eb;
+}

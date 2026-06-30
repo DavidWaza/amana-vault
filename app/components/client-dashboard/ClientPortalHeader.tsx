@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { CaretDown, UserCircle } from "phosphor-react";
+import { CaretDown, Plus, UserCircle, SignOut } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import ClientNotificationsDropdown from "./ClientNotificationsDropdown";
 import ClientChatInbox from "./ClientChatInbox";
 import { useClientProfile } from "./ClientProfileProvider";
@@ -13,6 +14,7 @@ type ClientPortalHeaderProps = {
   selectedProjectId: string | null;
   onSelectProject: (id: string | null) => void;
   onNotificationAction: (notification: ClientNotification) => void;
+  onStartProject?: () => void;
 };
 
 export default function ClientPortalHeader({
@@ -20,6 +22,7 @@ export default function ClientPortalHeader({
   selectedProjectId,
   onSelectProject,
   onNotificationAction,
+  onStartProject,
 }: ClientPortalHeaderProps) {
   const {
     profile,
@@ -27,6 +30,7 @@ export default function ClientPortalHeader({
     dismissNotification,
     markNotificationRead,
     openProfileSettings,
+    logout,
   } = useClientProfile();
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -66,6 +70,17 @@ export default function ClientPortalHeader({
       </div>
 
       <div className="cp-header-actions">
+        {projects.length === 0 && onStartProject && (
+          <Button
+            type="button"
+            className="adash-btn adash-btn--primary cp-header-create-build"
+            onClick={onStartProject}
+          >
+            <Plus size={18} weight="bold" />
+            Create New Build
+          </Button>
+        )}
+
         <div className="cp-header-icon-wrap">
           <ClientChatInbox
             open={chatOpen}
@@ -115,6 +130,17 @@ export default function ClientPortalHeader({
               </button>
               <button type="button" onClick={() => openProfileSettings("payment")}>
                 Payment Methods
+              </button>
+              <button
+                type="button"
+                className="cp-dropdown-item--danger"
+                onClick={() => {
+                  setProfileOpen(false);
+                  logout();
+                }}
+              >
+                <SignOut size={18} weight="bold" />
+                Sign out
               </button>
             </div>
           )}

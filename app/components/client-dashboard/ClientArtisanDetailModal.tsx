@@ -12,6 +12,7 @@ import {
   LockSimple,
   User,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import type { RecommendedArtisan } from "./types";
 
 type ClientArtisanDetailModalProps = {
@@ -204,14 +205,14 @@ export default function ClientArtisanDetailModal({
           <button type="button" className="adash-btn adash-btn--ghost" onClick={onClose}>
             Back to artisans
           </button>
-          <button
+          <Button
             type="button"
             className="adash-btn adash-btn--primary"
             onClick={() => onHire(artisan)}
           >
             <Briefcase size={18} weight="bold" />
             Request for a job
-          </button>
+          </Button>
         </div>
       </div>
     </div>

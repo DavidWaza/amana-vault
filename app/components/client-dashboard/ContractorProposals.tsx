@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ShieldCheck, Star, Users, Clock, CheckCircle } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import type { ClientProject, ContractorProposal } from "./types";
 import { formatNaira } from "./utils";
 import ClientPanelEmptyState from "./ClientPanelEmptyState";
@@ -10,12 +11,16 @@ type ContractorProposalsProps = {
   projects: ClientProject[];
   proposals: ContractorProposal[];
   onAcceptProposal?: (proposal: ContractorProposal) => void;
+  onAddToTeam?: (proposal: ContractorProposal) => void;
+  isOnTeam?: (proposalId: string) => boolean;
 };
 
 export default function ContractorProposals({
   projects,
   proposals,
   onAcceptProposal,
+  onAddToTeam,
+  isOnTeam,
 }: ContractorProposalsProps) {
   const biddingProjects = projects.filter(
     (p) => p.lifecycleStage === "contractor_bidding",
@@ -159,20 +164,41 @@ export default function ContractorProposals({
               </div>
             </dl>
 
-            <footer className="cdash-proposal-card-footer">
+            <footer className="cdash-proposal-card-footer cdash-proposal-card-footer--actions">
               {proposal.accepted ? (
                 <span className="cdash-proposal-accepted">
                   <CheckCircle size={16} weight="fill" />
                   Selected
                 </span>
               ) : (
-                <button
-                  type="button"
-                  className="adash-btn adash-btn--primary"
-                  onClick={() => onAcceptProposal?.(proposal)}
-                >
-                  Accept Bid
-                </button>
+                <>
+                  {isOnTeam?.(proposal.id) ? (
+                    <button
+                      type="button"
+                      className="adash-btn adash-btn--secondary"
+                      disabled
+                    >
+                      On your build team
+                    </button>
+                  ) : (
+                    <Button
+                      type="button"
+                      className="adash-btn adash-btn--secondary"
+                      onClick={() => onAddToTeam?.(proposal)}
+                      loadingLabel="Adding…"
+                    >
+                      Add to Team
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    className="adash-btn adash-btn--primary"
+                    onClick={() => onAcceptProposal?.(proposal)}
+                    loadingLabel="Accepting…"
+                  >
+                    Accept Bid
+                  </Button>
+                </>
               )}
             </footer>
           </article>

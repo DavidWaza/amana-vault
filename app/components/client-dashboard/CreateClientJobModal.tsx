@@ -13,6 +13,8 @@ import {
   Sparkle,
   CheckCircle,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 import { AGREEMENT_CATEGORIES } from "../artisan-dashboard/agreement-templates";
 import type { AgreementCategoryId } from "../artisan-dashboard/types";
 import type { CreateClientJobForm, RecommendedArtisan } from "./types";
@@ -58,7 +60,6 @@ export default function CreateClientJobModal({
 }: CreateClientJobModalProps) {
   const [form, setForm] = useState<CreateClientJobForm>(EMPTY_FORM);
   const [searchQuery, setSearchQuery] = useState("");
-  const [submitting, setSubmitting] = useState(false);
   const [successArtisan, setSuccessArtisan] = useState<RecommendedArtisan | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -100,16 +101,11 @@ export default function CreateClientJobModal({
     return Object.keys(next).length === 0;
   };
 
-  const handleSubmit = async () => {
+  const [handleSubmit, submitLoading] = useAsyncAction(async () => {
     if (!selectedArtisan || !validate()) return;
-    setSubmitting(true);
-    try {
-      await onSubmit(form, selectedArtisan);
-      setSuccessArtisan(selectedArtisan);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+    await onSubmit(form, selectedArtisan);
+    setSuccessArtisan(selectedArtisan);
+  });
 
   if (!open) return null;
 
@@ -148,9 +144,9 @@ export default function CreateClientJobModal({
               an agreement for you to fund in escrow.
             </p>
             <div className="adash-modal-actions">
-              <button type="button" className="adash-btn adash-btn--primary" onClick={onClose}>
+              <Button type="button" className="adash-btn adash-btn--primary" onClick={onClose}>
                 Done
-              </button>
+              </Button>
             </div>
           </div>
         ) : (
@@ -356,14 +352,15 @@ export default function CreateClientJobModal({
               <button type="button" className="adash-btn adash-btn--ghost" onClick={onClose}>
                 Cancel
               </button>
-              <button
+              <Button
                 type="button"
                 className="adash-btn adash-btn--primary"
-                disabled={submitting}
+                loading={submitLoading}
+                loadingLabel="Sending invite…"
                 onClick={handleSubmit}
               >
-                {submitting ? "Sending invite…" : "Send job invite"}
-              </button>
+                Send job invite
+              </Button>
             </div>
           </>
         )}

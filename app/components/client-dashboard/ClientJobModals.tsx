@@ -10,6 +10,7 @@ import {
   Image,
   CreditCard,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import type { ClientEscrow, ClientJob } from "./types";
 import { formatNaira, formatRelativeDate, calculateClientTotalDue } from "./utils";
 
@@ -125,13 +126,13 @@ export default function ClientJobModals({
             approve proof and release requests.
           </p>
         </div>,
-        <button
+        <Button
           type="button"
           className="adash-btn adash-btn--primary"
           onClick={agreementJob ? onCloseAgreement : onCloseFund}
         >
           Done
-        </button>,
+        </Button>,
       )}
 
       {!fundingSuccess && renderOverlay(
@@ -224,22 +225,26 @@ export default function ClientJobModals({
             Cancel
           </button>
           {!canFundJobs ? (
-            <button
+            <Button
               type="button"
               className="adash-btn adash-btn--primary"
               onClick={onOpenPaymentSettings}
             >
               Set up payment
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
               type="button"
               className="adash-btn adash-btn--primary"
               disabled={funding || !job || !authorizeCharge}
-              onClick={() => job && onConfirmFund(job.id)}
+              loading={funding}
+              loadingLabel="Processing…"
+              onClick={() => {
+              if (job) onConfirmFund(job.id);
+            }}
             >
-              {funding ? "Processing…" : `Fund ${formatNaira(totalDue)}`}
-            </button>
+              {`Fund ${formatNaira(totalDue)}`}
+            </Button>
           )}
         </>,
       )}
@@ -281,10 +286,17 @@ export default function ClientJobModals({
           <button type="button" className="adash-btn adash-btn--danger" onClick={() => proofJob && onDisputeProof(proofJob.id)}>
             Open dispute
           </button>
-          <button type="button" className="adash-btn adash-btn--primary" onClick={() => proofJob && onApproveProof(proofJob.id)}>
+          <Button
+            type="button"
+            className="adash-btn adash-btn--primary"
+            onClick={() => {
+              if (proofJob) onApproveProof(proofJob.id);
+            }}
+            loadingLabel="Approving…"
+          >
             <CheckCircle size={16} weight="bold" />
             Approve proof
-          </button>
+          </Button>
         </>,
       )}
 
@@ -313,9 +325,16 @@ export default function ClientJobModals({
           <button type="button" className="adash-btn adash-btn--ghost" onClick={onCloseRelease}>
             Not yet
           </button>
-          <button type="button" className="adash-btn adash-btn--primary" onClick={() => releaseJob && onApproveRelease(releaseJob.id)}>
+          <Button
+            type="button"
+            className="adash-btn adash-btn--primary"
+            onClick={() => {
+              if (releaseJob) onApproveRelease(releaseJob.id);
+            }}
+            loadingLabel="Approving…"
+          >
             Approve release
-          </button>
+          </Button>
         </>,
       )}
 

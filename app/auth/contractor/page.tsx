@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LockSimple } from "phosphor-react";
 import AmanaLogo from "@/app/components/join-amana/AmanaLogo";
+import { Button } from "@/app/components/ui/Button";
+import { useAsyncAction } from "@/app/lib/useAsyncAction";
 import {
   isValidPhoneDigits,
   normalizePhoneInput,
@@ -23,7 +25,7 @@ export default function ContractorAuthPage() {
     if (phoneError) setPhoneError(null);
   };
 
-  const handleAuthSubmit = (e: React.FormEvent) => {
+  const [handleAuthSubmit, authLoading] = useAsyncAction((e: React.FormEvent) => {
     e.preventDefault();
     if (!isValidPhoneDigits(phone)) {
       setPhoneError(`Enter exactly ${PHONE_DIGIT_LENGTH} digits.`);
@@ -31,14 +33,12 @@ export default function ContractorAuthPage() {
     }
     setPhoneError(null);
     setStep("verify");
-  };
+  });
 
-  const handleVerifySubmit = (e: React.FormEvent) => {
+  const [handleVerifySubmit, verifyLoading] = useAsyncAction((e: React.FormEvent) => {
     e.preventDefault();
-    // Returning contractors land on the dashboard; new sign-ups complete company
-    // onboarding first.
     router.push(isLogin ? "/contractor/dashboard" : "/contractor/onboarding");
-  };
+  });
 
   return (
     <div className="auth-page auth-page--contractor">
@@ -107,13 +107,15 @@ export default function ContractorAuthPage() {
               </div>
 
               <div className="grid gap-4 mt-4">
-                <button
+                <Button
                   type="submit"
                   className="auth-submit auth-submit--contractor"
                   disabled={!isValidPhoneDigits(phone)}
+                  loading={authLoading}
+                  loadingLabel={isLogin ? "Signing in…" : "Continuing…"}
                 >
                   {isLogin ? "Sign In" : "Continue"}
-                </button>
+                </Button>
               </div>
 
               {!isLogin && (
@@ -139,9 +141,14 @@ export default function ContractorAuthPage() {
                 ))}
               </div>
               <div className="grid gap-4 mt-4">
-                <button type="submit" className="auth-submit auth-submit--contractor">
+                <Button
+                  type="submit"
+                  className="auth-submit auth-submit--contractor"
+                  loading={verifyLoading}
+                  loadingLabel="Verifying…"
+                >
                   Verify & Continue
-                </button>
+                </Button>
                 <button type="button" onClick={() => setStep("auth")} className="auth-switch">
                   Change phone number
                 </button>

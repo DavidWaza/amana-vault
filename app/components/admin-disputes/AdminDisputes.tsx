@@ -10,6 +10,7 @@ import {
   CheckCircle,
   MapPin,
 } from "phosphor-react";
+import { Button } from "@/app/components/ui/Button";
 import VaultIcon from "../artisan-dashboard/VaultIcon";
 import { formatNaira } from "../artisan-dashboard/utils";
 import {
@@ -333,14 +334,15 @@ export default function AdminDisputes() {
                         onChange={(e) => setNote(e.target.value)}
                       />
 
-                      <button
+                      <Button
                         type="button"
                         className="adash-btn adash-btn--primary admin-ruling-submit"
                         onClick={issueDecision}
+                        loadingLabel="Issuing…"
                       >
                         <ShieldCheck size={16} weight="bold" />
                         Issue binding decision
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </>
