@@ -23,9 +23,14 @@ import {
   TwitterLogo,
   YoutubeLogo,
   IdentificationBadge,
-  Briefcase,
   SquaresFour,
   PenNib,
+  Handshake,
+  Bank,
+  Buildings,
+  Truck,
+  GraduationCap,
+  ArrowRight,
 } from "phosphor-react";
 import { HardHatIcon } from "@phosphor-icons/react";
 import AmanaLogo from "./join-amana/AmanaLogo";
@@ -34,16 +39,30 @@ import "./landing-page.css";
 const HERO_HOUSE =
   "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1400&q=80";
 
+/** Face-cropped so each portrait reads well inside the 64px circular avatar. */
+const ECOSYSTEM_AVATAR_CROP =
+  "auto=format&fit=facearea&facepad=2.8&w=200&h=200&q=80";
+
 const ECOSYSTEM_AVATARS = {
-  client:
-    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80",
-  artisan:
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
-  architect:
-    "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&q=80",
-  contractor:
-    "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=200&q=80",
+  // Client — businesswoman with a tablet
+  client: `https://images.unsplash.com/photo-1611432579402-7037e3e2c1e4?${ECOSYSTEM_AVATAR_CROP}`,
+  // Architect — site professional in hard hat and glasses
+  architect: `https://images.unsplash.com/photo-1621905252507-b35492cc74b4?${ECOSYSTEM_AVATAR_CROP}`,
+  // Contractor — site supervisor in hard hat and coveralls
+  contractor: `https://images.unsplash.com/photo-1725811641350-f63dc7442725?${ECOSYSTEM_AVATAR_CROP}`,
+  // Artisan — carpenter at work in his workshop
+  artisan: `https://images.unsplash.com/photo-1687422810663-c316494f725a?${ECOSYSTEM_AVATAR_CROP}`,
 };
+
+/** Partner categories — shared by the hero marquee and the partners section. */
+const PARTNER_TYPES = [
+  { name: "Licensed Escrow Banks", Icon: Bank },
+  { name: "Professional Bodies", Icon: Buildings },
+  { name: "Material Suppliers", Icon: Truck },
+  { name: "Insurance Partners", Icon: ShieldCheck },
+  { name: "Technology Partners", Icon: GlobeHemisphereWest },
+  { name: "Training Institutes", Icon: GraduationCap },
+];
 
 const ECOSYSTEM_ORBIT_SIZE = 400;
 const ECOSYSTEM_ORBIT_CENTER = ECOSYSTEM_ORBIT_SIZE / 2;
@@ -267,10 +286,7 @@ function HeroSection() {
       />
       <div className="page-container lp-hero-inner">
         <div className="lp-hero-content">
-          <div className="lp-hero-badge">
-            <CheckCircle size={16} weight="fill" />
-            Built for Africa. Backed by Trust.
-          </div>
+          
           <h1 className="lp-hero-title">
             Build with <em>confidence.</em>
           </h1>
@@ -306,6 +322,34 @@ function HeroSection() {
   );
 }
 
+// function PartnerMarquee() {
+//   return (
+//     <section className="lp-marquee" aria-label="Partner categories">
+//       <span className="lp-marquee-label">Working alongside</span>
+//       <div className="lp-marquee-viewport">
+//         <div className="lp-marquee-track">
+//           {[0, 1].map((copy) => (
+//             <ul
+//               key={copy}
+//               className="lp-marquee-group"
+//               aria-hidden={copy === 1 || undefined}
+//             >
+//               {PARTNER_TYPES.map(({ name, Icon }) => (
+//                 <li key={name} className="lp-marquee-item">
+//                   <span className="lp-marquee-icon">
+//                     <Icon size={20} weight="fill" />
+//                   </span>
+//                   <span>{name}</span>
+//                 </li>
+//               ))}
+//             </ul>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
 function HowItWorks() {
   const steps = [
     {
@@ -334,7 +378,7 @@ function HowItWorks() {
     <section className="lp-section" id="how-it-works">
       <div className="page-container">
         <div className="lp-section-header-center">
-          <span className="lp-eyebrow border border-green-500 flex items-center justify-center rounded-full px-4 py-2 bg-green-50 w-fit mx-auto">How It Works</span>
+          <span className="lp-eyebrow lp-eyebrow--pill">How It Works</span>
           <h2 className="lp-section-title lp-section-title--center">
             Four simple steps to bring your project home.
           </h2>
@@ -388,10 +432,26 @@ function EcosystemSection() {
   ];
 
   const features = [
-    { icon: <IdentificationBadge size={22} />, label: "Verified Professionals" },
-    { icon: <Briefcase size={22} />, label: "Projects Protected" },
-    { icon: <LockSimple size={22} />, label: "Funds Secured" },
-    { icon: <SquaresFour size={22} />, label: "Categories of Work" },
+    {
+      icon: <IdentificationBadge size={22} />,
+      label: "Verified professionals",
+      desc: "Every architect, contractor and artisan is identity-checked and rated before they can bid on your project.",
+    },
+    {
+      icon: <LockSimple size={22} />,
+      label: "Escrow-backed payments",
+      desc: "Funds sit in the Amana Vault and are released only when you approve the milestone they belong to.",
+    },
+    {
+      icon: <FolderOpen size={22} />,
+      label: "One shared project record",
+      desc: "Drawings, contracts and milestone proof live on a single timeline every party can see.",
+    },
+    {
+      icon: <SquaresFour size={22} />,
+      label: "Every trade in one place",
+      desc: "From structural design to final finishing, source the whole build from one verified network.",
+    },
   ];
 
   const cx = ECOSYSTEM_ORBIT_CENTER;
@@ -400,105 +460,115 @@ function EcosystemSection() {
   return (
     <section className="lp-section lp-section--alt" id="ecosystem">
       <div className="page-container">
-        <div className="lp-section-header-left">
-          <span className="lp-eyebrow border border-green-500 flex items-center justify-center rounded-full px-4 py-2 bg-green-50 w-fit">Our Ecosystem</span>
+        <div className="lp-ecosystem-header">
+          <span className="lp-eyebrow lp-eyebrow--pill">Our Ecosystem</span>
           <h2 className="lp-section-title">
             One platform connecting everyone needed to build.
           </h2>
+          <p className="lp-ecosystem-lead">
+            Clients, architects, contractors and artisans work from the same
+            brief, the same timeline and the same protected wallet — so nothing
+            is lost between hand-offs.
+          </p>
         </div>
         <div className="lp-ecosystem">
-          <div className="lp-ecosystem-diagram">
-            <div
-              className="lp-ecosystem-orbit"
-              style={{
-                width: ECOSYSTEM_ORBIT_SIZE,
-                height: ECOSYSTEM_ORBIT_SIZE,
-              }}
-            >
-              <svg
-                className="lp-ecosystem-arrows"
-                viewBox={`0 0 ${ECOSYSTEM_ORBIT_SIZE} ${ECOSYSTEM_ORBIT_SIZE}`}
-                aria-hidden
+          <div className="lp-ecosystem-stage">
+            <div className="lp-ecosystem-diagram">
+              <div
+                className="lp-ecosystem-orbit"
+                style={{
+                  width: ECOSYSTEM_ORBIT_SIZE,
+                  height: ECOSYSTEM_ORBIT_SIZE,
+                }}
               >
-                <defs>
-                  <marker
-                    id="lp-eco-arrowhead"
-                    markerWidth="8"
-                    markerHeight="8"
-                    refX="7"
-                    refY="4"
-                    orient="auto"
-                  >
-                    <path
-                      d="M0,0 L8,4 L0,8 Z"
-                      fill="#9aada3"
-                    />
-                  </marker>
-                </defs>
-                <circle
-                  cx={cx}
-                  cy={cy}
-                  r={ECOSYSTEM_INNER_RADIUS}
-                  fill="none"
-                  stroke="#b0beb5"
-                  strokeWidth="1.5"
-                  strokeDasharray="7 5"
-                />
-                {ECOSYSTEM_ANGLES.map((startAngle, index) => {
-                  const endAngle = ECOSYSTEM_ANGLES[(index + 1) % 4];
+                <svg
+                  className="lp-ecosystem-arrows"
+                  viewBox={`0 0 ${ECOSYSTEM_ORBIT_SIZE} ${ECOSYSTEM_ORBIT_SIZE}`}
+                  aria-hidden
+                >
+                  <defs>
+                    <marker
+                      id="lp-eco-arrowhead"
+                      markerWidth="7"
+                      markerHeight="7"
+                      refX="6"
+                      refY="3.5"
+                      orient="auto"
+                    >
+                      <path d="M0,0 L7,3.5 L0,7 Z" fill="var(--green3)" />
+                    </marker>
+                  </defs>
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={ECOSYSTEM_INNER_RADIUS}
+                    fill="none"
+                    stroke="rgba(0, 61, 28, 0.1)"
+                    strokeWidth="1"
+                  />
+                  {ECOSYSTEM_ANGLES.map((startAngle, index) => {
+                    const endAngle = ECOSYSTEM_ANGLES[(index + 1) % 4];
+                    return (
+                      <path
+                        key={startAngle}
+                        className="lp-ecosystem-arc"
+                        d={ecosystemArcPath(
+                          cx,
+                          cy,
+                          ECOSYSTEM_ARROW_RADIUS,
+                          startAngle,
+                          endAngle,
+                        )}
+                        fill="none"
+                        stroke="rgba(0, 138, 68, 0.45)"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeDasharray="2 8"
+                        markerEnd="url(#lp-eco-arrowhead)"
+                      />
+                    );
+                  })}
+                </svg>
+
+                <div className="lp-ecosystem-vault">
+                  <AmanaLogo size={56} variant="green" />
+                  <span className="lp-ecosystem-vault-label">Amana Vault</span>
+                </div>
+
+                {people.map((person) => {
+                  const point = ecosystemPoint(
+                    cx,
+                    cy,
+                    ECOSYSTEM_PERSON_RADIUS,
+                    person.angle,
+                  );
+
                   return (
-                    <path
-                      key={startAngle}
-                      d={ecosystemArcPath(
-                        cx,
-                        cy,
-                        ECOSYSTEM_ARROW_RADIUS,
-                        startAngle,
-                        endAngle,
-                      )}
-                      fill="none"
-                      stroke="#b0beb5"
-                      strokeWidth="1.5"
-                      strokeDasharray="7 5"
-                      markerEnd="url(#lp-eco-arrowhead)"
-                    />
+                    <div
+                      key={person.role}
+                      className="lp-ecosystem-person"
+                      style={{
+                        left: point.x,
+                        top: point.y,
+                      }}
+                    >
+                      <span className="lp-ecosystem-avatar-ring">
+                        <img
+                          src={person.src}
+                          alt={person.role}
+                          className="lp-ecosystem-avatar"
+                          width={64}
+                          height={64}
+                        />
+                      </span>
+                      <span className="lp-ecosystem-role">{person.role}</span>
+                      <span className="lp-ecosystem-bubble">
+                        {person.bubble}
+                      </span>
+                    </div>
                   );
                 })}
-              </svg>
-
-              <div className="lp-ecosystem-vault">
-                <AmanaLogo size={90} variant="green" />
               </div>
-
-              {people.map((person) => {
-                const point = ecosystemPoint(
-                  cx,
-                  cy,
-                  ECOSYSTEM_PERSON_RADIUS,
-                  person.angle,
-                );
-
-                return (
-                  <div
-                    key={person.role}
-                    className="lp-ecosystem-person"
-                    style={{
-                      left: point.x,
-                      top: point.y,
-                    }}
-                  >
-                    <span className="lp-ecosystem-role">{person.role}</span>
-                    <img
-                      src={person.src}
-                      alt={person.role}
-                      className="lp-ecosystem-avatar"
-                      width={64}
-                      height={64}
-                    />
-                    <div className="lp-ecosystem-bubble">{person.bubble}</div>
-                  </div>
-                );
-              })}
             </div>
           </div>
           <div className="lp-ecosystem-features">
@@ -506,7 +576,10 @@ function EcosystemSection() {
               <Reveal key={f.label} delay={i * 0.08}>
                 <div className="lp-ecosystem-feature">
                   <div className="lp-ecosystem-feature-icon">{f.icon}</div>
-                  <strong>{f.label}</strong>
+                  <div className="lp-ecosystem-feature-body">
+                    <strong>{f.label}</strong>
+                    <p>{f.desc}</p>
+                  </div>
                 </div>
               </Reveal>
             ))}
@@ -518,58 +591,191 @@ function EcosystemSection() {
 }
 
 function FeaturesSection() {
+  const spotlightPoints = [
+    "Funds released only when you approve a milestone",
+    "Held with licensed escrow partners, never by us",
+    "Every movement logged on an auditable trail",
+  ];
+
   const features = [
     {
-      icon: <Vault size={26} />,
-      title: "Amana Vault",
-      desc: "Funds are held securely in escrow until milestones are approved. Your money stays protected every step of the way.",
-    },
-    {
-      icon: <IdentificationBadge size={26} />,
+      icon: <IdentificationBadge size={24} />,
       title: "Verified Professionals",
       desc: "Every architect, contractor, and artisan is vetted and rated. Hire with confidence from our trusted network.",
     },
     {
-      icon: <ChartLineUp size={26} />,
+      icon: <ChartLineUp size={24} />,
       title: "Project Tracking",
       desc: "Monitor progress in real time with milestone updates, photo proof, and transparent status dashboards.",
     },
     {
-      icon: <FolderOpen size={26} />,
+      icon: <FolderOpen size={24} />,
       title: "Documents",
       desc: "Store contracts, drawings, permits, and receipts in one secure document center for your entire project.",
     },
     {
-      icon: <Star size={26} />,
+      icon: <Star size={24} />,
       title: "Reputation",
       desc: "Build and browse verified ratings and reviews. Choose professionals with proven track records.",
     },
     {
-      icon: <Headset size={26} />,
+      icon: <Headset size={24} />,
       title: "Resolution Support",
-      desc: "If something goes wrong, our team reviews evidence fairly and helps resolve disputes transparently.",
+      desc: "If something goes wrong, our team reviews the evidence fairly and helps resolve disputes transparently.",
+      wide: true,
     },
   ];
 
   return (
     <section className="lp-section" id="features">
       <div className="page-container">
-        <div className="lp-section-header-left">
-          <span className="lp-eyebrow">Features</span>
-          <h2 className="lp-section-title">
-            Everything you need to build with confidence.
-          </h2>
+        <div className="lp-features-header">
+          <div>
+            <span className="lp-eyebrow lp-eyebrow--pill">Features</span>
+            <h2 className="lp-section-title">
+              Everything you need to build with confidence.
+            </h2>
+          </div>
+          <p className="lp-features-lead">
+            Escrow, verification, tracking and paperwork in one place — so every
+            naira and every decision on your project has a record behind it.
+          </p>
         </div>
-        <div className="lp-features-grid">
-          {features.map((f, i) => (
-            <Reveal key={f.title} delay={i * 0.06}>
-              <div className="lp-feature-card">
-                <div className="lp-feature-icon">{f.icon}</div>
-                <h3>{f.title}</h3>
-                <p>{f.desc}</p>
+
+        <div className="lp-features-bento">
+          <Reveal className="lp-features-spotlight-wrap">
+            <article className="lp-feature-spotlight">
+              <div className="lp-feature-spotlight-top">
+                <div className="lp-feature-spotlight-icon">
+                  <Vault size={28} />
+                </div>
+                <span className="lp-feature-tag">Core protection</span>
               </div>
+              <h3>Amana Vault</h3>
+              <p>
+                Funds are held securely in escrow until milestones are approved,
+                so your money stays protected at every step of the build.
+              </p>
+              <ul className="lp-feature-spotlight-list">
+                {spotlightPoints.map((point) => (
+                  <li key={point}>
+                    <CheckCircle size={18} weight="fill" />
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </Reveal>
+
+          <div className="lp-features-grid">
+            {features.map((f, i) => (
+              <Reveal
+                key={f.title}
+                delay={i * 0.06}
+                className={f.wide ? "lp-feature-cell--wide" : ""}
+              >
+                <article
+                  className={`lp-feature-card${f.wide ? " lp-feature-card--wide" : ""}`}
+                >
+                  <div className="lp-feature-icon">{f.icon}</div>
+                  <div className="lp-feature-card-body">
+                    <h3>{f.title}</h3>
+                    <p>{f.desc}</p>
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PartnersSection() {
+  const tracks = [
+    {
+      icon: <Bank size={26} />,
+      title: "Financial Institutions",
+      desc: "Banks and licensed payment providers that hold and settle Vault funds for every milestone released on Amana.",
+    },
+    {
+      icon: <Buildings size={26} />,
+      title: "Professional Bodies",
+      desc: "Regulatory and industry associations that help us verify architects, contractors, and artisans before they join.",
+    },
+    {
+      icon: <Truck size={26} />,
+      title: "Suppliers & Vendors",
+      desc: "Material merchants and equipment partners offering trusted supply and preferential rates to Amana projects.",
+    },
+    {
+      icon: <GraduationCap size={26} />,
+      title: "Training & Development",
+      desc: "Institutes and NGOs upskilling artisans and tradespeople so more professionals qualify for verified work.",
+    },
+  ];
+
+  return (
+    <section className="lp-section lp-section--alt" id="partners">
+      <div className="page-container">
+        <div className="lp-section-header-center">
+          <span className="lp-eyebrow lp-eyebrow--pill">
+            Partners &amp; Collaborators
+          </span>
+          <h2 className="lp-section-title lp-section-title--center">
+            Building Africa&apos;s trust infrastructure, together.
+          </h2>
+          <p className="lp-partners-sub">
+            Amana works alongside financial institutions, professional bodies,
+            and industry partners so every project on the platform is backed by
+            more than a promise.
+          </p>
+        </div>
+
+        <div className="lp-partners-rail">
+          <span className="lp-partners-rail-label">Who we work with</span>
+          <ul className="lp-partners-chips">
+            {PARTNER_TYPES.map(({ name, Icon }) => (
+              <li key={name} className="lp-partner-chip">
+                <Icon size={16} weight="fill" />
+                <span>{name}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="lp-partners-grid">
+          {tracks.map((t, i) => (
+            <Reveal key={t.title} delay={i * 0.06}>
+              <article className="lp-partner-card">
+                <span className="lp-partner-index" aria-hidden>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="lp-partner-icon">{t.icon}</div>
+                <h3>{t.title}</h3>
+                <p>{t.desc}</p>
+              </article>
             </Reveal>
           ))}
+        </div>
+
+        <div className="lp-partners-cta">
+          <div className="lp-partners-cta-icon">
+            <Handshake size={28} weight="fill" />
+          </div>
+          <div className="lp-partners-cta-text">
+            <h3>Want to collaborate with Amana?</h3>
+            <p>
+              Whether you finance, supply, regulate, or train — there is a place
+              for you in the ecosystem. Tell us how you&apos;d like to work
+              together.
+            </p>
+          </div>
+          <a href="mailto:partners@amanavault.com" className="lp-btn-primary">
+            Become a Partner
+            <ArrowRight size={16} weight="bold" />
+          </a>
         </div>
       </div>
     </section>
@@ -735,6 +941,7 @@ function Footer() {
         <div>
           <h4>Company</h4>
           <a href="#trust">About Us</a>
+          <a href="#partners">Partners</a>
           <a href="#home">Careers</a>
           <a href="#home">Blog</a>
           <a href="#home">Contact Us</a>
@@ -783,9 +990,11 @@ export default function LandingPage() {
       <Navbar />
       <main>
         <HeroSection />
+        {/* <PartnerMarquee /> */}
         <HowItWorks />
         <EcosystemSection />
         <FeaturesSection />
+        <PartnersSection />
         <TrustAndFAQSection />
         <CTASection />
       </main>
