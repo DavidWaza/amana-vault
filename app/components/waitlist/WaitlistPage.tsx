@@ -132,10 +132,7 @@ export default function WaitlistPage() {
             <div className="wl-card">
               <header className="wl-card-header">
                 <h2>Join the waitlist</h2>
-                <p>
-                  Takes under a minute. We&apos;ll email you the moment your
-                  invite is ready.
-                </p>
+              
               </header>
 
               <WaitlistForm
