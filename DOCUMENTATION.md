@@ -117,6 +117,8 @@ invitation_pending → awaiting_funding → funds_secured → in_progress
 | Route | Purpose |
 | --- | --- |
 | `/` | Public marketing landing page |
+| `/waitlist` | Pre-launch waitlist signup (persisted to Supabase) |
+| `/api/waitlist` | `POST` — validates and stores a waitlist signup |
 | `/join-amana` | Artisan signup wizard (6 steps) |
 | `/auth/client` | Client login / signup (phone + OTP) |
 | `/auth/artisan` | Artisan login / signup (phone + OTP) |
@@ -146,6 +148,29 @@ The marketing page (`/`) communicates the value proposition and routes visitors 
 8. **CTA + Footer** — Final conversion CTA and footer with product/company/support links plus the full CBN custody disclaimer.
 
 > Testimonials were intentionally removed to keep all trust signals 100% real during the pilot.
+
+### 6.1 Waitlist (`/waitlist`)
+
+The pre-launch capture page, linked from the navbar CTA, the closing CTA block, and the footer. It uses the same split layout as `/join-amana`: forest-green hero on the left, white form card on the right.
+
+**Fields:** full name and email (required), phone, role, city, referral source, and a free-text message (all optional). Role is one of `client`, `architect`, `contractor`, `artisan`, `supplier`, `partner`, `other`.
+
+**Unlike the rest of the app, this is not mock data** — signups are persisted to the `waitlist` table in Supabase.
+
+- `app/components/waitlist/validation.ts` is the single source of validation truth, run in the browser for inline feedback and again in the route handler, which never trusts the client.
+- `POST /api/waitlist` writes via the **service role key**, so the table has RLS enabled with **no policies** — anon clients can neither read nor write it.
+- A hidden honeypot field catches bots. It is treated as a **heuristic, not a verdict**: a filled honeypot is saved with `status = 'spam'` rather than discarded, because browser autofill and password managers fill hidden fields for real people. Review with `select * from waitlist where status = 'spam'`.
+- Duplicate emails are matched case-insensitively and return the existing entry rather than an error, so a repeat signup sees "you're already on the list".
+- Each row gets a sequential `position`, shown back to the user as their place in line.
+
+**Required environment variables** (see `.env.example`):
+
+| Variable | Notes |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Project API URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | **Secret.** Bypasses RLS — server-side only, never `NEXT_PUBLIC_` |
+
+Without these the endpoint returns `503` and the form shows a friendly retry message.
 
 ---
 
