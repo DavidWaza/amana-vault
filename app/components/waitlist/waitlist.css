@@ -1,0 +1,613 @@
+/*
+ * Waitlist page — split layout mirroring the /join-amana shell: forest-green
+ * hero on the left, white form card on the right. All colours come from the
+ * :root tokens in app/globals.css.
+ */
+
+.wl-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: linear-gradient(
+    145deg,
+    var(--green) 0%,
+    var(--green2) 55%,
+    #005228 100%
+  );
+  color: #fff;
+}
+
+.wl-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ---------------------------------------------------------------- hero --- */
+
+.wl-hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2.5rem 3rem;
+}
+
+.wl-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #fff;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.wl-brand-name {
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.wl-hero-content {
+  max-width: 26rem;
+}
+
+.wl-hero-eyebrow {
+  display: inline-block;
+  margin-bottom: 1rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.wl-hero-content h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 3.2vw, 2.9rem);
+  line-height: 1.12;
+  font-weight: 900;
+}
+
+.wl-hero-content h1 span {
+  color: var(--gold);
+}
+
+.wl-hero-content > p {
+  margin: 0 0 2rem;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.wl-trust-list {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wl-trust-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.wl-trust-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--gold);
+}
+
+.wl-hero-login {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.wl-hero-login a {
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.wl-hero-login a:hover {
+  color: var(--gold);
+}
+
+/* --------------------------------------------------------------- panel --- */
+
+.wl-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wl-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  max-height: min(760px, calc(100dvh - 4rem));
+  min-height: 0;
+  overflow: hidden;
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.wl-card--success {
+  overflow-y: auto;
+}
+
+.wl-card-header {
+  padding: 2rem 2.25rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.wl-card-header h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.55rem;
+  color: var(--green);
+}
+
+.wl-card-header p {
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ---------------------------------------------------------------- form --- */
+
+.wl-form {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.wl-form-scroll {
+  display: grid;
+  gap: 1.15rem;
+  padding: 1.5rem 2.25rem;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-gutter: stable;
+}
+
+.wl-form-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.wl-form-scroll::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 999px;
+}
+
+.wl-field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.wl-fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.wl-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+  padding: 0;
+}
+
+.wl-optional {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.wl-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 0.95rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.wl-input:focus {
+  border-color: var(--green2);
+  box-shadow: 0 0 0 4px rgba(0, 122, 61, 0.12);
+}
+
+.wl-input--error {
+  border-color: #d64545;
+}
+
+.wl-input--error:focus {
+  border-color: #d64545;
+  box-shadow: 0 0 0 4px rgba(214, 69, 69, 0.12);
+}
+
+.wl-select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%235b6b60' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1.1rem center;
+  background-size: 1rem;
+  padding-right: 2.75rem;
+}
+
+.wl-textarea {
+  resize: vertical;
+  min-height: 5.5rem;
+  line-height: 1.6;
+}
+
+.wl-field-error {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #c53030;
+  line-height: 1.4;
+}
+
+.wl-field-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* --------------------------------------------------------------- roles --- */
+
+.wl-roles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin-top: 0.15rem;
+}
+
+.wl-role {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
+}
+
+.wl-role:hover {
+  border-color: var(--green3);
+  background: var(--soft);
+}
+
+.wl-role:focus-visible {
+  outline: none;
+  border-color: var(--green2);
+  box-shadow: 0 0 0 4px rgba(0, 122, 61, 0.12);
+}
+
+.wl-role--active {
+  border-color: var(--green2);
+  background: var(--soft);
+  box-shadow: 0 0 0 1px var(--green2) inset;
+}
+
+.wl-role-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  background: var(--soft);
+  color: var(--green2);
+  transition: background var(--transition);
+}
+
+.wl-role--active .wl-role-icon {
+  background: var(--green2);
+  color: #fff;
+}
+
+.wl-role-text {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.wl-role-text strong {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--green);
+  line-height: 1.2;
+}
+
+.wl-role-text small {
+  font-size: 0.74rem;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+.wl-honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------------------------------------------- actions --- */
+
+.wl-form-actions {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.25rem 2.25rem 1.75rem;
+  border-top: 1px solid var(--line);
+  background: #fff;
+}
+
+.wl-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.95rem 1.5rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--green2);
+  color: #fff;
+  font-size: 0.98rem;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.wl-submit:hover:not(:disabled) {
+  background: var(--green);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.wl-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.wl-submit-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #f6c9c9;
+  border-radius: 14px;
+  background: #fdf2f2;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #c53030;
+  line-height: 1.4;
+}
+
+.wl-form-note {
+  margin: 0;
+  font-size: 0.75rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------------- success --- */
+
+.wl-success {
+  padding: 2.5rem 2.25rem;
+  text-align: center;
+}
+
+.wl-success-icon {
+  width: 5rem;
+  height: 5rem;
+  margin: 0 auto 1.25rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--soft);
+  color: var(--green2);
+}
+
+.wl-success h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.6rem;
+  color: var(--green);
+}
+
+.wl-success > p {
+  margin: 0 0 1.5rem;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.wl-position {
+  display: grid;
+  gap: 0.3rem;
+  padding: 1.1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--soft);
+}
+
+.wl-position-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.wl-position-value {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--green);
+  line-height: 1;
+}
+
+.wl-success-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: 16px;
+  background: var(--gold-soft);
+  border: 1px solid #f3e0b5;
+  text-align: left;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: #7a5600;
+}
+
+.wl-success-note svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  color: var(--gold);
+}
+
+.wl-back-home {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--green2);
+  text-decoration: none;
+}
+
+.wl-back-home:hover {
+  color: var(--green);
+}
+
+/* ---------------------------------------------------------- responsive --- */
+
+@media (min-width: 961px) and (max-width: 1440px) {
+  .wl-hero {
+    padding: 2rem;
+  }
+
+  .wl-hero-content {
+    max-width: 23rem;
+  }
+
+  .wl-hero-content h1 {
+    font-size: clamp(1.85rem, 2.8vw, 2.35rem);
+  }
+}
+
+@media (max-width: 960px) {
+  .wl-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .wl-hero {
+    padding: 2rem 1.5rem 1rem;
+    gap: 1.5rem;
+  }
+
+  .wl-hero-content {
+    max-width: none;
+  }
+
+  .wl-hero-content > p {
+    margin-bottom: 1.5rem;
+  }
+
+  .wl-hero-login {
+    display: none;
+  }
+
+  .wl-panel {
+    padding: 1rem 1.25rem 2.5rem;
+    border-left: none;
+  }
+
+  .wl-card {
+    max-height: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .wl-hero-content h1 {
+    font-size: 1.85rem;
+  }
+
+  .wl-trust-list li {
+    font-size: 0.88rem;
+  }
+
+  .wl-card-header {
+    padding: 1.5rem 1.35rem 1rem;
+  }
+
+  .wl-form-scroll {
+    padding: 1.25rem 1.35rem;
+  }
+
+  .wl-form-actions {
+    padding: 1.1rem 1.35rem 1.5rem;
+  }
+
+  .wl-roles {
+    grid-template-columns: 1fr;
+  }
+
+  .wl-success {
+    padding: 2rem 1.35rem;
+  }
+}

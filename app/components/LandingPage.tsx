@@ -201,11 +201,11 @@ function Navbar() {
           ),
         )}
         <Link
-          href="/join-amana"
+          href="/waitlist"
           className="lp-nav-cta"
           onClick={() => setMobileOpen(false)}
         >
-          Get Started
+          Join the Waitlist
         </Link>
       </div>
     </nav>
@@ -895,7 +895,11 @@ function CTASection() {
             Join thousands of clients and professionals building a better way.
           </p>
           <div className="lp-cta-actions">
-            <Link href="/auth/client" className="lp-btn-primary">
+            <Link href="/waitlist" className="lp-btn-primary">
+              Join the Waitlist
+              <ArrowRight size={16} weight="bold" />
+            </Link>
+            <Link href="/auth/client" className="lp-btn-outline">
               Start Your Project
             </Link>
             <Link href="/join-amana" className="lp-btn-outline">
@@ -931,6 +935,7 @@ function Footer() {
 
         <div>
           <h4>Product</h4>
+          <a href="/waitlist">Join the Waitlist</a>
           <a href="#how-it-works">How It Works</a>
           <a href="/auth/client">For Clients</a>
           <a href="/join-amana">For Professionals</a>
