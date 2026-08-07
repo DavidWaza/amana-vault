@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/app/lib/supabase-admin";
-import { normalizePhoneInput } from "@/app/lib/phone";
+import {
+  DEFAULT_PHONE_COUNTRY,
+  sanitizePhoneInput,
+  toE164,
+} from "@/app/components/waitlist/phone-countries";
 import {
   HONEYPOT_FIELD,
   MESSAGE_MAX_LENGTH,
@@ -61,10 +65,16 @@ export async function POST(request: Request) {
     );
   }
 
+  // An unknown country code is left as-is rather than defaulted, so validation
+  // rejects it instead of quietly filing a foreign number under Nigeria.
+  const countryCode =
+    asString(payload.countryCode).trim().toUpperCase() || DEFAULT_PHONE_COUNTRY;
+
   const form: WaitlistFormData = {
     fullName: asString(payload.fullName).trim(),
     email: normalizeEmail(asString(payload.email)),
-    phone: normalizePhoneInput(asString(payload.phone)),
+    phone: sanitizePhoneInput(asString(payload.phone), countryCode),
+    countryCode,
     role: asString(payload.role) as WaitlistFormData["role"],
     city: asString(payload.city).trim(),
     referralSource: asString(payload.referralSource).trim(),
@@ -87,7 +97,9 @@ export async function POST(request: Request) {
     .insert({
       full_name: form.fullName,
       email: form.email,
-      phone: orNull(form.phone),
+      // Stored in E.164 ("+2348012345678") so the country travels with the
+      // number — the dropdown selection is not persisted separately.
+      phone: orNull(toE164(form.phone, form.countryCode)),
       role: form.role,
       city: orNull(form.city),
       referral_source: orNull(form.referralSource),

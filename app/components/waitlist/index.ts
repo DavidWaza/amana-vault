@@ -11,3 +11,11 @@ export {
   REFERRAL_OPTIONS,
 } from "./constants";
 export { ROLE_OPTIONS, WAITLIST_TRUST_POINTS } from "./ui-options";
+export {
+  DEFAULT_PHONE_COUNTRY,
+  PHONE_COUNTRIES,
+  countryFlagEmoji,
+  getPhoneCountry,
+  toE164,
+  type PhoneCountry,
+} from "./phone-countries";

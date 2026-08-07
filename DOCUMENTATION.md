@@ -105,7 +105,7 @@ invitation_pending → awaiting_funding → funds_secured → in_progress
 - The app is organized by **portal**, each under its own route segment (`app/artisan`, `app/client`, `app/architect`, `app/admin`) with a matching component folder under `app/components/<portal>-dashboard`.
 - Each portal wraps its pages in a **React context provider** (e.g. `ClientProfileProvider`, `ArtisanProfileProvider`, `ArchitectProfileProvider`) that holds the current profile and dashboard state.
 - Domain data is currently driven by **`mock-data.ts`** files per portal (the app is a high-fidelity, front-end MVP/prototype). Types live in per-portal `types.ts`; the dispute model is shared in `app/components/disputes/types.ts`.
-- Shared helpers: `utils.ts` per portal (currency/date formatting, status metadata, action resolvers) and `app/lib/phone.ts` (Nigerian phone validation, 11 digits).
+- Shared helpers: `utils.ts` per portal (currency/date formatting, status metadata, action resolvers) and `app/lib/phone.ts` (Nigerian phone validation, 11 digits — the waitlist is the one exception, see §6.1).
 - Sidebar collapse state and onboarding progress persist to **localStorage**.
 
 > **Build note (`AGENTS.md`):** This project pins a specific Next.js version whose conventions may differ from older releases — consult `node_modules/next/dist/docs/` before changing framework-level code.
@@ -162,6 +162,7 @@ The pre-launch capture page, linked from the navbar CTA, the closing CTA block, 
 - A hidden honeypot field catches bots. It is treated as a **heuristic, not a verdict**: a filled honeypot is saved with `status = 'spam'` rather than discarded, because browser autofill and password managers fill hidden fields for real people. Review with `select * from waitlist where status = 'spam'`.
 - Duplicate emails are matched case-insensitively and return the existing entry rather than an error, so a repeat signup sees "you're already on the list".
 - Each row gets a sequential `position`, shown back to the user as their place in line.
+- **Phone is international here, unlike the rest of the app.** A country dropdown (`app/components/waitlist/phone-countries.ts`, ~220 countries with dial code and national digit range) is attached to the number field as its `+234` prefix — one control, one number input — and the number is validated against the selected country's digit range. The locally-written trunk zero is accepted and stripped (kept for Italy, which retains it internationally). The row is stored in **E.164** (`+2348012345678`), so the `waitlist.phone` column must accept a leading `+` and up to 16 characters — the country is not persisted in a separate column.
 
 **Required environment variables** (see `.env.example`):
 

@@ -2,7 +2,14 @@
 
 import { PaperPlaneTilt, Warning } from "phosphor-react";
 import { Button } from "@/app/components/ui/Button";
-import { normalizePhoneInput } from "@/app/lib/phone";
+import {
+  countryFlagEmoji,
+  describeDigitRange,
+  getPhoneCountry,
+  PHONE_COUNTRIES,
+  sanitizePhoneInput,
+  toNationalDigits,
+} from "./phone-countries";
 import {
   CITY_OPTIONS,
   HONEYPOT_FIELD,
@@ -43,6 +50,9 @@ export default function WaitlistForm({
   /** Only surface an error once the field has been visited or submit was tried. */
   const errorFor = (field: keyof WaitlistTouchedState) =>
     touched[field] ? errors[field] : undefined;
+
+  const country = getPhoneCountry(form.countryCode);
+  const nationalDigits = toNationalDigits(form.phone, form.countryCode);
 
   return (
     <form className="wl-form" onSubmit={onSubmit} noValidate>
@@ -98,23 +108,72 @@ export default function WaitlistForm({
           <label className="wl-label" htmlFor="wl-phone">
             Phone number <span className="wl-optional">(optional)</span>
           </label>
-          <input
-            id="wl-phone"
-            className={`wl-input${errorFor("phone") ? " wl-input--error" : ""}`}
-            type="tel"
-            inputMode="numeric"
-            autoComplete="tel"
-            placeholder="08012345678"
-            value={form.phone}
-            onChange={(e) => onChange("phone", normalizePhoneInput(e.target.value))}
-            onBlur={() => onBlur("phone")}
-            aria-invalid={errorFor("phone") ? true : undefined}
-            aria-describedby={errorFor("phone") ? "wl-phone-error" : undefined}
-          />
-          {errorFor("phone") && (
+
+          <div
+            className={`wl-phone-group${errorFor("phone") ? " wl-phone-group--error" : ""}`}
+          >
+            {/*
+              The country picker is a real <select> laid transparently over the
+              flag + dial code, so it keeps native keyboard and mobile
+              behaviour while reading as a prefix of the single phone field.
+            */}
+            <div className="wl-phone-country">
+              <select
+                id="wl-phone-country"
+                className="wl-phone-select"
+                aria-label="Phone number country"
+                value={form.countryCode}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  onChange("countryCode", next);
+                  // A number typed for a longer country must not stay over the
+                  // new country's limit — re-clamp against the country picked.
+                  onChange("phone", sanitizePhoneInput(form.phone, next));
+                }}
+              >
+                {PHONE_COUNTRIES.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {countryFlagEmoji(option.code)} {option.name} (+{option.dial})
+                  </option>
+                ))}
+              </select>
+              <span className="wl-phone-dial" aria-hidden>
+                <span className="wl-phone-flag">
+                  {countryFlagEmoji(form.countryCode)}
+                </span>
+                +{country?.dial ?? ""}
+              </span>
+            </div>
+
+            <input
+              id="wl-phone"
+              className="wl-phone-input"
+              type="tel"
+              inputMode="numeric"
+              autoComplete="tel-national"
+              placeholder="Phone number"
+              value={form.phone}
+              onChange={(e) =>
+                onChange("phone", sanitizePhoneInput(e.target.value, form.countryCode))
+              }
+              onBlur={() => onBlur("phone")}
+              aria-invalid={errorFor("phone") ? true : undefined}
+              aria-describedby={
+                errorFor("phone") ? "wl-phone-error" : "wl-phone-hint"
+              }
+            />
+          </div>
+
+          {errorFor("phone") ? (
             <p className="wl-field-error" id="wl-phone-error">
               {errorFor("phone")}
             </p>
+          ) : (
+            country && (
+              <p className="wl-field-hint" id="wl-phone-hint">
+                {nationalDigits.length}/{describeDigitRange(country)} digits
+              </p>
+            )
           )}
         </div>
 
