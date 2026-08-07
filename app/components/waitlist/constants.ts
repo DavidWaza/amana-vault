@@ -5,6 +5,7 @@
  * validation.ts), so this module must stay free of component code. Anything
  * that renders an icon belongs in ui-options.tsx instead.
  */
+import { DEFAULT_PHONE_COUNTRY } from "./phone-countries";
 import type { WaitlistFormData, WaitlistTouchedState } from "./types";
 
 /**
@@ -23,6 +24,7 @@ export const INITIAL_FORM: WaitlistFormData = {
   fullName: "",
   email: "",
   phone: "",
+  countryCode: DEFAULT_PHONE_COUNTRY,
   role: "",
   city: "",
   referralSource: "",

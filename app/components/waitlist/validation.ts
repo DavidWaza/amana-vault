@@ -1,4 +1,8 @@
-import { isValidPhoneDigits } from "@/app/lib/phone";
+import {
+  describeDigitRange,
+  getPhoneCountry,
+  toNationalDigits,
+} from "./phone-countries";
 import {
   EMAIL_MAX_LENGTH,
   MESSAGE_MAX_LENGTH,
@@ -37,11 +41,23 @@ export function getEmailError(email: string): string | null {
   return null;
 }
 
-/** Phone is optional — only validated once something has been typed. */
-export function getPhoneError(phone: string): string | null {
-  const trimmed = phone.trim();
-  if (!trimmed) return null;
-  if (!isValidPhoneDigits(trimmed)) return "Enter a valid 11-digit phone number";
+/**
+ * Phone is optional — only validated once something has been typed. The number
+ * is checked against the digit range of the selected country, so a Ghanaian or
+ * British signup is just as valid as a Nigerian one.
+ */
+export function getPhoneError(phone: string, countryCode: string): string | null {
+  // No number at all is fine; a country still has to be a real one, because the
+  // dropdown value is what turns the digits into an E.164 number.
+  if (!/\d/.test(phone)) return null;
+
+  const country = getPhoneCountry(countryCode);
+  if (!country) return "Select the country your number is from";
+
+  const national = toNationalDigits(phone, countryCode);
+  if (national.length < country.minDigits || national.length > country.maxDigits) {
+    return `Enter a ${describeDigitRange(country)}-digit ${country.name} number after +${country.dial}`;
+  }
   return null;
 }
 
@@ -78,7 +94,7 @@ export function getWaitlistErrors(form: WaitlistFormData): WaitlistFieldErrors {
   const email = getEmailError(form.email);
   if (email) errors.email = email;
 
-  const phone = getPhoneError(form.phone);
+  const phone = getPhoneError(form.phone, form.countryCode);
   if (phone) errors.phone = phone;
 
   const role = getRoleError(form.role);

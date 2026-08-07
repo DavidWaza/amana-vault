@@ -269,6 +269,96 @@
   padding-right: 2.75rem;
 }
 
+/* ---------------------------------------------------------------- phone --- */
+
+/*
+ * One control: the country dropdown is the prefix segment of the phone field,
+ * so there is a single visible input for the number itself.
+ */
+.wl-phone-group {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  overflow: hidden;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.wl-phone-group:focus-within {
+  border-color: var(--green2);
+  box-shadow: 0 0 0 4px rgba(0, 122, 61, 0.12);
+}
+
+.wl-phone-group--error {
+  border-color: #d64545;
+}
+
+.wl-phone-group--error:focus-within {
+  border-color: #d64545;
+  box-shadow: 0 0 0 4px rgba(214, 69, 69, 0.12);
+}
+
+.wl-phone-country {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  border-right: 1px solid var(--line);
+  background: var(--soft);
+}
+
+/*
+ * Invisible but fully functional: it sits on top of the label below so a click
+ * anywhere on the prefix opens the real native country list.
+ */
+.wl-phone-select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  opacity: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.wl-phone-dial {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 5.75rem;
+  padding: 0.95rem 2.1rem 0.95rem 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%235b6b60' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 0.9rem;
+}
+
+.wl-phone-flag {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.wl-phone-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  padding: 0.95rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+}
+
 .wl-textarea {
   resize: vertical;
   min-height: 5.5rem;
